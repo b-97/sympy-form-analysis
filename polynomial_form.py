@@ -27,8 +27,6 @@ def is_polynomial(expr):
                 return False
     return not duplicate_monomials(expr)
 
-
-
 '''
     duplicate_monomials(expr) - determines if any of the monomials in a
         polynomial can be combined.
@@ -55,10 +53,8 @@ def duplicate_monomials(expr):
                 expr2 = expr.args[j]
                 expr3 = Add(expr1, expr2, evaluate=False)
 
-                if (isinstance(expr1, Number) or \
-                        isinstance(expr1, NumberSymbol)) and \
-                        (isinstance(expr2, Number) or \
-                        isinstance(expr2, NumberSymbol)):
+                if isinstance(expr1, (Number, NumberSymbol)) and \
+                        isinstance(expr2, (Number,NumberSymbol)):
                             if len(simplify(expr3).args) != \
                                     len(Add(expr3).args):
                                     return True
@@ -77,7 +73,5 @@ def duplicate_monomials(expr):
 '''
 def const_divisible(expr1, expr2):
     q, r = div(expr1, expr2,domain='QQ')
-    return isinstance(q, Number) or \
-            isinstance(q, NumberSymbol) and \
-            r == 0
+    return isinstance(q, (Number,NumberSymbol)) and r == 0
 

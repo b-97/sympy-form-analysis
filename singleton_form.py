@@ -19,8 +19,7 @@ def const_to_const(expr):
 '''
 def const_expon(expr):
     return isinstance(expr, Pow) and \
-        (isinstance(expr.args[1], Number) or \
-        isinstance(expr.args[1], NumberSymbol))
+        isinstance(expr.args[1], (Number, NumberSymbol))
 
 '''
     is_singleton(expr) - determines if the expression is a singleton
@@ -36,18 +35,15 @@ def const_expon(expr):
 def is_singleton(expr):
     
     #If number or symbol
-    if isinstance(expr, Number) or \
-            isinstance(expr, NumberSymbol) or \
-            isinstance(expr, Symbol):
+    if isinstance(expr, (Number, NumberSymbol, Symbol)):
         return True
     
     #Case of rational added to irrational
-    #TODO: Something more sound than counting arguments?
+    #TODO: Something more mathematically sound than counting arguments?
     if isinstance(expr, Add):
         for i in expr.args:
             #only numbers and numbersymbols allowed
-            if not (isinstance(i, Number) or \
-                    isinstance(i, NumberSymbol)):
+            if not isinstance(i, (Number, NumberSymbol)):
                 return False
         return len(simplify(expr).args) == len(expr.args)
 
@@ -58,10 +54,10 @@ def is_singleton(expr):
         if const_to_const(expr):
             return False
         elif isinstance(expr.args[0], Add):
-            if not (instance(i, Number) or \
-                    instance(i, NumberSymbol)):
+            if not isinstance(i, (Number, NumberSymbol)):    
                 return False
-            return len(simplify(expr.args[0]).args) == expr.args[0].args
+            else: #BANDAID BELOW: PLEASE FIX
+                return len(simplify(expr.args[0]).args) == expr.args[0].args
         else:
             return True
     return False 
