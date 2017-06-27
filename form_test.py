@@ -1,4 +1,7 @@
-from symp import *
+from singleton_form import *
+from monomial_form import *
+from polynomial_form import *
+
 import unittest
 
 class TestSymp(unittest.TestCase):
