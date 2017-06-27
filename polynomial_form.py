@@ -1,3 +1,4 @@
+from __future__ import division
 from sympy import *
 from monomial_form import *
 
@@ -50,11 +51,21 @@ def duplicate_monomials(expr):
         #remainder
         if i <= len(expr.args) - 2:
             for j in range(i+1, len(expr.args)):
-                if(const_divisible(expr.args[i], expr.args[j])):
-                    print(expr.args[i], expr.args[j])
+                expr1 = expr.args[i]
+                expr2 = expr.args[j]
+                expr3 = Add(expr1, expr2, evaluate=False)
+
+                if (isinstance(expr1, Number) or \
+                        isinstance(expr1, NumberSymbol)) and \
+                        (isinstance(expr2, Number) or \
+                        isinstance(expr2, NumberSymbol)):
+                            if len(simplify(expr3).args) != \
+                                    len(Add(expr3).args):
+                                    return True
+
+                if const_divisible(expr.args[i], expr.args[j]):
                     return True
 
-    print("what")
     #Check for any duplicates 
     return len(monomials) != len(set(monomials))
 
@@ -65,7 +76,7 @@ def duplicate_monomials(expr):
                     false otherwise
 '''
 def const_divisible(expr1, expr2):
-    q, r = div(expr1, expr2, domain='ZZ')
+    q, r = div(expr1, expr2,domain='QQ')
     return isinstance(q, Number) or \
             isinstance(q, NumberSymbol) and \
             r == 0

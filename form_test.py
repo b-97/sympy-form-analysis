@@ -25,6 +25,9 @@ class TestSymp(unittest.TestCase):
         self.a11 = Add(1,9,pi,evaluate=False)
         #self.a12 = Add(0,1,evaluate=False)
         self.a13 = Add(152, pi, evaluate=False)
+    
+    
+    
     def test_singleton(self):
         self.assertTrue(is_singleton(self.x))
         self.assertTrue(is_singleton(self.y))
@@ -35,6 +38,9 @@ class TestSymp(unittest.TestCase):
         self.assertFalse(is_singleton(self.a11))
         #self.assertFalse(is_singleton(self.a12))
         self.assertTrue(is_singleton(self.a13))
+    
+    
+    
     def test_monomial(self):
         self.assertTrue(is_monomial(self.x))
         self.assertTrue(is_monomial(self.y))
@@ -47,6 +53,13 @@ class TestSymp(unittest.TestCase):
         self.assertFalse(is_monomial(self.a7))
         self.assertTrue(is_monomial(self.a8))
         self.assertTrue(is_monomial(self.a9))
-
+    
+    
+    
+    def test_polynomial(self):
+        self.assertFalse(is_polynomial(self.a10))
+        self.assertFalse(is_polynomial(self.a11))
+        #self.assertFalse(is_polynomial(self.a12))
+        self.assertTrue(is_polynomial(self.a13))
 if __name__ == '__main__':
     unittest.main()
