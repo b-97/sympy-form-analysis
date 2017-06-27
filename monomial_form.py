@@ -1,7 +1,13 @@
 from sympy import *
 from singleton_form import *
 
-#Returns if an expression is a monomial or not.
+'''
+    is_monomial(expr): returns if an expression is a monomial or not.
+    monomials are defined as either a singleton or a single product of singletons
+    returns:
+        true if the expression is a well-formed monomial
+        false otherwise.
+'''
 def is_monomial(expr):
     if is_singleton(expr):
         return True
@@ -14,17 +20,23 @@ def is_monomial(expr):
                 return False
     return not duplicate_bases(expr)
 
-#Test to see if any of the factors are dupes
+'''
+    duplicate_bases(expr): returns if any bases in a monomial are duplicates
+    Preconditions: monomial is otherwise well-formed
+    returns:
+        true if there are duplicate bases in the monomial
+        false otherwise
+'''
+#Check to see if any of the bases in a monomial are duplicates
 def duplicate_bases(expr):
     bases = []
     
-    #collect the bases - if there's an exponent, just look
-    #at the base
+    #collect the bases - if there's an exponent, just look at the base
     for i in range(0, len(expr.args)):
         if isinstance(expr.args[i], Pow):
             bases.append(expr.args[i].args[0])
         else:
             bases.append(expr.args[i])
-    
-    #check for any dupes
+
+    #Set only collects unique bases
     return len(bases) != len(set(bases))

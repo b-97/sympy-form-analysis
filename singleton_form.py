@@ -1,32 +1,43 @@
 from sympy import *
 
-#Returns whether expression in question is a real number
-#to the power of a real number.
+'''
+    const_to_const(expr): determines if an expression is a
+        non-transcendental number to the power of a non-transcendental number
+    returns: true if so
+             false if not
+'''
 def const_to_const(expr):
     return isinstance(expr, Pow) and \
             isinstance(expr.args[0], Number) and \
             isinstance(expr.args[1], Number)
 
-#returns whether the exponent is a constant or not
+'''
+    const_expon(expr) - determines if the expression has an
+        non-transcendental exponent.
+    returns:    true if so
+                false if not
+'''
 def const_expon(expr):
     return isinstance(expr, Pow) and \
         (isinstance(expr.args[1], Number) or \
         isinstance(expr.args[1], NumberSymbol))
 
-#Returns if an expression is a singleton.
+'''
+    is_singleton(expr) - determines if the expression is a singleton
+    A singleton is defined to be either a number or a symbol, optionally raised
+    to a power.
+    TODO: Allow numbers like (pi + 12) to be included in the definition
+'''
 def is_singleton(expr):
-    if isinstance(expr, Number):
-        return True
-    elif isinstance(expr, NumberSymbol):
-        return True
-    elif isinstance(expr, Symbol):
+    
+    #If number or symbol
+    if isinstance(expr, Number) or \
+            isinstance(expr, NumberSymbol) or \
+            isinstance(expr, Symbol):
         return True
             
-    #First: test to see if it's raised to a power
-    #If so, make sure the exponent constant and 
-    #ensure the base is in singleton form
+    #If number or symbol raised to a power
     if isinstance(expr, Pow):
-        #TODO: Add code to pass bases like (pi + 3)
         if isinstance(expr.args[0], Mul):
             return False
         if const_to_const(expr):
