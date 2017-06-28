@@ -1,14 +1,15 @@
 from sympy import *
 from singleton_form import *
 
-
-
-'''
-    const_to_const(expr): determines if an expression is a
-    non-transcendental number to the power of a non-transcendental number
-    returns a tuple with a boolean result and a message describing the result
-'''
 def const_to_const(expr):
+    '''determines if an expression is a rational raised to a rational power.
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result 
+    '''
     if isinstance(expr, Pow) and \
             isinstance(expr.args[0], Number) and \
             isinstance(expr.args[1], Number):
@@ -20,7 +21,12 @@ def const_to_const(expr):
 
 def is_monomial_factor_form(expr):
     '''Determines whether a term in a monomial is in the appropriate form.
-        TODO: DOCUMENTATION
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result
     '''
     if isinstance(expr, Pow):
         if const_to_const(expr)[0]:
@@ -32,14 +38,18 @@ def is_monomial_factor_form(expr):
     elif not is_singleton_form(expr)[0]:
         return (False, "Non-singleton monomial factor found")
     return (True, "Monomial is in factor form")
-'''
-    is_monomial_form(expr): returns if an expression is a monomial or not.
-    monomials are defined as either a singleton or a single product of singletons
-    returns:
-        true if the expression is a well-formed monomial
-        false otherwise.
-'''
+
 def is_monomial_form(expr):
+    '''Determines whether an expression is in proper monomian form.
+        Monomials are defined as either a singleton or a single product of
+        singletons, where singletons are optionally raised to a power.
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result
+    '''
     if is_singleton_form(expr)[0]:
         return (True, "Expression is in singleton form")
     elif isinstance(expr,Pow):
@@ -60,15 +70,17 @@ def is_monomial_form(expr):
     else:
         return (True, "Expression is a monomial")
 
-'''
-    duplicate_bases(expr): returns if any bases in a monomial are duplicates
-    Preconditions: monomial is otherwise well-formed
-    returns:
-        true if there are duplicate bases in the monomial
-        false otherwise
-'''
 #Check to see if any of the bases in a monomial are duplicates
 def duplicate_bases(expr):
+    '''Returns if any bases in a monomial are duplicates
+        Preconditions: monomial is otherwise well-formed.
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result
+    '''
     bases = []
     
     #collect the bases - if there's an exponent, just look at the base

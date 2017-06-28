@@ -2,19 +2,19 @@ from sympy import *
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
 
-'''
-    singleton_combinable_terms(expr): determines if two terms in a singleton
-        can be combined.
-            TODO LIST:
-                1. Two rational numbers are combinable (DONE!)
-                2. Two identical irrational numbers are combinable (Done!)
-                3. Two irrational numbers with combinable terms (pi, sqrt(2), etc)
-                    are combinable
-    returns:    true if so
-                false if not
-'''
 def singleton_combinable_terms(expr):
-    
+    '''determines if two terms in a singleton can be combined.
+        1. Two rational numbers are combinable.
+        2. Two identical rational numbers are combinable.
+        3. Two irrational numbers with combinable terms (pi, sqrt(2),etc)
+            are combinable
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result 
+    '''
     #We don't want symbols or subexpressions like Add
     for i in expr.args:
         if not isinstance(i, (Number, NumberSymbol, Mul)):
@@ -40,16 +40,18 @@ def singleton_combinable_terms(expr):
     else:
         return False, "No combinable terms in singleton"
 
-'''
-    is_singleton(expr) - determines if the expression is a singleton
-    A singleton is defined to be either a number or a symbol
-    returns:    true if so
-                false if not
-    Note: internally, 0 + 6 will pass as a singleton, because SymPy will 
-        convert 0 + 6 to 6. This is SymPy's fault; if the issue is handled it
-        won't be here.
-'''
 def is_singleton_form(expr):
+    '''determines if the expression is a singleton.
+        Note: internally, 0 + 6 will pass as a singleton, because SymPy will
+            convert 0 + 6 to 6. This is Sympy's fault; if the issue is handled
+            it won't be here.
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result 
+    '''
     if isinstance(expr, (Number, NumberSymbol, Symbol)):
         return (True, "Expression is a number, NumberSymbol, or Symbol")
     

@@ -3,15 +3,15 @@ from sympy import *
 from monomial_form import *
 
 def is_polynomial_form(expr):
-    '''checks to see if the polynomial given is well formed.
-        a polynomial can either be a monomial or a sum of monomials with no 
-        common bases TODO: Implement "no common bases" better ((x^2)(2x)) + 
-        (2x^3)(x^2) will incorrectly pass
+    '''Determines if an expression is in proper polynomial form
+        A polynomial is defined as a sum of monomials that cannot be factored
+            further.
         Args:
-            expr: Expression to be checked
-        
+            expr: A standard Sympy expression
         Returns:
-            A tuple with a boolean result and a message explaining the result
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result 
     '''
 
     #If the expression is a monomial or a singleton
@@ -30,14 +30,15 @@ def is_polynomial_form(expr):
     else:
         return (True, "Proper Polynomial")
 
-'''
-    duplicate_monomials(expr) - determines if any of the monomials in a
-        polynomial can be combined.
-    preconditions: polynomial is otherwise well formed
-    returns:    true if there are any monomials that could be combined
-                false otherwise
-'''
 def duplicate_monomials(expr):
+    '''Determines if any monomials in a polynomial are factorable
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result 
+    '''
     monomials = []
     
     #collect the bases 
@@ -76,13 +77,16 @@ def duplicate_monomials(expr):
     else:
         return (False, "No combinable monomials")
 
-'''
-    const_divisible(expr1, expr2) - returns whether the quotient of two
-        expressoins is a constant with no remainder
-        returns:    true if division produces constant w/no remainder
-                    false otherwise
-'''
 def const_divisible(expr1, expr2):
+    '''determines whether the quotient of two expressions is constant divisible
+        Const divisible is defined as dividing with constant quotient and 0 remainder
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result 
+    '''
     q, r = div(expr1, expr2,domain='QQ')
     if isinstance(q, (Number,NumberSymbol)) and r == 0:
         return (True, "Expressions are divisible by a constant")
