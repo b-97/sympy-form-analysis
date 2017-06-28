@@ -32,6 +32,8 @@ def is_polynomial_form(expr):
 
 def duplicate_monomials(expr):
     '''Determines if any monomials in a polynomial are factorable
+        NOTE: Currently relies upon term count to determine simplicity.
+            This needs to be changed, and an algorithm is in development.
         Args:
             expr: A standard Sympy expression
         Returns:
