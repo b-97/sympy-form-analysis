@@ -31,7 +31,7 @@ class TestSymp(unittest.TestCase):
     def test_singleton(self):
         self.assertTrue(is_singleton_form(self.x)[0])
         self.assertTrue(is_singleton_form(self.y)[0])
-        self.assertTrue(is_singleton_form(self.a1)[0])
+        self.assertFalse(is_singleton_form(self.a1)[0])
         self.assertFalse(is_singleton_form(self.a2)[0])
         self.assertFalse(is_singleton_form(self.a3)[0])
         self.assertFalse(is_singleton_form(self.a10)[0])
@@ -46,7 +46,7 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_monomial_form(self.y)[0])
         self.assertTrue(is_monomial_form(self.a1)[0])
         self.assertFalse(is_monomial_form(self.a2)[0])
-        self.assertTrue(is_monomial_form(self.a3)[0])
+        self.assertFalse(is_monomial_form(self.a3)[0])
         self.assertTrue(is_monomial_form(self.a4)[0])
         self.assertFalse(is_monomial_form(self.a5)[0])
         self.assertTrue(is_monomial_form(self.a6)[0])
