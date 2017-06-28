@@ -2,6 +2,27 @@ from sympy import *
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
 
+def is_singleton_factor_form(expr):
+    '''Determines if a product in a singleton is appropriate.
+        1. No symbols are allowed in the product.
+        2. Product cannot contain two rational numbers.
+        3. Product cannot contain any operations other than Mul.
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result
+    '''
+    for i in expr.args:
+        if not isinstance(i, (Number, NumberSymbol)):
+            return False, "Singletons cannot have symbols in their products"
+
+    if sum(isinstance(j, Number) for j in expr.args) > 1:
+        return False, "> 1 instance of rational numbers inside a product"
+
+    return True, "Product appropriate for singletons"
+
 def singleton_combinable_terms(expr):
     '''determines if two terms in a singleton can be combined.
         1. Two rational numbers are combinable.
@@ -22,20 +43,10 @@ def singleton_combinable_terms(expr):
 
         #If there's a product, make sure only one is rational
         if isinstance(i, Mul):
-            #No symbols allowed inside a Mul
-            for j in i.args:
-                if not isinstance(j, Number, NumberSymbol):
-                    return True, "Singletons cannot have symbols in their products"
-
-            if sum(isinstance(j, Number) for j in i.args) > 1:
-                return True, "Two instances of rational numbers inside a product"
-    if isinstance(expr, Mul):
-        for i in expr.args:
-            if not isinstance(i, (Number, NumberSymbol)):
-                return True, "Singletons cannot have symbols or operations in their products."
-        if sum(isinstance(j, Number) for j in expr.args) > 1:
-            return True, "Two instances of rational numbers inside a product"
-
+            result = is_singleton_factor_form(i)
+            if not result[0]:
+                return True, result[1]
+    
     #Any two rational numbers can be simplified
     if sum(isinstance(i, Rational) for i in expr.args) > 1:
         return True, "Two instances of rational numbers"
@@ -62,13 +73,20 @@ def is_singleton_form(expr):
         return (True, "Expression is a number, NumberSymbol, or Symbol")
     
     #Case of rational added to irrational
-    if isinstance(expr, (Add, Mul)):
+    if isinstance(expr, Add):
         result = singleton_combinable_terms(expr)
         if result[0]:
             return (False, result[1])
         else:
             return (True, result[1])
 
+    #Case of rational multiplied to irrational
+    if isinstance(expr, Mul):
+        result = is_singleton_factor_form(expr)
+        if not result[0]:
+            return False, result[1]
+
+        
     #Case of trigonometric functions
     #TODO: Analyze what's inside the trigonometric function
     if isinstance(expr, (TrigonometricFunction)):
