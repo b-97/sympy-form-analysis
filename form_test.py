@@ -29,37 +29,37 @@ class TestSymp(unittest.TestCase):
     
     
     def test_singleton(self):
-        self.assertTrue(is_singleton_form(self.x))
-        self.assertTrue(is_singleton_form(self.y))
-        self.assertTrue(is_singleton_form(self.a1))
-        self.assertFalse(is_singleton_form(self.a2))
-        self.assertFalse(is_singleton_form(self.a3))
-        self.assertFalse(is_singleton_form(self.a10))
-        self.assertFalse(is_singleton_form(self.a11))
-        #self.assertFalse(is_singleton_form(self.a12))
-        self.assertTrue(is_singleton_form(self.a13))
+        self.assertTrue(is_singleton_form(self.x)[0])
+        self.assertTrue(is_singleton_form(self.y)[0])
+        self.assertTrue(is_singleton_form(self.a1)[0])
+        self.assertFalse(is_singleton_form(self.a2)[0])
+        self.assertFalse(is_singleton_form(self.a3)[0])
+        self.assertFalse(is_singleton_form(self.a10)[0])
+        self.assertFalse(is_singleton_form(self.a11)[0])
+        #self.assertFalse(is_singleton_form(self.a12)[0])
+        self.assertTrue(is_singleton_form(self.a13)[0])
     
     
     
     def test_monomial(self):
-        self.assertTrue(is_monomial_form(self.x))
-        self.assertTrue(is_monomial_form(self.y))
-        self.assertTrue(is_monomial_form(self.a1))
-        self.assertFalse(is_monomial_form(self.a2))
-        self.assertTrue(is_monomial_form(self.a3))
-        self.assertTrue(is_monomial_form(self.a4))
-        self.assertFalse(is_monomial_form(self.a5))
-        self.assertTrue(is_monomial_form(self.a6))
-        self.assertFalse(is_monomial_form(self.a7))
-        self.assertTrue(is_monomial_form(self.a8))
-        self.assertTrue(is_monomial_form(self.a9))
+        self.assertTrue(is_monomial_form(self.x)[0])
+        self.assertTrue(is_monomial_form(self.y)[0])
+        self.assertTrue(is_monomial_form(self.a1)[0])
+        self.assertFalse(is_monomial_form(self.a2)[0])
+        self.assertTrue(is_monomial_form(self.a3)[0])
+        self.assertTrue(is_monomial_form(self.a4)[0])
+        self.assertFalse(is_monomial_form(self.a5)[0])
+        self.assertTrue(is_monomial_form(self.a6)[0])
+        self.assertFalse(is_monomial_form(self.a7)[0])
+        self.assertTrue(is_monomial_form(self.a8)[0])
+        self.assertTrue(is_monomial_form(self.a9)[0])
     
     
     
     def test_polynomial(self):
-        self.assertFalse(is_polynomial_form(self.a10))
-        self.assertFalse(is_polynomial_form(self.a11))
-        #self.assertFalse(is_polynomial(self.a12))
-        self.assertTrue(is_polynomial_form(self.a13))
+        self.assertFalse(is_polynomial_form(self.a10)[0])
+        self.assertFalse(is_polynomial_form(self.a11)[0])
+        #self.assertFalse(is_polynomial(self.a12)[0])
+        self.assertTrue(is_polynomial_form(self.a13)[0])
 if __name__ == '__main__':
     unittest.main()
