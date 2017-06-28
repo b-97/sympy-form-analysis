@@ -42,6 +42,10 @@ def singleton_combinable_terms(expr):
 
         #If there's a product, make sure only one is rational
         if isinstance(i, Mul):
+            #No symbols allowed inside a Mul
+            for j in i.args:
+                if not isinstance(j, Number, NumberSymbol):
+                    return True
             if sum(isinstance(j, Number) for j in i.args) > 1:
                 return True
 
