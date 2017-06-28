@@ -17,6 +17,21 @@ def const_to_const(expr):
         return (False, "Singleton is not a const to a const")
 
 
+
+def is_monomial_factor_form(expr):
+    '''Determines whether a term in a monomial is in the appropriate form.
+        TODO: DOCUMENTATION
+    '''
+    if isinstance(expr, Pow):
+        if const_to_const(expr)[0]:
+            return (False, "Expression has constant rational base and exponent")
+        if not is_singleton_form(expr.args[0])[0]:
+            return (False, "Expression is not a monomial")
+        elif not is_singleton_form(expr.args[1])[1]:
+            return (False, "Expression raised to a non-singleton power")
+    elif not is_singleton_form(expr)[0]:
+        return (False, "Non-singleton monomial factor found")
+    return (True, "Monomial is in factor form")
 '''
     is_monomial_form(expr): returns if an expression is a monomial or not.
     monomials are defined as either a singleton or a single product of singletons
@@ -28,27 +43,16 @@ def is_monomial_form(expr):
     if is_singleton_form(expr)[0]:
         return (True, "Expression is in singleton form")
     elif isinstance(expr,Pow):
-        if const_to_const(expr)[0]:
-            return (False, "Expression has constant rational base and exponent")
-        if not is_singleton_form(expr.args[0])[0]:
-            return (False, "Expression is not a monomial")
-        elif not is_singleton_form(expr.args[1])[1]:
-            return (False, "Expression raised to a non-singleton power")
+        return is_monomial_factor_form(expr)
     elif isinstance(expr,Add):
         return (False, "Expression has multiple terms")
     else:
         if sum(isinstance(j, Number) for j in expr.args) > 1:
             return (False, "No more than 1 number coefficient allowed!")
         for single in expr.args:
-            if isinstance(single, Pow):
-                if const_to_const(single)[0]:
-                    return (False, "Term found with constant rational base and exponent")
-                elif not is_singleton_form(single.args[0])[0]:
-                    return (False, "Term found with non-singleton base")
-                elif not is_singleton_form(single.args[1])[1]:
-                    return (False, "Term raised to non-singleton power")
-            elif not is_singleton_form(single)[0]:
-                return (False, "Term found is not a singleton")
+            result = is_monomial_factor_form(single)
+            if not result[0]:
+                return False, result[1]
 
     result = duplicate_bases(expr)
     if result[0]:
