@@ -82,9 +82,7 @@ def is_singleton_form(expr):
 
     #Case of rational multiplied to irrational
     if isinstance(expr, Mul):
-        result = is_singleton_factor_form(expr)
-        if not result[0]:
-            return False, result[1]
+        return is_singleton_factor_form(expr)
 
         
     #Case of trigonometric functions
