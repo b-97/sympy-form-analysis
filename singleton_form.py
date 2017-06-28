@@ -62,7 +62,7 @@ def singleton_combinable_terms(expr):
         SymPy's fault; if the issue is handled it won't be
         here.
 '''
-def is_singleton(expr):
+def is_singleton_form(expr):
     
     #If singular number or symbol
     if isinstance(expr, (Number, NumberSymbol, Symbol)):

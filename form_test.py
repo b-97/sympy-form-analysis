@@ -29,15 +29,15 @@ class TestSymp(unittest.TestCase):
     
     
     def test_singleton(self):
-        self.assertTrue(is_singleton(self.x))
-        self.assertTrue(is_singleton(self.y))
-        self.assertTrue(is_singleton(self.a1))
-        self.assertFalse(is_singleton(self.a2))
-        self.assertFalse(is_singleton(self.a3))
-        self.assertFalse(is_singleton(self.a10))
-        self.assertFalse(is_singleton(self.a11))
-        #self.assertFalse(is_singleton(self.a12))
-        self.assertTrue(is_singleton(self.a13))
+        self.assertTrue(is_singleton_form(self.x))
+        self.assertTrue(is_singleton_form(self.y))
+        self.assertTrue(is_singleton_form(self.a1))
+        self.assertFalse(is_singleton_form(self.a2))
+        self.assertFalse(is_singleton_form(self.a3))
+        self.assertFalse(is_singleton_form(self.a10))
+        self.assertFalse(is_singleton_form(self.a11))
+        #self.assertFalse(is_singleton_form(self.a12))
+        self.assertTrue(is_singleton_form(self.a13))
     
     
     

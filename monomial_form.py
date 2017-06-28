@@ -9,13 +9,13 @@ from singleton_form import *
         false otherwise.
 '''
 def is_monomial_form(expr):
-    if is_singleton(expr):
+    if is_singleton_form(expr):
         return True
     elif not isinstance(expr, Mul):
         return False
     else:
         for i in range(0,len(expr.args)):
-            if not is_singleton(expr.args[i]):
+            if not is_singleton_form(expr.args[i]):
                 print(srepr(expr))
                 return False
     return not duplicate_bases(expr)
