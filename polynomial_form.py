@@ -10,9 +10,9 @@ from monomial_form import *
     returns:    true if the polynomial is well formed
                 false otherwise
 '''
-def is_polynomial(expr):
+def is_polynomial_form(expr):
     #If the expression is a monomial or a singleton
-    if is_monomial(expr):
+    if is_monomial_form(expr):
         return True
     
     #If the monomial test fails with < 2 terms
@@ -22,7 +22,7 @@ def is_polynomial(expr):
     #Make sure each term in the polynomial is a monomial
     else:
         for i in range(0, len(expr.args)):
-            if not is_monomial(expr.args[i]):
+            if not is_monomial_form(expr.args[i]):
                 print(srepr(expr))
                 return False
     return not duplicate_monomials(expr)

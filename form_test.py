@@ -42,24 +42,24 @@ class TestSymp(unittest.TestCase):
     
     
     def test_monomial(self):
-        self.assertTrue(is_monomial(self.x))
-        self.assertTrue(is_monomial(self.y))
-        self.assertTrue(is_monomial(self.a1))
-        self.assertFalse(is_monomial(self.a2))
-        self.assertTrue(is_monomial(self.a3))
-        self.assertTrue(is_monomial(self.a4))
-        self.assertFalse(is_monomial(self.a5))
-        self.assertTrue(is_monomial(self.a6))
-        self.assertFalse(is_monomial(self.a7))
-        self.assertTrue(is_monomial(self.a8))
-        self.assertTrue(is_monomial(self.a9))
+        self.assertTrue(is_monomial_form(self.x))
+        self.assertTrue(is_monomial_form(self.y))
+        self.assertTrue(is_monomial_form(self.a1))
+        self.assertFalse(is_monomial_form(self.a2))
+        self.assertTrue(is_monomial_form(self.a3))
+        self.assertTrue(is_monomial_form(self.a4))
+        self.assertFalse(is_monomial_form(self.a5))
+        self.assertTrue(is_monomial_form(self.a6))
+        self.assertFalse(is_monomial_form(self.a7))
+        self.assertTrue(is_monomial_form(self.a8))
+        self.assertTrue(is_monomial_form(self.a9))
     
     
     
     def test_polynomial(self):
-        self.assertFalse(is_polynomial(self.a10))
-        self.assertFalse(is_polynomial(self.a11))
+        self.assertFalse(is_polynomial_form(self.a10))
+        self.assertFalse(is_polynomial_form(self.a11))
         #self.assertFalse(is_polynomial(self.a12))
-        self.assertTrue(is_polynomial(self.a13))
+        self.assertTrue(is_polynomial_form(self.a13))
 if __name__ == '__main__':
     unittest.main()

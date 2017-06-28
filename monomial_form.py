@@ -2,13 +2,13 @@ from sympy import *
 from singleton_form import *
 
 '''
-    is_monomial(expr): returns if an expression is a monomial or not.
+    is_monomial_form(expr): returns if an expression is a monomial or not.
     monomials are defined as either a singleton or a single product of singletons
     returns:
         true if the expression is a well-formed monomial
         false otherwise.
 '''
-def is_monomial(expr):
+def is_monomial_form(expr):
     if is_singleton(expr):
         return True
     elif not isinstance(expr, Mul):
