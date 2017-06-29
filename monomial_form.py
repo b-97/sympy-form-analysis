@@ -2,7 +2,8 @@ from sympy import *
 from singleton_form import *
 
 def const_to_const(expr):
-    '''determines if an expression is a rational raised to a rational power.
+    '''determines if an expression is a rational raised to a constant \
+            power other than 1 and 1/n"
         Args:
             expr: A standard Sympy expression
         Returns:
@@ -10,14 +11,16 @@ def const_to_const(expr):
                 [0]: bool containing the result
                 [1]: string describing the result 
     '''
-    if isinstance(expr, Pow) and \
-            isinstance(expr.args[0], Number) and \
-            isinstance(expr.args[1], Number):
-                return (True, "Singleton is a const to a const")
-    else:
-        return (False, "Singleton is not a const to a const")
-
-
+    if isinstance(expr, Pow) and isinstance(expr.args[0], Number):
+        if isinstance(expr.args[1], Pow):
+            if expr.args[1].args[1] == -1:
+                return (False, "Singleton raised to 1/n")
+            elif expr.args[1] == -1:
+                return (False, "Singleton raised to -1")
+        elif isinstance(expr.args[1], Number):
+            return (True, "Singleton is a const to a const")
+    
+    return (False, "Singleton is not a const to a const")
 
 def is_monomial_factor_form(expr):
     '''Determines whether a term in a monomial is in the appropriate form.
