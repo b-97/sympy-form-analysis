@@ -59,13 +59,11 @@ def is_monomial_form(expr):
         return is_monomial_factor_form(expr)
     elif isinstance(expr,Add):
         return (False, "Expression has multiple terms")
-    else:
-        if sum(isinstance(j, Number) for j in expr.args) > 1:
-            return (False, "No more than 1 number coefficient allowed!")
-        for single in expr.args:
-            result = is_monomial_factor_form(single)
-            if not result[0]:
-                return False, result[1]
+    if sum(isinstance(j, Number) for j in expr.args) > 1:
+        return (False, "No more than 1 number coefficient allowed!")
+    if isinstance(expr,Mul):
+        if not all(is_monomial_form(j) for j in expr.args):
+            return (False, "Non-monomial found in Mul expression")
 
     result = duplicate_bases(expr)
     if result[0]:

@@ -27,8 +27,8 @@ class TestSymp(unittest.TestCase):
         self.a14 = Add(3, pi, evaluate=False)
         self.a15 = Add(3, Mul(4, pi), evaluate=False)
         self.a16 = Mul(3,pi,evaluate=False)
-        self.a17 = Mul(Pow(self.x,3),Pow(self.y,2),self.z,Pow(2,-1))
-        self.a18 = Mul(Mul(Pow(self.x,3),Pow(self.y,2),self.z),Pow(2,-1))
+        self.a17 = Mul(Pow(self.x,3),Pow(self.y,2),self.z,Pow(2,-1),evaluate=False)
+        self.a18 = Mul(Mul(Pow(self.x,3),Pow(self.y,2),self.z),Pow(2,-1),evaluate=False)
         self.a19 = Mul(Pow(Integer(2), Integer(-1)), Pow(Symbol('m'), Integer(2)))
     
     
@@ -59,7 +59,7 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_monomial_form(self.a8)[0])
         self.assertTrue(is_monomial_form(self.a9)[0])
         self.assertTrue(is_monomial_form(self.a17)[0]) 
-        self.assertTrue(is_monomial_form(self.a18)[0]) 
+        self.assertTrue(is_monomial_form(self.a18)[0])
         self.assertTrue(is_monomial_form(self.a19)[0]) 
     
     def test_polynomial(self):
