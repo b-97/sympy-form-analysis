@@ -34,7 +34,7 @@ def is_monomial_factor_form(expr):
     if isinstance(expr, Pow):
         if const_to_const(expr)[0]:
             return (False, "Expression has constant rational base and exponent")
-        if not is_singleton_form(expr.args[0])[0]:
+        elif not is_singleton_form(expr.args[0])[0]:
             return (False, "Expression is not a monomial")
         elif not is_singleton_form(expr.args[1])[1]:
             return (False, "Expression raised to a non-singleton power")

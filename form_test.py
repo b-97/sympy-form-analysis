@@ -30,8 +30,9 @@ class TestSymp(unittest.TestCase):
         self.a17 = Mul(Pow(self.x,3),Pow(self.y,2),self.z,Pow(2,-1),evaluate=False)
         self.a18 = Mul(Mul(Pow(self.x,3),Pow(self.y,2),self.z),Pow(2,-1),evaluate=False)
         self.a19 = Mul(Pow(Integer(2), Integer(-1)), Pow(Symbol('m'), Integer(2)))
-    
-    
+        self.a20 = sin(self.x)    
+        self.a21 = Mul(sin(self.x),3,Pow(2,-1))
+
     def test_singleton(self):
         self.assertTrue(is_singleton_form(self.x)[0])
         self.assertTrue(is_singleton_form(self.y)[0])
@@ -45,7 +46,9 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_singleton_form(self.a14)[0]) 
         self.assertTrue(is_singleton_form(self.a15)[0])
         self.assertTrue(is_singleton_form(self.a16)[0])
-    
+        self.assertTrue(is_singleton_form(self.a20)[0])
+        self.assertFalse(is_singleton_form(self.a21)[0])
+
     def test_monomial(self):
         self.assertTrue(is_monomial_form(self.x)[0])
         self.assertTrue(is_monomial_form(self.y)[0])
@@ -61,12 +64,15 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_monomial_form(self.a17)[0]) 
         self.assertTrue(is_monomial_form(self.a18)[0])
         self.assertTrue(is_monomial_form(self.a19)[0]) 
-    
+        self.assertTrue(is_monomial_form(self.a20)[0])
+
     def test_polynomial(self):
         self.assertFalse(is_polynomial_form(self.a10)[0])
         self.assertFalse(is_polynomial_form(self.a11)[0])
         #self.assertFalse(is_polynomial(self.a12)[0])
         self.assertTrue(is_polynomial_form(self.a13)[0])
+        self.assertTrue(is_polynomial_form(self.a20)[0])
+
 
 if __name__ == '__main__':
     unittest.main()
