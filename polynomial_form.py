@@ -31,8 +31,8 @@ def is_polynomial_form(expr, form="expanded"):
     #for monomials that are combinable by integers, so we filter those out
     
     result = integer_proportional_monomials(expr)
-    if not result[0]:
-        return result
+    if result[0]:
+        return False, result[1]
 
     #Further checks are dependent on user preference
     if form == "factored":
@@ -57,9 +57,10 @@ def integer_proportional_monomials(expr):
         #quotient and no remainder
         if i <= len(expr.args) - 2:
             for j in range(i+1, len(expr.args)):
-                if const_divisible(expr.args[i], expr.args[j]):
+                if const_divisible(expr.args[i], expr.args[j])[0]:
+                    print(srepr(expr.args[i]),srepr(expr.args[j]))
                     return (True, "Two monomials are divisible by a constant")
-
+    return (False, "No two monomials divisible by a constant")
 
 def const_divisible(expr1, expr2):
     '''determines whether the quotient of two expressions is constant divisible
