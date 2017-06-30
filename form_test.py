@@ -7,6 +7,7 @@ import unittest
     NOTE: Sympy doesn't honor expression flag evaluate=False
         for the identity property. This may be a crippling problem, that needs
         to be handled by whatever implements this library
+        Test a12 has been left in there just in case the issue is resolved
 '''
 class TestSymp(unittest.TestCase):
     def setUp(self):
