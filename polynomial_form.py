@@ -18,7 +18,7 @@ def is_polynomial_form(expr, form="expanded"):
                 [1]: string describing the result 
     '''
 
-    #If the expression is a monomial or a singleton
+    #If the expression is a monomial or a singleton in the desired form
     if is_monomial_form(expr,form)[0]:
         return (True, "Expression is also a monomial")
     

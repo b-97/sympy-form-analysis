@@ -92,8 +92,58 @@ class TestSymp(unittest.TestCase):
         
 
     def test_expanded_polynomial(self):
-        self.assertTrue(is_polynomial_form(self.a22,form="expanded")[0])
-        self.assertFalse(is_polynomial_form(self.a11,form="expanded")[0])
+        self.assertTrue(is_polynomial_form(self.x)[0])
+        self.assertTrue(is_polynomial_form(self.y)[0])
+        self.assertTrue(is_polynomial_form(self.z)[0])
+        self.assertTrue(is_polynomial_form(self.a1)[0])
+        self.assertTrue(is_polynomial_form(self.a2)[0])
+        self.assertFalse(is_polynomial_form(self.a3)[0]) #N
+        self.assertTrue(is_polynomial_form(self.a4)[0])
+        self.assertFalse(is_polynomial_form(self.a5)[0]) #N
+        self.assertTrue(is_polynomial_form(self.a6)[0])
+        self.assertFalse(is_polynomial_form(self.a7)[0])
+        self.assertTrue(is_polynomial_form(self.a8)[0])
+        self.assertTrue(is_polynomial_form(self.a9)[0])
+        self.assertFalse(is_polynomial_form(self.a10)[0]) #N
+        self.assertFalse(is_polynomial_form(self.a11)[0]) #N
+        #self.assertFalse(is_polynomial_form(self.a12)[0]) #N
+        self.assertTrue(is_polynomial_form(self.a13)[0])
+        self.assertTrue(is_polynomial_form(self.a14)[0]) 
+        self.assertTrue(is_polynomial_form(self.a15)[0])
+        self.assertTrue(is_polynomial_form(self.a16)[0])
+        self.assertTrue(is_polynomial_form(self.a17)[0])
+        self.assertTrue(is_polynomial_form(self.a18)[0])
+        self.assertTrue(is_polynomial_form(self.a19)[0])
+        self.assertTrue(is_polynomial_form(self.a20)[0])
+        self.assertTrue(is_polynomial_form(self.a21)[0])
+        self.assertTrue(is_polynomial_form(self.a22)[0])
+    
+    def test_factored_polynomial(self):
+        self.assertTrue(is_polynomial_form(self.x,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.y,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.z,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a1,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a2,"factored")[0])
+        self.assertFalse(is_polynomial_form(self.a3,"factored")[0]) #N
+        self.assertTrue(is_polynomial_form(self.a4,"factored")[0])
+        self.assertFalse(is_polynomial_form(self.a5,"factored")[0]) #N
+        self.assertTrue(is_polynomial_form(self.a6,"factored")[0])
+        self.assertFalse(is_polynomial_form(self.a7,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a8,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a9,"factored")[0])
+        self.assertFalse(is_polynomial_form(self.a10,"factored")[0]) #N
+        self.assertFalse(is_polynomial_form(self.a11,"factored")[0]) #N
+        #self.assertFalse(is_polynomial_form(self.a12,"factored")[0]) #N
+        self.assertTrue(is_polynomial_form(self.a13,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a14,"factored")[0]) 
+        self.assertTrue(is_polynomial_form(self.a15,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a16,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a17,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a18,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a19,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a20,"factored")[0])
+        self.assertTrue(is_polynomial_form(self.a21,"factored")[0])
+        self.assertFalse(is_polynomial_form(self.a22,"factored")[0])
 
 if __name__ == '__main__':
     unittest.main()
