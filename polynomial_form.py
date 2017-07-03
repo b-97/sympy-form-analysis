@@ -19,7 +19,7 @@ def is_polynomial_form(expr, form="expanded"):
     '''
 
     #If the expression is a monomial or a singleton
-    if is_monomial_form(expr,"expanded")[0]:
+    if is_monomial_form(expr,form)[0]:
         return (True, "Expression is also a monomial")
     
     #Make sure each term in the polynomial is a monomial
@@ -105,7 +105,6 @@ def expanded_polynomial_form(expr):
         return is_monomial_form(expr.args,"expanded")
 
 
-#TODO: Actually write this function
 def factored_polynomial_form(expr):
     '''determines whether two monomials in a polynomial can be factored.
         the definition of 'factored' is tenuous and needs to be refined as
@@ -118,13 +117,14 @@ def factored_polynomial_form(expr):
                 [1]: string describing the result
     '''
     monomials = []
+
     for i in range(0, len(expr.args)):
         if isinstance(expr.args[i], Pow):
             monomials.append(expr.args[i].args[0])
         else:
             monomials.append(expr.args[i])
 
-    if len(monomials != len(set(monomials))):
-        return (True, "Two monomials are duplicates")
-    else:
-        return (False, "No combinable monomials") 
+    if len(monomials) != len(set(monomials)):
+        return (False, "Two monomials are duplicates")
+
+    return (True, "No combinable monomials")

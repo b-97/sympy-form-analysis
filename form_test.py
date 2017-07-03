@@ -1,6 +1,7 @@
-from singleton_form import *
-from monomial_form import *
-from polynomial_form import *
+from singleton_form import is_singleton_form
+from monomial_form import is_monomial_form
+from polynomial_form import is_polynomial_form
+from sympy import *
 
 import unittest
 '''
