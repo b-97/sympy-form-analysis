@@ -1,6 +1,7 @@
 from __future__ import division
+
 from sympy import *
-from monomial_form import *
+from monomial_form import is_monomial_form
 
 def is_polynomial_form(expr, form="expanded"):
     '''Determines if an expression is in proper polynomial form
@@ -18,7 +19,7 @@ def is_polynomial_form(expr, form="expanded"):
     '''
 
     #If the expression is a monomial or a singleton
-    if is_monomial_form(expr)[0]:
+    if is_monomial_form(expr,"expanded")[0]:
         return (True, "Expression is also a monomial")
     
     #Make sure each term in the polynomial is a monomial
@@ -57,10 +58,14 @@ def integer_proportional_monomials(expr):
         #quotient and no remainder
         if i <= len(expr.args) - 2:
             for j in range(i+1, len(expr.args)):
+                if isinstance(expr.args[i], (Number, NumberSymbol)) and \
+                    isinstance(expr.args[j], (Number, NumberSymbol)):
+                        return (True, "Two monomials are constants")
                 if const_divisible(expr.args[i], expr.args[j])[0]:
-                    print(srepr(expr.args[i]),srepr(expr.args[j]))
                     return (True, "Two monomials are divisible by a constant")
     return (False, "No two monomials divisible by a constant")
+
+
 
 def const_divisible(expr1, expr2):
     '''determines whether the quotient of two expressions is constant divisible
@@ -78,6 +83,8 @@ def const_divisible(expr1, expr2):
     else:
         return (False, "Expressions are not divisible by a constant")
 
+
+
 def expanded_polynomial_form(expr):
     '''determines whether individual monomials in a polynomial can be expanded.
         Args:
@@ -88,38 +95,17 @@ def expanded_polynomial_form(expr):
                 [1]: string describing the result 
     '''
     if isinstance(expr,Add):
-        if all(expanded_monomial(i)[0] for i in expr.args):
+        if all(is_monomial_form(i,"expanded")[0] for i in expr.args):
            return (True, "All monomials in polynomial are expanded")
         else:
             return (False, "Monomial in polynomial left partially factored")
     elif isinstance(expr,(Mul,Pow)):
-        return expanded_monomial(expr)
+        return is_monomial_form(expr,"expanded")
     elif isinstance(expr, (TrigonometricFunction,InverseTrigonometricFunction)):
-        return expanded_monomial(expr.args)
+        return is_monomial_form(expr.args,"expanded")
 
-def expanded_monomial(expr):
-    '''determines whether factors in a monomial can be expanded
-        For now, just looks at whether there's instances of (Add)
-    '''
-    if is_singleton_form(expr):
-        return (True, ("Expression is a singleton and could not be"
-                        "further combined"))
-    elif isinstance(expr, Add):
-        return (False, "Monomial could be further expanded")
-    elif isinstance(expr, Mul):
-        if not all(expanded_monomial(i)[0] for i in expr.args):
-            return (False, "Factor in monomial could be expanded")
-        if not len(expr.args) != len(set(expr.args)):
-            return (False, "Duplicate factors in monomial")
-    elif isinstance(expr, Pow):
-        if not expanded_monomial(expr.args[0])[0]:
-            return (False, "Base in monomial could be expanded")
-        if not expanded_monomial(expr.args[1])[0]:
-            return (False, "Exponent in monomial could be expanded")
-    elif isinstance(expr, (TrigonometricFunction,InverseTrigonometricFunction)):
-        return expanded_monomial(expr.args)
-    return (True, "Monomial cannot be further expanded")
 
+#TODO: Actually write this function
 def factored_polynomial_form(expr):
     '''determines whether two monomials in a polynomial can be factored.
         the definition of 'factored' is tenuous and needs to be refined as

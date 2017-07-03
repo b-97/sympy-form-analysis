@@ -1,3 +1,5 @@
+from __future__ import division
+
 from sympy import *
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
