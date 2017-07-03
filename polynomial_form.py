@@ -52,7 +52,6 @@ def integer_proportional_monomials(expr):
                 [0]: bool containing the result
                 [1]: string describing the result 
     '''
-    #collect the bases (if there's an exponent, just look at the base)
     for i in range(0, len(expr.args)):
         #Check to see if any of the other monomials are divisible with integer
         #quotient and no remainder
@@ -107,8 +106,6 @@ def expanded_polynomial_form(expr):
 
 def factored_polynomial_form(expr):
     '''determines whether two monomials in a polynomial can be factored.
-        the definition of 'factored' is tenuous and needs to be refined as
-        research continues throughout the summer term.
         Args:
             expr: A standard Sympy expression
         Returns:

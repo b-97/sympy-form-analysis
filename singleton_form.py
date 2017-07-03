@@ -38,6 +38,9 @@ def singleton_combinable_terms(expr):
                 [0]: bool containing the result
                 [1]: string describing the result 
     '''
+    #Collect the bases for later comparison
+    bases = []
+    
     #We don't want symbols or subexpressions like Add
     for i in expr.args:
         if not isinstance(i, (Number, NumberSymbol, Mul)):
@@ -45,16 +48,18 @@ def singleton_combinable_terms(expr):
 
         #If there's a product, make sure only one is rational
         if isinstance(i, Mul):
+            bases += i.args
             result = is_singleton_factor_form(i)
             if not result[0]:
                 return True, result[1]
-    
+        else:
+            bases.append(i)
     #Any two rational numbers can be simplified
     if sum(isinstance(i, Rational) for i in expr.args) > 1:
         return True, "Two instances of rational numbers"
-   
+
     #Evaluate each individual term numerically - if duplicates, return true
-    if len(expr.args) != len(set(map(N, expr.args))):
+    if len(bases) != len(set(bases)):
         return True, "Two combinable terms"
     else:
         return False, "No combinable terms in singleton"
