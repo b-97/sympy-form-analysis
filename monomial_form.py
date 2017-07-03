@@ -1,6 +1,6 @@
 from __future__ import division
 from sympy import *
-from singleton_form import *
+from singleton_form import is_singleton_form
 
 def is_monomial_form(expr,form="expanded"):
     '''Determines whether an expression is in proper monomial form.
@@ -33,10 +33,10 @@ def is_monomial_form(expr,form="expanded"):
 
     if isinstance(expr,Mul):
         if form == "factored":
-            if not all(is_monomial_factor_factored_form(j) for j in expr.args):
+            if not all(is_monomial_factor_factored_form(j)[0] for j in expr.args):
                 return (False, "Non-monomial found in Mul expression")
         elif form == "expanded":
-            if not all(is_monomial_factor_expanded_form(j) for j in expr.args):
+            if not all(is_monomial_factor_expanded_form(j)[0] for j in expr.args):
                 return (False, "Improper term in Mul expression")
 
     if duplicate_bases(expr)[0]: 
@@ -44,6 +44,7 @@ def is_monomial_form(expr,form="expanded"):
     
     if form =="factored":
         return (True, "Expression is a factored monomial")
+    
     return(True, "Expression is an expanded monomial")
 
 
@@ -73,32 +74,34 @@ def is_monomial_factor_expanded_form(expr):
     return (True, "Monomial is in factor form")
 
 
-'''
+
 def is_monomial_factor_factored_form(expr):
-    Determines whether a term in a monomial is in factored form.
+    '''Determines whether a term in a monomial is in factored form.
+        #TODO: Implementation
         Args:
             expr: A Sympy expression, representing a monomial factor
         Returns:
             A tuple containing:
                 [0]: bool containing the result
                 [1]: string describing the result
-    
+    '''
+    if is_singleton_form(expr)[0]:
+        return (True, "Expression is a monomial")
     if isinstance(expr, Pow):
         if const_to_const(expr)[0]:
             return (False, "Expression has constant rational base and exponent")
-        elif not is_polynomial_form(expr.args[0], "expanded")[0]: #TODO: Factored
-            return (False, "Expression is not a monomial")
         elif not is_singleton_form(expr.args[1])[1]:
             return (False, "Expression raised to a non-singleton power")
-    elif isinstance(expr, Mul):
+        expr = expr.args[0]
+    if isinstance(expr,Mul):
         if not all(is_monomial_factor_factored_form(j)[0] for j in expr.args):
-            return (False, "Term in product is not an expanded monomial")
-    elif isinstance(expr, Add):
-        return is_polynomial_form(expr.args[0], "expanded") #TODO: Factored
-    elif not is_singleton_form(expr)[0]:
-        return (False, "Non-singleton monomial factor found")
-    return (True, "Monomial is in factor form")
-'''    
+            return (False, "Product has factor in non-monomial form")
+    if isinstance(expr,Add):
+        #Using the discriminant of a quadratic expression to determine if the
+        #expression could be factored
+        if degree(expr) > 1 and len(real_roots(expr)) == degree(expr):
+            return (False, "Factor in product is not factored")
+    return (True, "Expression is a factored monomial factor")
 
 def const_to_const(expr):
     '''determines if an expression is a rational raised to a constant \
@@ -114,8 +117,8 @@ def const_to_const(expr):
         if isinstance(expr.args[1], Pow):
             if expr.args[1].args[1] == -1:
                 return (False, "Singleton raised to 1/n")
-            elif expr.args[1] == -1:
-                return (False, "Singleton raised to -1")
+        elif expr.args[1] == -1:
+            return (False, "Singleton raised to -1")
         elif isinstance(expr.args[1], Number):
             return (True, "Singleton is a const to a const")
     
