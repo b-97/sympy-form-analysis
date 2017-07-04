@@ -92,7 +92,35 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_monomial_form(self.a21)[0])
         self.assertFalse(is_monomial_form(self.a22)[0])
         self.assertFalse(is_monomial_form(self.a23)[0]) #N
-        
+
+
+    def test_factored_monomial(self):
+        self.assertTrue(is_monomial_form(self.x,"factored")[0])
+        self.assertTrue(is_monomial_form(self.y,"factored")[0])
+        self.assertTrue(is_monomial_form(self.z,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a1,"factored")[0])
+        self.assertFalse(is_monomial_form(self.a2,"factored")[0])
+        self.assertFalse(is_monomial_form(self.a3,"factored")[0]) #N
+        self.assertTrue(is_monomial_form(self.a4,"factored")[0])
+        self.assertFalse(is_monomial_form(self.a5,"factored")[0]) #N
+        self.assertTrue(is_monomial_form(self.a6,"factored")[0])
+        self.assertFalse(is_monomial_form(self.a7,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a8,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a9,"factored")[0])
+        self.assertFalse(is_monomial_form(self.a10,"factored")[0]) #N
+        self.assertFalse(is_monomial_form(self.a11,"factored")[0]) #N
+        #self.assertFalse(is_monomial_form(self.a12,"factored")[0]) #N
+        self.assertTrue(is_monomial_form(self.a13,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a14,"factored")[0]) 
+        self.assertTrue(is_monomial_form(self.a15,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a16,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a17,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a18,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a19,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a20,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a21,"factored")[0])
+        self.assertFalse(is_monomial_form(self.a22,"factored")[0])
+        self.assertFalse(is_monomial_form(self.a23,"factored")[0]) #N
 
     def test_expanded_polynomial(self):
         self.assertTrue(is_polynomial_form(self.x)[0])
