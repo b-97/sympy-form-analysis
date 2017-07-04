@@ -36,6 +36,8 @@ class TestSymp(unittest.TestCase):
         self.a21 = Mul(sin(self.x),3,Pow(2,-1,evaluate=False),evaluate=False)
         self.a22 = Add(Pow(self.x,4),Pow(self.x,3),Pow(self.x,2),self.x,1,evaluate=False)
         self.a23 = Add(Mul(2,pi),Mul(3,pi),evaluate=False)
+        self.a24 = Pow(Add(self.x,1),2,evaluate=False)
+        self.a25 = Mul(3,Add(3,self.x),evaluate=False) #N
 
     def test_singleton(self):
         self.assertTrue(is_singleton_form(self.x)[0])
@@ -64,6 +66,8 @@ class TestSymp(unittest.TestCase):
         self.assertFalse(is_singleton_form(self.a21)[0])
         self.assertFalse(is_singleton_form(self.a22)[0])
         self.assertFalse(is_singleton_form(self.a23)[0]) #N
+        self.assertFalse(is_singleton_form(self.a24)[0])
+        self.assertFalse(is_singleton_form(self.a25)[0]) #N
 
     def test_expanded_monomial(self):
         self.assertTrue(is_monomial_form(self.x)[0])
@@ -92,7 +96,8 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_monomial_form(self.a21)[0])
         self.assertFalse(is_monomial_form(self.a22)[0])
         self.assertFalse(is_monomial_form(self.a23)[0]) #N
-
+        self.assertFalse(is_monomial_form(self.a24)[0])
+        self.assertFalse(is_monomial_form(self.a25)[0]) #N
 
     def test_factored_monomial(self):
         self.assertTrue(is_monomial_form(self.x,"factored")[0])
@@ -121,6 +126,8 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_monomial_form(self.a21,"factored")[0])
         self.assertFalse(is_monomial_form(self.a22,"factored")[0])
         self.assertFalse(is_monomial_form(self.a23,"factored")[0]) #N
+        self.assertTrue(is_monomial_form(self.a24,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a25,"factored")[0]) #N
 
     def test_expanded_polynomial(self):
         self.assertTrue(is_polynomial_form(self.x)[0])
@@ -149,6 +156,8 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_polynomial_form(self.a21)[0])
         self.assertTrue(is_polynomial_form(self.a22)[0])
         self.assertFalse(is_polynomial_form(self.a23)[0]) #N
+        self.assertFalse(is_polynomial_form(self.a24,"expanded")[0])
+        self.assertFalse(is_polynomial_form(self.a25,"expanded")[0]) #N
     
     def test_factored_polynomial(self):
         self.assertTrue(is_polynomial_form(self.x,"factored")[0])
@@ -177,6 +186,8 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_polynomial_form(self.a21,"factored")[0])
         self.assertFalse(is_polynomial_form(self.a22,"factored")[0])
         self.assertFalse(is_polynomial_form(self.a23,"factored")[0]) #N
+        self.assertTrue(is_polynomial_form(self.a24,"factored")[0])
+        self.assertTrue(is_monomial_form(self.a25,"factored")[0]) #N
 
 if __name__ == '__main__':
     unittest.main()
