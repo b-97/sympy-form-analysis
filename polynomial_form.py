@@ -3,7 +3,7 @@ from __future__ import division
 from sympy import *
 from monomial_form import is_monomial_form
 
-def is_polynomial_form(expr, form="expanded"):
+def is_polynomial_form(expr, form="expanded", eval_trig=False):
     '''Determines if an expression is in proper polynomial form
         A polynomial is defined as a sum of monomials that cannot be factored
             further.
@@ -28,12 +28,17 @@ def is_polynomial_form(expr, form="expanded"):
             if not is_monomial_form(expr.args[i]):
                 return (False, "Non-monomial detected")
 
-    #Currently, no definition of polynomials allows
-    #for monomials that are combinable by integers, so we filter those out
-    
+    #Currently, no definition of polynomials allows for monomials that 
+    #are combinable by integers, so we can filter those out
     result = integer_proportional_monomials(expr)
     if result[0]:
         return False, result[1]
+
+    if eval_trig:
+        result = sin_2_cos_2_simplifiable(expr)
+        if result[0]:
+            return False, result[1]
+
 
     #Further checks are dependent on user preference
     if form == "factored":
@@ -64,6 +69,36 @@ def integer_proportional_monomials(expr):
                     return (True, "Two monomials are divisible by a constant")
     return (False, "No two monomials divisible by a constant")
 
+def sin_2_cos_2_simplifiable(expr):
+    '''determines whether the trig identity sin(x)^2 + cos(x)^2 = 1 \
+            can be evaluated.
+        Will not catch if sin(x)^2 and cos(x)^2 are both multiplied by the 
+        same constant.
+
+        Args:
+            expr: A standard sympy expression with constants removed
+    '''
+    #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
+    for i in range(0, len(expr.args)):
+        #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
+        if isinstance(expr.args[i],Pow) and i <= len(expr.args) - 2 and \
+                expr.args[i].args[1] == 2:
+                    if isinstance(expr.args[i].args[0],sin):
+                        for j in range(i+1, len(expr.args)):
+                            if isinstance(expr.args[j], Pow) and \
+                                    isinstance(expr.args[j].args[0],cos) and \
+                                    expr.args[j].args[1] == 2 and \
+                                    expr.args[j].args[0].args == expr.args[i].args[0].args:
+                                        return (True, "cos(x)^2 + sin(x)^2 exists")
+                    elif isinstance(expr.args[i].args[0],cos):
+                        for j in range(i+1, len(expr.args)):
+                            if isinstance(expr.args[j], Pow) and \
+                                    isinstance(expr.args[j].args[0],sin) and \
+                                    expr.args[j].args[1] == 2 and \
+                                    expr.args[j].args[0].args == expr.args[i].args[0].args:
+                                        return (True, "cos(x)^2 + sin(x)^2 exists")
+    
+    return (False, "No such cos(x)^2 + sin(x)^2 exists")
 
 
 def const_divisible(expr1, expr2):
