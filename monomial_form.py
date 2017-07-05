@@ -31,7 +31,6 @@ def is_monomial_form(expr):
             return (False, "Expression is not a singleton")
     
     elif sum(isinstance(j, Number) for j in expr.args) > 1:
-        print(srepr(expr))
         return (False, "Two factorable integers")
 
     elif isinstance(expr,Add):
