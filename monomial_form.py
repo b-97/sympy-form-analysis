@@ -2,6 +2,8 @@ from __future__ import division
 from sympy import *
 from singleton_form import *
 
+from form_utils import *
+
 def is_monomial_form(expr):
     '''Determines whether an expression is in proper monomial form.
         Monomials are defined as either a singleton or a single product of
@@ -17,67 +19,36 @@ def is_monomial_form(expr):
         return (True, "Expression is also a singleton")
     
     elif isinstance(expr,Pow):
-        return is_monomial_factor_expanded_form(expr)
-        
-    if sum(isinstance(j, Number) for j in expr.args) > 1:
-        return (False, "Two factorable integers")
+        if const_to_const(expr)[0]:
+            return (False, "Expression has a constant rational base and exponent")
+        if is_singleton_form(expr.args[0])[0]:
+            if is_singleton_form(expr.args[1])[0]:
+                return (True, "Expression is a singleton raised to a \
+                        singleton power")
+            else:
+                return (False, "Expression is not raised to a singleton power")
+        else:
+            return (False, "Expression is not a singleton")
     
-    if isinstance(expr,Add):
+    elif sum(isinstance(j, Number) for j in expr.args) > 1:
+        print(srepr(expr))
+        return (False, "Two factorable integers")
+
+    elif isinstance(expr,Add):
         return (False, "More than 1 term in expression")
-
-    if isinstance(expr,Mul):
-        if not all(is_monomial_factor_expanded_form(j)[0] for j in expr.args):
-            return (False, "Improper factor in product")
-
+    
+    elif isinstance(expr,Mul):
+        for j in expr.args:
+            result = is_monomial_form(j)
+            if not result[0]:
+                return (False, result[1])
+        #if not all(is_monomial_form(j)[0] for j in expr.args):
+        #    return (False, "Improper factor in product")
+    
     if duplicate_bases(expr)[0]: 
         return (False, "Duplicate base found in monomial")
     
     return(True, "Expression is an expanded monomial")
-
-
-def is_monomial_factor_expanded_form(expr):
-    '''Determines whether a term in a monomial is in the appropriate form.
-        Args:
-            expr: A standard Sympy expression
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result
-    '''
-    if isinstance(expr, Pow):
-        if const_to_const(expr)[0]:
-            return (False, "Expression has a constant rational base and exponent")
-        elif not is_singleton_form(expr.args[0])[0]:
-            return (False, "Expression is not a monomial")
-        elif not is_singleton_form(expr.args[1])[1]:
-            return (False, "Expression raised to a non-singleton power")
-    elif isinstance(expr, Mul):
-        if not all(is_monomial_factor_expanded_form(j)[0] for j in expr.args):
-            return (False, "Term in product is not an expanded monomial")
-    elif not is_singleton_form(expr)[0]:
-        return (False, "Non-singleton monomial factor found")
-    return (True, "Monomial is in factor form")
-
-def const_to_const(expr):
-    '''determines if an expression is a rational raised to a constant \
-            power other than 1 and 1/n"
-        Args:
-            expr: A standard Sympy expression
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result 
-    '''
-    if isinstance(expr, Pow) and isinstance(expr.args[0], Number):
-        if isinstance(expr.args[1], Pow):
-            if expr.args[1].args[1] == -1:
-                return (False, "Singleton raised to 1/n")
-        elif expr.args[1] == -1:
-            return (False, "Singleton raised to -1")
-        elif isinstance(expr.args[1], Number):
-            return (True, "Singleton is a constant raised to a constant")
-    
-    return (False, "Singleton is not a constant raised to a constant")
 
 #Check to see if any of the bases in a monomial are duplicates
 def duplicate_bases(expr):

@@ -2,7 +2,7 @@ from __future__ import division
 
 from sympy import *
 from monomial_form import *
-
+from form_utils import *
 
 def is_fully_expanded_polynomial(expr, eval_trig=False):
     if is_monomial_form(expr)[0]:
@@ -75,76 +75,8 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
     return (True, "No combinable monomials")
 
 
-def integer_proportional_monomials(expr):
-    '''Determines if any monomials in a polynomial are integer proportional.
-        (ex: Mul(2,Pow(x,5)) : Mul(9,Pow(x,5)) is proportional by 2:9)
-        TODO: Potentially delete const_divisible and integrate into here?
-        Args:
-            expr: A standard Sympy expression
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result 
-    '''
-    for i in range(0, len(expr.args)):
-        #Check to see if any of the other monomials are divisible with integer
-        #quotient and no remainder
-        if i <= len(expr.args) - 2:
-            for j in range(i+1, len(expr.args)):
-                if isinstance(expr.args[i], (Number, NumberSymbol)) and \
-                    isinstance(expr.args[j], (Number, NumberSymbol)):
-                        return (True, "Two monomials are constants")
-                if const_divisible(expr.args[i], expr.args[j])[0]:
-                    return (True, "Two or more monomials can be factored together")
 
-    return (False, "No two monomials divisible by a constant")
 
-def sin_2_cos_2_simplifiable(expr):
-    '''determines whether the trig identity sin(x)^2 + cos(x)^2 = 1 \
-            can be evaluated.
-        Will not catch if sin(x)^2 and cos(x)^2 are both multiplied by the 
-        same constant.
-
-        Args:
-            expr: A standard sympy expression with constants removed
-    '''
-    #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
-    for i in range(0, len(expr.args)):
-        #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
-        if isinstance(expr.args[i],Pow) and i <= len(expr.args) - 2 and \
-                expr.args[i].args[1] == 2:
-                    if isinstance(expr.args[i].args[0],sin):
-                        for j in range(i+1, len(expr.args)):
-                            if isinstance(expr.args[j], Pow) and \
-                                    isinstance(expr.args[j].args[0],cos) and \
-                                    expr.args[j].args[1] == 2 and \
-                                    expr.args[j].args[0].args == expr.args[i].args[0].args:
-                                        return (True, "cos(x)^2 + sin(x)^2 exists")
-                    elif isinstance(expr.args[i].args[0],cos):
-                        for j in range(i+1, len(expr.args)):
-                            if isinstance(expr.args[j], Pow) and \
-                                    isinstance(expr.args[j].args[0],sin) and \
-                                    expr.args[j].args[1] == 2 and \
-                                    expr.args[j].args[0].args == expr.args[i].args[0].args:
-                                        return (True, "cos(x)^2 + sin(x)^2 exists")
-    
-    return (False, "No such cos(x)^2 + sin(x)^2 exists")
-
-def const_divisible(expr1, expr2):
-    '''determines whether the quotient of two expressions is constant divisible
-        Const divisible is defined as dividing with constant quotient and 0 remainder
-        Args:
-            expr: A standard Sympy expression
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result 
-    '''
-    q, r = div(expr1, expr2,domain='QQ')
-    if isinstance(q, (Number,NumberSymbol)) and r == 0:
-        return (True, "Monomials could be factored further")
-    else:
-        return (False, "Monomials cannot be factored further")
 
 def is_factor_factored(expr):
     '''Determines whether a term in a monomial is in factored form.
@@ -158,26 +90,31 @@ def is_factor_factored(expr):
     '''
     if is_singleton_form(expr)[0]:
         return (True, "Expression is a singleton raised to any power")
-
-    #If the expression is raised to a power, ensure the power
-    #is sane then look at the base
     
     if sum(isinstance(j, Number) for j in expr.args) > 1:
         return (False, "Two factorable integers")
 
+    #If the expression is raised to a power, ensure the power
+    #is sane then look at the base
+    
     if isinstance(expr, Pow):
         if const_to_const(expr)[0]:
             return (False, "Expression has constant rational base and exponent")
         elif not is_singleton_form(expr.args[1])[1]:
             return (False, "Expression raised to a non-singleton power")
         return is_factor_factored(expr.args[0])
+    
+    #if it's a Mul instance, take a look at what's inside
     if isinstance(expr,Mul):
         if not all(is_factor_factored(j)[0] for j in expr.args):
             return (False, "Product has factor in non-monomial form")
+    
+    
     if isinstance(expr,Add):
         #Using the discriminant of a quadratic expression to determine if the
         #expression could be factored further
-        #TODO: Make this less awful
+        #TODO: Refine this definition - This is where the majority of my
+        #research will take place
         if degree(expr) > 1 and len(real_roots(expr)) == degree(expr):
             return (False, "Factor in product is not factored")
 
