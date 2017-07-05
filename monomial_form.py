@@ -2,30 +2,6 @@ from __future__ import division
 from sympy import *
 from singleton_form import *
 
-#TODO: Remove this function, integrate into polynomial_form
-def is_factored_monomial(expr):
-    if is_singleton_form(expr)[0]:
-        return (True, "Expression is also a singleton")
-    
-    elif isinstance(expr,Pow):
-        return is_monomial_factor_factored_form(expr)
-        
-    if sum(isinstance(j, Number) for j in expr.args) > 1:
-        return (False, "Two factorable integers")
-    
-    if isinstance(expr,Add):
-        return (False, "More than 1 term in expression")
-
-    if isinstance(expr,Mul):
-        if not all(is_monomial_factor_factored_form(j)[0] for j in expr.args):
-            return (False, "Improper factor in product")
-
-    if duplicate_bases(expr)[0]: 
-        return (False, "Duplicate base found in monomial")
-    
-    return (True, "Expression is a factored monomial")
-
-
 def is_monomial_form(expr):
     '''Determines whether an expression is in proper monomial form.
         Monomials are defined as either a singleton or a single product of
@@ -59,8 +35,6 @@ def is_monomial_form(expr):
     return(True, "Expression is an expanded monomial")
 
 
-#TODO: COMBINE IS_MONOMIAL_FACTORED_FORM AND IS_MONOMIAL_EXPANDED_FORM
-
 def is_monomial_factor_expanded_form(expr):
     '''Determines whether a term in a monomial is in the appropriate form.
         Args:
@@ -84,36 +58,6 @@ def is_monomial_factor_expanded_form(expr):
         return (False, "Non-singleton monomial factor found")
     return (True, "Monomial is in factor form")
 
-
-#TODO: Remove, integrate into polynomial form
-def is_monomial_factor_factored_form(expr):
-    '''Determines whether a term in a monomial is in factored form.
-        #TODO: Implementation
-        Args:
-            expr: A Sympy expression, representing a monomial factor
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result
-    '''
-    if is_singleton_form(expr)[0]:
-        return (True, "Expression is a monomial")
-    if isinstance(expr, Pow):
-        if const_to_const(expr)[0]:
-            return (False, "Expression has constant rational base and exponent")
-        elif not is_singleton_form(expr.args[1])[1]:
-            return (False, "Expression raised to a non-singleton power")
-        expr = expr.args[0]
-    if isinstance(expr,Mul):
-        if not all(is_monomial_factor_factored_form(j)[0] for j in expr.args):
-            return (False, "Product has factor in non-monomial form")
-    if isinstance(expr,Add):
-        #Using the discriminant of a quadratic expression to determine if the
-        #expression could be factored
-        if degree(expr) > 1 and len(real_roots(expr)) == degree(expr):
-            return (False, "Factor in product is not factored")
-    return (True, "Expression is a factored monomial factor")
-
 def const_to_const(expr):
     '''determines if an expression is a rational raised to a constant \
             power other than 1 and 1/n"
@@ -134,7 +78,6 @@ def const_to_const(expr):
             return (True, "Singleton is a constant raised to a constant")
     
     return (False, "Singleton is not a constant raised to a constant")
-
 
 #Check to see if any of the bases in a monomial are duplicates
 def duplicate_bases(expr):
