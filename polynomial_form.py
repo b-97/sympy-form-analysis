@@ -1,12 +1,37 @@
 from __future__ import division
 
 from sympy import *
-from monomial_form import is_monomial_form
+from monomial_form import *
 
-def is_polynomial_form(expr, form="expanded", eval_trig=False):
+
+def is_fully_expanded_polynomial(expr, eval_trig=False):
+    if is_monomial_form(expr)[0]:
+        return (True, "Expression is also a monomial")
+    
+    for i in range(0, len(expr.args)):
+        if not is_monomial_form(expr.args[i]):
+            return (False, "One or more terms is not a monomial")
+    
+    result = integer_proportional_monomials(expr)
+    if result[0]:
+        return (False, result[1])
+
+    if isinstance(expr,Add):
+        if all(is_monomial_form(i)[0] for i in expr.args):
+           return (True, "All monomials in polynomial are expanded")
+        else:
+            return (False, "Monomial in polynomial left partially factored")
+    elif isinstance(expr,(Mul,Pow)):
+        return is_monomial_form(expr)
+    elif isinstance(expr, (TrigonometricFunction,InverseTrigonometricFunction)):
+        return is_monomial_form(expr.args)
+    
+    return (False, "ERROR: Couldn't identify this polynomial!")
+
+def is_fully_factored_polynomial(expr, eval_trig=False):
     '''Determines if an expression is in proper polynomial form
         A polynomial is defined as a sum of monomials that cannot be factored
-            further.
+            further. There's a lot of work to do here.
         Args:
             expr: A standard Sympy expression
             form: string denoting the desired form
@@ -19,14 +44,13 @@ def is_polynomial_form(expr, form="expanded", eval_trig=False):
     '''
 
     #If the expression is a monomial or a singleton in the desired form
-    if is_monomial_form(expr,form)[0]:
+    if is_monomial_form(expr)[0]:
         return (True, "Expression is also a monomial")
     
     #Make sure each term in the polynomial is a monomial
-    else:
-        for i in range(0, len(expr.args)):
-            if not is_monomial_form(expr.args[i]):
-                return (False, "One or more terms is not a monomial")
+    for i in range(0, len(expr.args)):
+        if not is_factored_monomial(expr.args[i]):
+            return (False, "One or more terms is not a monomial")
 
     #Currently, no definition of polynomials allows for monomials that 
     #are combinable by integers, so we can filter those out
@@ -39,12 +63,17 @@ def is_polynomial_form(expr, form="expanded", eval_trig=False):
         if result[0]:
             return False, result[1]
 
+    monomials = []
+    for i in range(0, len(expr.args)):
+        if isinstance(expr.args[i], Pow):
+            monomials.append(expr.args[i].args[0])
+        else:
+            monomials.append(expr.args[i])
+    if len(monomials) != len(set(monomials)):
+        return (False, "Two monomials are duplicates")
 
-    #Further checks are dependent on user preference
-    if form == "factored":
-        return factored_polynomial_form(expr)
-    elif form == "expanded":
-        return expanded_polynomial_form(expr)
+    return (True, "No combinable monomials")
+
 
 def integer_proportional_monomials(expr):
     '''Determines if any monomials in a polynomial are integer proportional.
@@ -101,7 +130,6 @@ def sin_2_cos_2_simplifiable(expr):
     
     return (False, "No such cos(x)^2 + sin(x)^2 exists")
 
-
 def const_divisible(expr1, expr2):
     '''determines whether the quotient of two expressions is constant divisible
         Const divisible is defined as dividing with constant quotient and 0 remainder
@@ -117,47 +145,3 @@ def const_divisible(expr1, expr2):
         return (True, "Monomials could be factored further")
     else:
         return (False, "Monomials cannot be factored further")
-
-
-
-def expanded_polynomial_form(expr):
-    '''determines whether individual monomials in a polynomial can be expanded.
-        Args:
-            expr: A standard Sympy expression
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result 
-    '''
-    if isinstance(expr,Add):
-        if all(is_monomial_form(i,"expanded")[0] for i in expr.args):
-           return (True, "All monomials in polynomial are expanded")
-        else:
-            return (False, "Monomial in polynomial left partially factored")
-    elif isinstance(expr,(Mul,Pow)):
-        return is_monomial_form(expr,"expanded")
-    elif isinstance(expr, (TrigonometricFunction,InverseTrigonometricFunction)):
-        return is_monomial_form(expr.args,"expanded")
-
-
-def factored_polynomial_form(expr):
-    '''determines whether two monomials in a polynomial can be factored.
-        Args:
-            expr: A standard Sympy expression
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result
-    '''
-    monomials = []
-
-    for i in range(0, len(expr.args)):
-        if isinstance(expr.args[i], Pow):
-            monomials.append(expr.args[i].args[0])
-        else:
-            monomials.append(expr.args[i])
-
-    if len(monomials) != len(set(monomials)):
-        return (False, "Two monomials are duplicates")
-
-    return (True, "No combinable monomials")

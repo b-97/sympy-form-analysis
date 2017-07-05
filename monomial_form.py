@@ -1,28 +1,13 @@
 from __future__ import division
 from sympy import *
-from singleton_form import is_singleton_form
+from singleton_form import *
 
-def is_monomial_form(expr,form="expanded"):
-    '''Determines whether an expression is in proper monomial form.
-        Monomials are defined as either a singleton or a single product of
-        singletons, where singletons are optionally raised to a power.
-        Args:
-            expr: A standard Sympy expression
-            form: the desired form for the monomial
-                "expanded" - expanded form
-                "factored" - factored form
-                "termfactored" - internal, for checking Adds inside a Mul
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result
-    '''
+#TODO: Remove this function, integrate into polynomial_form
+def is_factored_monomial(expr):
     if is_singleton_form(expr)[0]:
         return (True, "Expression is also a singleton")
     
     elif isinstance(expr,Pow):
-        if form == "expanded":
-            return is_monomial_factor_expanded_form(expr)
         return is_monomial_factor_factored_form(expr)
         
     if sum(isinstance(j, Number) for j in expr.args) > 1:
@@ -32,18 +17,44 @@ def is_monomial_form(expr,form="expanded"):
         return (False, "More than 1 term in expression")
 
     if isinstance(expr,Mul):
-        if form == "factored":
-            if not all(is_monomial_factor_factored_form(j)[0] for j in expr.args):
-                return (False, "Improper factor in product")
-        elif form == "expanded":
-            if not all(is_monomial_factor_expanded_form(j)[0] for j in expr.args):
-                return (False, "Improper factor in product")
+        if not all(is_monomial_factor_factored_form(j)[0] for j in expr.args):
+            return (False, "Improper factor in product")
 
     if duplicate_bases(expr)[0]: 
         return (False, "Duplicate base found in monomial")
     
-    if form =="factored":
-        return (True, "Expression is a factored monomial")
+    return (True, "Expression is a factored monomial")
+
+
+def is_monomial_form(expr):
+    '''Determines whether an expression is in proper monomial form.
+        Monomials are defined as either a singleton or a single product of
+        singletons, where singletons are optionally raised to a power.
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result
+    '''
+    if is_singleton_form(expr)[0]:
+        return (True, "Expression is also a singleton")
+    
+    elif isinstance(expr,Pow):
+        return is_monomial_factor_expanded_form(expr)
+        
+    if sum(isinstance(j, Number) for j in expr.args) > 1:
+        return (False, "Two factorable integers")
+    
+    if isinstance(expr,Add):
+        return (False, "More than 1 term in expression")
+
+    if isinstance(expr,Mul):
+        if not all(is_monomial_factor_expanded_form(j)[0] for j in expr.args):
+            return (False, "Improper factor in product")
+
+    if duplicate_bases(expr)[0]: 
+        return (False, "Duplicate base found in monomial")
     
     return(True, "Expression is an expanded monomial")
 
@@ -74,7 +85,7 @@ def is_monomial_factor_expanded_form(expr):
     return (True, "Monomial is in factor form")
 
 
-
+#TODO: Remove, integrate into polynomial form
 def is_monomial_factor_factored_form(expr):
     '''Determines whether a term in a monomial is in factored form.
         #TODO: Implementation
