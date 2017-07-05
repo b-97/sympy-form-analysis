@@ -18,7 +18,7 @@ def is_monomial_form(expr,form="expanded"):
                 [1]: string describing the result
     '''
     if is_singleton_form(expr)[0]:
-        return (True, "Expression is in singleton form")
+        return (True, "Expression is also a singleton")
     
     elif isinstance(expr,Pow):
         if form == "expanded":
@@ -26,18 +26,18 @@ def is_monomial_form(expr,form="expanded"):
         return is_monomial_factor_factored_form(expr)
         
     if sum(isinstance(j, Number) for j in expr.args) > 1:
-        return (False, "No more than 1 number coefficient allowed!")
+        return (False, "Two factorable integers")
     
     if isinstance(expr,Add):
-        return (False, "No top-level Adds allowed in expression")
+        return (False, "More than 1 term in expression")
 
     if isinstance(expr,Mul):
         if form == "factored":
             if not all(is_monomial_factor_factored_form(j)[0] for j in expr.args):
-                return (False, "Non-monomial found in Mul expression")
+                return (False, "Improper factor in product")
         elif form == "expanded":
             if not all(is_monomial_factor_expanded_form(j)[0] for j in expr.args):
-                return (False, "Improper term in Mul expression")
+                return (False, "Improper factor in product")
 
     if duplicate_bases(expr)[0]: 
         return (False, "Duplicate base found in monomial")
@@ -61,7 +61,7 @@ def is_monomial_factor_expanded_form(expr):
     '''
     if isinstance(expr, Pow):
         if const_to_const(expr)[0]:
-            return (False, "Expression has constant rational base and exponent")
+            return (False, "Expression has a constant rational base and exponent")
         elif not is_singleton_form(expr.args[0])[0]:
             return (False, "Expression is not a monomial")
         elif not is_singleton_form(expr.args[1])[1]:
@@ -120,9 +120,9 @@ def const_to_const(expr):
         elif expr.args[1] == -1:
             return (False, "Singleton raised to -1")
         elif isinstance(expr.args[1], Number):
-            return (True, "Singleton is a const to a const")
+            return (True, "Singleton is a constant raised to a constant")
     
-    return (False, "Singleton is not a const to a const")
+    return (False, "Singleton is not a constant raised to a constant")
 
 
 #Check to see if any of the bases in a monomial are duplicates

@@ -60,7 +60,7 @@ def singleton_combinable_terms(expr):
 
     #Evaluate each individual term numerically - if duplicates, return true
     if len(bases) != len(set(bases)):
-        return True, "Two combinable terms"
+        return True, "Two combinable terms in singleton"
     else:
         return False, "No combinable terms in singleton"
 
@@ -77,7 +77,7 @@ def is_singleton_form(expr):
                 [1]: string describing the result 
     '''
     if isinstance(expr, (Number, NumberSymbol, Symbol)):
-        return (True, "Expression is a number, NumberSymbol, or Symbol")
+        return (True, "Expression is a singleton!")
     
     #Case of rational added to irrational
     if isinstance(expr, Add):

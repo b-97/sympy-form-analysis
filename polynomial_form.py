@@ -26,7 +26,7 @@ def is_polynomial_form(expr, form="expanded", eval_trig=False):
     else:
         for i in range(0, len(expr.args)):
             if not is_monomial_form(expr.args[i]):
-                return (False, "Non-monomial detected")
+                return (False, "One or more terms is not a monomial")
 
     #Currently, no definition of polynomials allows for monomials that 
     #are combinable by integers, so we can filter those out
@@ -66,7 +66,8 @@ def integer_proportional_monomials(expr):
                     isinstance(expr.args[j], (Number, NumberSymbol)):
                         return (True, "Two monomials are constants")
                 if const_divisible(expr.args[i], expr.args[j])[0]:
-                    return (True, "Two monomials are divisible by a constant")
+                    return (True, "Two or more monomials can be factored together")
+
     return (False, "No two monomials divisible by a constant")
 
 def sin_2_cos_2_simplifiable(expr):
@@ -113,9 +114,9 @@ def const_divisible(expr1, expr2):
     '''
     q, r = div(expr1, expr2,domain='QQ')
     if isinstance(q, (Number,NumberSymbol)) and r == 0:
-        return (True, "Expressions are divisible by a constant")
+        return (True, "Monomials could be factored further")
     else:
-        return (False, "Expressions are not divisible by a constant")
+        return (False, "Monomials cannot be factored further")
 
 
 
