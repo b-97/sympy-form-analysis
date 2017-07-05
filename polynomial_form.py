@@ -146,10 +146,6 @@ def const_divisible(expr1, expr2):
     else:
         return (False, "Monomials cannot be factored further")
 
-
-
-#TODO: combine is_factor_factored form and is_factor_factor_factored form
-
 def is_factor_factored(expr):
     '''Determines whether a term in a monomial is in factored form.
         #TODO: Implementation
@@ -161,42 +157,31 @@ def is_factor_factored(expr):
                 [1]: string describing the result
     '''
     if is_singleton_form(expr)[0]:
-        return (True, "Expression is a monomial")
+        return (True, "Expression is a singleton raised to any power")
+
+    #If the expression is raised to a power, ensure the power
+    #is sane then look at the base
+    
+    if sum(isinstance(j, Number) for j in expr.args) > 1:
+        return (False, "Two factorable integers")
+
     if isinstance(expr, Pow):
         if const_to_const(expr)[0]:
             return (False, "Expression has constant rational base and exponent")
         elif not is_singleton_form(expr.args[1])[1]:
             return (False, "Expression raised to a non-singleton power")
-        expr = expr.args[0]
+        return is_factor_factored(expr.args[0])
     if isinstance(expr,Mul):
-        if not all(is_factor_factor_factored_form(j)[0] for j in expr.args):
+        if not all(is_factor_factored(j)[0] for j in expr.args):
             return (False, "Product has factor in non-monomial form")
     if isinstance(expr,Add):
         #Using the discriminant of a quadratic expression to determine if the
-        #expression could be factored
+        #expression could be factored further
+        #TODO: Make this less awful
         if degree(expr) > 1 and len(real_roots(expr)) == degree(expr):
             return (False, "Factor in product is not factored")
+
+    if duplicate_bases(expr)[0]:
+        return (False, "Duplicate bases found in monomial")
+
     return (True, "Expression is a factored monomial factor")
-
-#TODO: Better function name
-def is_factor_factor_factored(expr):
-    if is_singleton_form(expr)[0]:
-        return (True, "Expression is also a singleton")
-    
-    elif isinstance(expr,Pow):
-        return is_monomial_factor_factored_form(expr)
-        
-    if sum(isinstance(j, Number) for j in expr.args) > 1:
-        return (False, "Two factorable integers")
-    
-    if isinstance(expr,Add):
-        return (False, "More than 1 term in expression")
-
-    if isinstance(expr,Mul):
-        if not all(is_monomial_factor_factored_form(j)[0] for j in expr.args):
-            return (False, "Improper factor in product")
-
-    if duplicate_bases(expr)[0]: 
-        return (False, "Duplicate base found in monomial")
-    
-    return (True, "Expression is a factored monomial")
