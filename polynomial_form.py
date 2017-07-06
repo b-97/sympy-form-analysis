@@ -2,6 +2,7 @@ from __future__ import division
 
 from sympy import *
 from monomial_form import *
+from form_utils import *
 
 def is_fully_expanded_polynomial(expr, eval_trig=False):
     if is_monomial_form(expr)[0]:
@@ -111,7 +112,9 @@ def is_factor_factored(expr):
         elif not is_singleton_form(expr.args[1])[1]:
             return (False, "Expression raised to a non-singleton power")
         return is_factor_factored(expr.args[0])
-    
+
+
+
     #if it's a Mul instance, take a look at what's inside
     if isinstance(expr,Mul):
         if not all(is_factor_factored(j)[0] for j in expr.args):
@@ -130,64 +133,3 @@ def is_factor_factored(expr):
         return (False, "Duplicate bases found in monomial")
 
     return (True, "Expression is a factored monomial factor")
-
-def const_divisible(expr):
-    '''determines whether the quotient of two expressions is constant divisible
-        Const divisible is defined as dividing with constant quotient and 0 remainder
-        Args:
-            expr: A standard Sympy expression
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result 
-    OLD CODE BELOW
-    '''
-    if isinstance(expr,(Add,Mul)):
-        for f in expr.free_symbols:
-            exprs = rcollect(expr,f)
-            if len(expr.args) != len(exprs.args):
-                return (True, "Some terms can be combined")
-        for i in range(0, len(expr.args)):
-            #Check to see if any of the other monomials are divisible with integer
-            #quotient and no remainder
-            if i <= len(expr.args) - 2:
-                for j in range(i+1, len(expr.args)):
-                    if isinstance(expr.args[i], (Number, NumberSymbol)) and \
-                            isinstance(expr.args[j], (Number, NumberSymbol)):
-                                return (True, "Two monomials are constants")
-                    q, r = div(expr.args[i], expr.args[j],domain='QQ')
-                    if isinstance(q, (Number,NumberSymbol)) and r == 0:
-                        return (True, "Some terms can be combined")
-
-    return (False, "No terms can be combined")
-
-def sin_2_cos_2_simplifiable(expr):
-    '''determines whether the trig identity sin(x)^2 + cos(x)^2 = 1 \
-            can be evaluated.
-        Will not catch if sin(x)^2 and cos(x)^2 are both multiplied by the 
-        same constant.
-
-        Args:
-            expr: A standard sympy expression with constants removed
-    '''
-    #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
-    for i in range(0, len(expr.args)):
-        #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
-        if isinstance(expr.args[i],Pow) and i <= len(expr.args) - 2 and \
-                expr.args[i].args[1] == 2:
-                    if isinstance(expr.args[i].args[0],sin):
-                        for j in range(i+1, len(expr.args)):
-                            if isinstance(expr.args[j], Pow) and \
-                                    isinstance(expr.args[j].args[0],cos) and \
-                                    expr.args[j].args[1] == 2 and \
-                                    expr.args[j].args[0].args == expr.args[i].args[0].args:
-                                        return (True, "cos(x)^2 + sin(x)^2 exists")
-                    elif isinstance(expr.args[i].args[0],cos):
-                        for j in range(i+1, len(expr.args)):
-                            if isinstance(expr.args[j], Pow) and \
-                                    isinstance(expr.args[j].args[0],sin) and \
-                                    expr.args[j].args[1] == 2 and \
-                                    expr.args[j].args[0].args == expr.args[i].args[0].args:
-                                        return (True, "cos(x)^2 + sin(x)^2 exists")
-    
-    return (False, "No such cos(x)^2 + sin(x)^2 exists")
