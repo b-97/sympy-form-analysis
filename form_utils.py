@@ -14,7 +14,7 @@ def const_divisible(expr):
     if isinstance(expr,(Add,Mul)):
         for f in expr.free_symbols:
             exprs = collect(expr,f)
-            if len(expr.args) != len(set(expr.args)):
+            if len(expr.args) != len(exprs.args):
                 return (True, "Some terms can be combined")
         for i in range(0, len(expr.args)):
             #Check to see if any of the other monomials are divisible with integer
