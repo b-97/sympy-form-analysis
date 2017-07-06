@@ -8,19 +8,26 @@ def is_fully_expanded_polynomial(expr, eval_trig=False):
     if is_monomial_form(expr)[0]:
         return (True, "Expression is also a monomial")
 
-    for i in range(0, len(expr.args)):
-        if not is_monomial_form(expr.args[i]):
-            return (False, "One or more terms is not a monomial")
+    if not isinstance(expr,Add):
+        result = is_numerically_reducible_monomial(expr)
+        if result[0]:
+            return (False, result[1])
+    else:
+        for i in expr.args:
+            result = is_numerically_reducible_monomial(i)
+            if result[0]:
+                return (False, result[1])
 
     result = const_divisible(expr)
     if result[0]:
         return (False, result[1])
-
+    
     if isinstance(expr,Add):
         if all(is_monomial_form(i)[0] for i in expr.args):
            return (True, "All monomials in polynomial are expanded")
         else:
             return (False, "Monomial in polynomial left partially factored")
+    
     elif isinstance(expr, Pow):
         if const_to_const(expr)[0]:
             return (False, "Expression is not a singleton, monomial, or polynomial")
@@ -52,6 +59,16 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
     if is_monomial_form(expr)[0]:
         return (True, "Expression is also a monomial")
     
+    if not isinstance(expr,Add):
+        result = is_numerically_reducible_monomial(expr)
+        if result[0]:
+            return (False, result[1])
+    else:
+        for i in expr.args:
+            result = is_numerically_reducible_monomial(i)
+            if result[0]:
+                return (False, result[1])
+
     #Make sure each term in the polynomial is a monomial
     for i in range(0, len(expr.args)):
         if not is_factor_factored(expr.args[i]):
@@ -98,6 +115,7 @@ def is_factor_factored(expr):
     
     if sum(isinstance(j, Number) for j in expr.args) > 1:
         return (False, "Two factorable integers")
+
 
     #If the expression is raised to a power, ensure the power
     #is sane then look at the base

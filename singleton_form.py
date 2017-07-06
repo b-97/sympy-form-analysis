@@ -1,8 +1,8 @@
 from __future__ import division
 
 from sympy import *
-from sympy.functions.elementary.trigonometric import TrigonometricFunction
-from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
+from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
+from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
 
 def is_singleton_factor_form(expr):
     '''Determines if a product in a singleton is appropriate.
@@ -10,7 +10,7 @@ def is_singleton_factor_form(expr):
         2. Product cannot contain two rational numbers.
         3. Product cannot contain any operations other than Mul.
         Args:
-            expr: A standard Sympy expression
+            expr: A Mul Sympy expression
         Returns:
             A tuple containing:
                 [0]: bool containing the result
@@ -22,7 +22,7 @@ def is_singleton_factor_form(expr):
 
     if sum(isinstance(j, Number) for j in expr.args) > 1:
         return False, "> 1 instance of rational numbers inside a product"
-
+    
     return True, "Product appropriate for singletons"
 
 def singleton_combinable_terms(expr):
@@ -94,9 +94,9 @@ def is_singleton_form(expr):
         
     #Case of trigonometric functions
     #TODO: Analyze what's inside the trigonometric function
-    if isinstance(expr, (TrigonometricFunction)):
+    if isinstance(expr, (SymTrigF)):
         return (True, "Expression is a trigonometric function")
-    if isinstance(expr, InverseTrigonometricFunction):
+    if isinstance(expr, SymInvTrigF):
         return (True, "Expression is an inverse trig function")
     
     return (False, "Not a singleton")

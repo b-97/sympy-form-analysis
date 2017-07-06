@@ -1,4 +1,7 @@
 from sympy import *
+from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
+from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
+
 
 def const_divisible(expr):
     '''determines whether the quotient of two expressions is constant divisible
@@ -81,3 +84,34 @@ def const_to_const(expr):
             return (True, "Singleton is a constant raised to a constant")
     
     return (False, "Singleton is not a constant raised to a constant")
+
+
+def is_numerically_reducible_monomial(expr):
+    #First, rule out the case that it's 1/(const * const)
+    if isinstance(expr, Pow):
+        if sum(isinstance(j,(Integer,int,float)) for j in expr.args[0].args) > 1:
+            return (True, "Two constants in denominator")
+
+    if isinstance(expr, Mul):
+	#First, check to see if it's in form -1*(expr)
+        if isinstance(expr.args[0], Integer) and expr.args[0] == -1 and \
+                isinstance(expr.args[1], Mul):
+	    expr = expr.args[1]
+
+        #Then, check to see if there are two integers in the numerator
+        if sum(isinstance(j,(Integer,int,float)) for j in expr.args) > 1:
+            return (True, "Two constants in numerator")
+
+        #Then, check through any denominators that exist:
+        for i in expr.args:
+            if isinstance(i,Pow):
+                if sum(isinstance(j,(Integer,int,float)) for j in expr.args) > 1:
+                    return (True, "Two constants in denominator")
+        
+        #Finally, collect the numerator and denominator and check if they can be reduced
+        q = fraction(expr)[0]
+        r = fraction(expr)[1]
+        if gcd(q,r) != 1:
+            return (True, "Fraction could be reduced further")
+
+    return (False, "Not a reducible fraction")

@@ -17,7 +17,10 @@ def is_monomial_form(expr):
     '''
     if is_singleton_form(expr)[0]:
         return (True, "Expression is also a singleton")
-    
+
+    if is_numerically_reducible_monomial(expr)[0]:
+        return (False, "Expression is a reducible monomial")
+
     elif isinstance(expr,Pow):
         if const_to_const(expr)[0]:
             return (False, "Expression has a constant rational base and exponent")
@@ -27,10 +30,8 @@ def is_monomial_form(expr):
             if is_singleton_form(expr.args[1])[0]:
                 return (True, "Expression is a singleton raised to a \
                         singleton power")
-            else:
-                return (False, "Expression is not raised to a singleton power")
-        else:
-            return (False, "Expression is not a singleton")
+            return (False, "Expression is not raised to a singleton power")
+        return (False, "Expression is not a singleton")
     
     elif sum(isinstance(j, Number) for j in expr.args) > 1:
         return (False, "Two factorable integers")
@@ -45,8 +46,6 @@ def is_monomial_form(expr):
             result = is_monomial_form(j)
             if not result[0]:
                 return (False, result[1])
-        #if not all(is_monomial_form(j)[0] for j in expr.args):
-        #    return (False, "Improper factor in product")
     
     if duplicate_bases(expr)[0]: 
         return (False, "Duplicate base found in monomial")
