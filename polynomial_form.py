@@ -7,12 +7,12 @@ from form_utils import *
 def is_fully_expanded_polynomial(expr, eval_trig=False):
     if is_monomial_form(expr)[0]:
         return (True, "Expression is also a monomial")
-    
+
     for i in range(0, len(expr.args)):
         if not is_monomial_form(expr.args[i]):
             return (False, "One or more terms is not a monomial")
-    
-    result = integer_proportional_monomials(expr)
+
+    result = const_divisible(expr)
     if result[0]:
         return (False, result[1])
 
@@ -21,7 +21,12 @@ def is_fully_expanded_polynomial(expr, eval_trig=False):
            return (True, "All monomials in polynomial are expanded")
         else:
             return (False, "Monomial in polynomial left partially factored")
-    elif isinstance(expr,(Mul,Pow)):
+    elif isinstance(expr, Pow):
+        if const_to_const(expr)[0]:
+            return (False, "Expression is not a singleton, monomial, or polynomial")
+        else:
+            return is_monomial_form(expr)
+    elif isinstance(expr,Mul):
         return is_monomial_form(expr)
     elif isinstance(expr, (TrigonometricFunction,InverseTrigonometricFunction)):
         return is_monomial_form(expr.args)
@@ -54,15 +59,19 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
 
     #Currently, no definition of polynomials allows for monomials that 
     #are combinable by integers, so we can filter those out
-    result = integer_proportional_monomials(expr)
+    result = const_divisible(expr)
     if result[0]:
         return False, result[1]
 
+    if isinstance(expr, Pow):
+        if const_to_const(expr)[0]:
+            return (False, "Improper term")
+    
     if eval_trig:
         result = sin_2_cos_2_simplifiable(expr)
         if result[0]:
             return False, result[1]
-
+    
     monomials = []
     for i in range(0, len(expr.args)):
         if isinstance(expr.args[i], Pow):
