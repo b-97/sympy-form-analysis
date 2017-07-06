@@ -144,7 +144,7 @@ def const_divisible(expr):
     '''
     if isinstance(expr,(Add,Mul)):
         for f in expr.free_symbols:
-            exprs = collect(expr,f)
+            exprs = rcollect(expr,f)
             if len(expr.args) != len(exprs.args):
                 return (True, "Some terms with variables can be combined")
         for i in range(0, len(expr.args)):
