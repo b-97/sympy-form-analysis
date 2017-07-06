@@ -22,6 +22,8 @@ def is_monomial_form(expr):
         if const_to_const(expr)[0]:
             return (False, "Expression has a constant rational base and exponent")
         if is_singleton_form(expr.args[0])[0]:
+            if expr.args[1] == 0 or expr.args[1] == 1:
+                return (False, "Expression uneccessarily raised to a power")
             if is_singleton_form(expr.args[1])[0]:
                 return (True, "Expression is a singleton raised to a \
                         singleton power")
@@ -38,6 +40,8 @@ def is_monomial_form(expr):
     
     elif isinstance(expr,Mul):
         for j in expr.args:
+            if expr.args == 0:
+                return (False, "Expression is multiplied by 0")
             result = is_monomial_form(j)
             if not result[0]:
                 return (False, result[1])

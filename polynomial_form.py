@@ -83,10 +83,6 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
 
     return (True, "No combinable monomials")
 
-
-
-
-
 def is_factor_factored(expr):
     '''Determines whether a term in a monomial is in factored form.
         #TODO: Implementation

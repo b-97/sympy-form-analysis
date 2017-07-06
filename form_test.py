@@ -38,6 +38,9 @@ class TestSymp(unittest.TestCase):
         self.a23 = Add(Mul(2,pi),Mul(3,pi),evaluate=False)
         self.a24 = Pow(Add(x,1),2,evaluate=False)
         self.a25 = Mul(3,Add(3,x),evaluate=False) #N
+        self.a26 = Add(Mul(3,Pow(x,2)),Pow(x,1),5,evaluate=False) #N - Exponent 1
+        self.a26 = Add(Mul(3,Pow(x,2)),Pow(x,0),5,evaluate=False) #N - Exponent 0
+        self.a27 = Add(Mul(0,Pow(x,2)),Pow(x,0),5,evaluate=False) #N - 0*x
 
     def test_singleton(self):
         self.assertTrue(is_singleton_form(x)[0])
@@ -68,6 +71,8 @@ class TestSymp(unittest.TestCase):
         self.assertFalse(is_singleton_form(self.a23)[0]) #N
         self.assertFalse(is_singleton_form(self.a24)[0])
         self.assertFalse(is_singleton_form(self.a25)[0]) #N
+        self.assertFalse(is_singleton_form(self.a26)[0]) #N
+        self.assertFalse(is_singleton_form(self.a27)[0]) #N
 
     def test_expanded_monomial(self):
         self.assertTrue(is_monomial_form(x)[0])
@@ -98,6 +103,8 @@ class TestSymp(unittest.TestCase):
         self.assertFalse(is_monomial_form(self.a23)[0]) #N
         self.assertFalse(is_monomial_form(self.a24)[0])
         self.assertFalse(is_monomial_form(self.a25)[0]) #N
+        self.assertFalse(is_monomial_form(self.a26)[0]) #N
+        self.assertFalse(is_monomial_form(self.a27)[0]) #N
 
     def test_expanded_polynomial(self):
         self.assertTrue(is_fully_expanded_polynomial(x)[0])
@@ -128,6 +135,8 @@ class TestSymp(unittest.TestCase):
         self.assertFalse(is_fully_expanded_polynomial(self.a23)[0]) #N
         self.assertFalse(is_fully_expanded_polynomial(self.a24)[0])
         self.assertFalse(is_fully_expanded_polynomial(self.a25)[0]) #N
+        self.assertFalse(is_fully_expanded_polynomial(self.a26)[0]) #N
+        self.assertFalse(is_fully_expanded_polynomial(self.a27)[0]) #N
     
     def test_factored_polynomial(self):
         self.assertTrue(is_fully_factored_polynomial(x)[0])
@@ -158,6 +167,8 @@ class TestSymp(unittest.TestCase):
         self.assertFalse(is_fully_factored_polynomial(self.a23)[0]) #N
         self.assertTrue(is_fully_factored_polynomial(self.a24)[0])
         self.assertTrue(is_fully_factored_polynomial(self.a25)[0]) #N
+        self.assertFalse(is_fully_factored_polynomial(self.a26)[0]) #N
+        self.assertFalse(is_fully_factored_polynomial(self.a27)[0]) #N
 
 if __name__ == '__main__':
     unittest.main()
