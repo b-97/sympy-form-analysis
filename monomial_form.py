@@ -2,7 +2,6 @@ from __future__ import division
 from sympy import *
 from singleton_form import *
 
-from form_utils import *
 
 def is_monomial_form(expr):
     '''Determines whether an expression is in proper monomial form.
@@ -85,3 +84,25 @@ def search_bases(expr):
         else: #Trig/InverseTrig functions, Add instances for factored exprs
             exprbases.append(expr.args[i])
     return exprbases
+
+
+def const_to_const(expr):
+    '''determines if an expression is a rational raised to a constant \
+            power other than 1 and 1/n"
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result 
+    '''
+    if isinstance(expr, Pow) and isinstance(expr.args[0], Number):
+        if isinstance(expr.args[1], Pow):
+            if expr.args[1].args[1] == -1:
+                return (False, "Singleton raised to 1/n")
+        elif expr.args[1] == -1:
+            return (False, "Singleton raised to -1")
+        elif isinstance(expr.args[1], Number):
+            return (True, "Singleton is a constant raised to a constant")
+    
+    return (False, "Singleton is not a constant raised to a constant")
