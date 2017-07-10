@@ -54,11 +54,11 @@ def singleton_combinable_terms(expr):
                 return True, result[1]
         else:
             bases.append(i)
+    
     #Any two rational numbers can be simplified
     if sum(isinstance(i, Rational) for i in expr.args) > 1:
         return True, "Two instances of rational numbers"
 
-    #Evaluate each individual term numerically - if duplicates, return true
     if len(bases) != len(set(bases)):
         return True, "Two combinable terms in singleton"
     else:
@@ -99,4 +99,14 @@ def is_singleton_form(expr):
     if isinstance(expr, SymInvTrigF):
         return (True, "Expression is an inverse trig function")
     
+
+    #Case of pi^2, pi^pi, pi^x, etc.
+    if isinstance(expr,Pow) and isinstance(expr.args[0],NumberSymbol) and \
+            isinstance(expr.args[1],(Symbol,Number,NumberSymbol)):
+                return (True, "Expression is a singleton")
+    #Case of 3^x, 3^pi, etc.
+    if isinstance(expr,Pow) and isinstance(expr.args[0],Number) and \
+            isinstance(expr.args[1],(Symbol,NumberSymbol)):
+                return (True, "Expression is a singleton")
+   
     return (False, "Not a singleton")
