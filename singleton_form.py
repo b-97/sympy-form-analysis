@@ -4,6 +4,9 @@ from sympy import *
 from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
 
+from form_output import *
+from form_utils import *
+
 def is_singleton_factor_form(expr):
     '''Determines if a product in a singleton is appropriate.
         1. No symbols are allowed in the product.
@@ -17,12 +20,23 @@ def is_singleton_factor_form(expr):
                 [1]: string describing the result
     '''
     for i in expr.args:
-        if not isinstance(i, (Number, NumberSymbol)):
-            return False, "Singletons cannot have symbols in their products"
+        if not isinstance(i, (Number, NumberSymbol,Pow,Mul)):
+            return False, FormOutput.IMPROPER_SINGLETON_TERM
+        if isinstance(i,Pow):
+            if isinstance(i.args[0], Number) and isinstance(i.args[1],NumberSymbol):
+                continue
+            if isinstance(i.args[0],NumberSymbol) and isinstance(i.args[1], (Number,NumberSymbol)):
+                continue
+            return False, FormOutput.IMPROPER_SINGLETON_TERM
+        if isinstance(i,Mul):
+            if sum(j == -1 and isinstance(j,Number) for j in i.args) != 1:
+                return False, FormOutput.IMPROPER_SINGLETON_TERM
+            if is_numerically_reducible_monomial(i)[0]:
+                return False, FormOutput.IMPROPER_SINGLETON_TERM
 
     if sum(isinstance(j, Number) for j in expr.args) > 1:
         return False, "> 1 instance of rational numbers inside a product"
-    
+
     return True, "Product appropriate for singletons"
 
 def singleton_combinable_terms(expr):
@@ -36,11 +50,11 @@ def singleton_combinable_terms(expr):
         Returns:
             A tuple containing:
                 [0]: bool containing the result
-                [1]: string describing the result 
+                [1]: string describing the result
     '''
     #Collect the bases for later comparison
     bases = []
-    
+
     #We don't want symbols or subexpressions like Add
     for i in expr.args:
         if not isinstance(i, (Number, NumberSymbol, Mul)):
@@ -54,7 +68,7 @@ def singleton_combinable_terms(expr):
                 return True, result[1]
         else:
             bases.append(i)
-    
+
     #Any two rational numbers can be simplified
     if sum(isinstance(i, Rational) for i in expr.args) > 1:
         return True, "Two instances of rational numbers"
@@ -74,11 +88,11 @@ def is_singleton_form(expr):
         Returns:
             A tuple containing:
                 [0]: bool containing the result
-                [1]: string describing the result 
+                [1]: string describing the result
     '''
     if isinstance(expr, (Number, NumberSymbol, Symbol)):
         return (True, "Expression is a singleton!")
-    
+
     #Case of rational added to irrational
     if isinstance(expr, Add):
         result = singleton_combinable_terms(expr)
@@ -89,18 +103,23 @@ def is_singleton_form(expr):
 
     #Case of rational multiplied to irrational
     if isinstance(expr, Mul):
+        if is_numerically_reducible_monomial(expr)[0]:
+            return False, FormOutput.REDUCIBLE_SINGLETON
         return is_singleton_factor_form(expr)
 
-        
+
     #Case of trigonometric functions
     #TODO: Analyze what's inside the trigonometric function
     if isinstance(expr, (SymTrigF)):
         return (True, "Expression is a trigonometric function")
     if isinstance(expr, SymInvTrigF):
         return (True, "Expression is an inverse trig function")
-    
+
 
     #Case of pi^2, pi^pi, pi^x, etc.
+    if isinstance(expr,Pow):
+        return is_singleton_factor_form(expr)
+    '''
     if isinstance(expr,Pow) and isinstance(expr.args[0],NumberSymbol) and \
             isinstance(expr.args[1],(Symbol,Number,NumberSymbol)):
                 return (True, "Expression is a singleton")
@@ -108,5 +127,5 @@ def is_singleton_form(expr):
     if isinstance(expr,Pow) and isinstance(expr.args[0],Number) and \
             isinstance(expr.args[1],(Symbol,NumberSymbol)):
                 return (True, "Expression is a singleton")
-   
+    '''
     return (False, "Not a singleton")
