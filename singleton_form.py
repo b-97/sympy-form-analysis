@@ -1,8 +1,8 @@
 from __future__ import division
 
 from sympy import *
-from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
-from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
+from sympy.functions.elementary.trigonometric import TrigonometricFunction
+from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
 
 from form_output import *
 from form_utils import *
@@ -110,22 +110,15 @@ def is_singleton_form(expr):
 
     #Case of trigonometric functions
     #TODO: Analyze what's inside the trigonometric function
-    if isinstance(expr, (SymTrigF)):
+    if isinstance(expr, TrigonometricFunction):
         return (True, "Expression is a trigonometric function")
-    if isinstance(expr, SymInvTrigF):
+    if isinstance(expr, InverseTrigonometricFunction):
         return (True, "Expression is an inverse trig function")
 
 
     #Case of pi^2, pi^pi, pi^x, etc.
     if isinstance(expr,Pow):
         return is_singleton_factor_form(expr)
-    '''
-    if isinstance(expr,Pow) and isinstance(expr.args[0],NumberSymbol) and \
-            isinstance(expr.args[1],(Symbol,Number,NumberSymbol)):
-                return (True, "Expression is a singleton")
-    #Case of 3^x, 3^pi, etc.
-    if isinstance(expr,Pow) and isinstance(expr.args[0],Number) and \
-            isinstance(expr.args[1],(Symbol,NumberSymbol)):
-                return (True, "Expression is a singleton")
-    '''
+
+
     return (False, "Not a singleton")

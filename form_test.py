@@ -49,6 +49,7 @@ class TestSymp(unittest.TestCase):
         self.a33 = Pow(pi,pi,evaluate=False)
         self.a34 = Mul(-1,Pow(pi,pi,evaluate=False),evaluate=False)
         self.a35 = Pow(Mul(-1,pi),pi,evaluate=False)
+        self.a36 = Add(x,3,Add(x,2))
 
     def test_singleton(self):
         self.assertTrue(is_singleton_form(x)[0])
@@ -89,6 +90,8 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_singleton_form(self.a33)[0])
         self.assertTrue(is_singleton_form(self.a34)[0])
         self.assertTrue(is_singleton_form(self.a35)[0])
+        self.assertFalse(is_singleton_form(self.a36)[0])
+
 
     def test_expanded_monomial(self):
         self.assertTrue(is_monomial_form(x)[0])
@@ -129,6 +132,7 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_monomial_form(self.a33)[0])
         self.assertTrue(is_monomial_form(self.a34)[0])
         self.assertTrue(is_monomial_form(self.a35)[0])
+        self.assertFalse(is_monomial_form(self.a36)[0])
 
     def test_expanded_polynomial(self):
         self.assertTrue(is_fully_expanded_polynomial(x)[0])
@@ -169,6 +173,7 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_fully_expanded_polynomial(self.a33)[0])
         self.assertTrue(is_fully_expanded_polynomial(self.a34)[0])
         self.assertTrue(is_fully_expanded_polynomial(self.a35)[0])
+        self.assertFalse(is_fully_expanded_polynomial(self.a36)[0])
 
     def test_factored_polynomial(self):
         self.assertTrue(is_fully_factored_polynomial(x)[0])
@@ -209,6 +214,7 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_fully_factored_polynomial(self.a33)[0])
         self.assertTrue(is_fully_factored_polynomial(self.a34)[0])
         self.assertTrue(is_fully_factored_polynomial(self.a35)[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a36)[0])
 
 if __name__ == '__main__':
     unittest.main()
