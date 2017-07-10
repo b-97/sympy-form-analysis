@@ -29,15 +29,15 @@ def is_singleton_factor_form(expr):
                 continue
             return False, FormOutput.IMPROPER_SINGLETON_TERM
         if isinstance(i,Mul):
-            if sum(j == -1 and isinstance(j,Number) for j in i.args) != 1:
+            if sum(j == -1 and isinstance(j,Number) for j in i.args) > 1:
                 return False, FormOutput.IMPROPER_SINGLETON_TERM
             if is_numerically_reducible_monomial(i)[0]:
                 return False, FormOutput.IMPROPER_SINGLETON_TERM
 
     if sum(isinstance(j, Number) for j in expr.args) > 1:
-        return False, "> 1 instance of rational numbers inside a product"
+        return False, FormOutput.INVALID_SINGLETON_PRODUCT
 
-    return True, "Product appropriate for singletons"
+    return True, FormOutput.VALID_SINGLETON_PRODUCT
 
 def singleton_combinable_terms(expr):
     '''determines if two terms in a singleton can be combined.
@@ -58,8 +58,7 @@ def singleton_combinable_terms(expr):
     #We don't want symbols or subexpressions like Add
     for i in expr.args:
         if not isinstance(i, (Number, NumberSymbol, Mul)):
-            return True, "Singleton can be combined"
-
+            return True, FormOutput.INVALID_SINGLETON_SUM
         #If there's a product, make sure only one is rational
         if isinstance(i, Mul):
             bases += i.args
@@ -70,13 +69,13 @@ def singleton_combinable_terms(expr):
             bases.append(i)
 
     #Any two rational numbers can be simplified
-    if sum(isinstance(i, Rational) for i in expr.args) > 1:
-        return True, "Two instances of rational numbers"
+    if sum(isinstance(i, Number) for i in expr.args) > 1:
+        return True, FormOutput.INVALID_SINGLETON_SUM
 
     if len(bases) != len(set(bases)):
-        return True, "Two combinable terms in singleton"
+        return True, FormOutput.INVALID_SINGLETON_SUM
     else:
-        return False, "No combinable terms in singleton"
+        return False, FormOutput.VALID_SINGLETON_SUM
 
 def is_singleton_form(expr):
     '''determines if the expression is a singleton.
@@ -91,7 +90,7 @@ def is_singleton_form(expr):
                 [1]: string describing the result
     '''
     if isinstance(expr, (Number, NumberSymbol, Symbol)):
-        return (True, "Expression is a singleton!")
+        return True, FormOutput.VALID_SINGLETON
 
     #Case of rational added to irrational
     if isinstance(expr, Add):
@@ -111,9 +110,9 @@ def is_singleton_form(expr):
     #Case of trigonometric functions
     #TODO: Analyze what's inside the trigonometric function
     if isinstance(expr, TrigonometricFunction):
-        return (True, "Expression is a trigonometric function")
+        return True, FormOutput.VALID_SINGLETON_TRIG
     if isinstance(expr, InverseTrigonometricFunction):
-        return (True, "Expression is an inverse trig function")
+        return True, FormOutput.VALID_SINGLETON_INVTRIG
 
 
     #Case of pi^2, pi^pi, pi^x, etc.
@@ -121,4 +120,4 @@ def is_singleton_form(expr):
         return is_singleton_factor_form(expr)
 
 
-    return (False, "Not a singleton")
+    return False, INVALID_SINGLETON

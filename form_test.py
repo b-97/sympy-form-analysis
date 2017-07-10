@@ -49,7 +49,7 @@ class TestSymp(unittest.TestCase):
         self.a33 = Pow(pi,pi,evaluate=False)
         self.a34 = Mul(-1,Pow(pi,pi,evaluate=False),evaluate=False)
         self.a35 = Pow(Mul(-1,pi),pi,evaluate=False)
-        self.a36 = Add(x,3,Add(x,2))
+        self.a36 = Add(x,3,Add(x,2,evaluate=False),evaluate=False)
 
     def test_singleton(self):
         self.assertTrue(is_singleton_form(x)[0])

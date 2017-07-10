@@ -1,7 +1,7 @@
 from sympy import *
 from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
-
+from form_output import *
 
 def const_divisible(expr):
     '''determines whether the quotient of two expressions is constant divisible
@@ -11,14 +11,14 @@ def const_divisible(expr):
         Returns:
             A tuple containing:
                 [0]: bool containing the result
-                [1]: string describing the result 
+                [1]: string describing the result
     OLD CODE BELOW
     '''
     if isinstance(expr,(Add,Mul)):
         for f in expr.free_symbols:
             exprs = rcollect(expr,f)
             if len(expr.args) != len(exprs.args):
-                return (True, "Some terms can be combined")
+                return True, FormOutput.CONST_DIVISIBLE
         for i in range(0, len(expr.args)):
             #Check to see if any of the other monomials are divisible with integer
             #quotient and no remainder
@@ -26,17 +26,17 @@ def const_divisible(expr):
                 for j in range(i+1, len(expr.args)):
                     if isinstance(expr.args[i], (Number, NumberSymbol)) and \
                             isinstance(expr.args[j], (Number, NumberSymbol)):
-                                return (True, "Two monomials are constants")
+                                return True, FormOutput.CONST_DIVISIBLE
                     q, r = div(expr.args[i], expr.args[j],domain='QQ')
                     if isinstance(q, (Number,NumberSymbol)) and r == 0:
-                        return (True, "Some terms can be combined")
+                        return True, FormOutput.CONST_DIVISIBLE
 
-    return (False, "No terms can be combined")
+    return False, FormOutput.NOT_CONST_DIVISIBLE
 
 def sin_2_cos_2_simplifiable(expr):
     '''determines whether the trig identity sin(x)^2 + cos(x)^2 = 1 \
             can be evaluated.
-        Will not catch if sin(x)^2 and cos(x)^2 are both multiplied by the 
+        Will not catch if sin(x)^2 and cos(x)^2 are both multiplied by the
         same constant.
 
         Args:
@@ -53,16 +53,16 @@ def sin_2_cos_2_simplifiable(expr):
                                     isinstance(expr.args[j].args[0],cos) and \
                                     expr.args[j].args[1] == 2 and \
                                     expr.args[j].args[0].args == expr.args[i].args[0].args:
-                                        return (True, "cos(x)^2 + sin(x)^2 exists")
+                                        return True, FormOutput.TRIG_CAN_SIMPLIFY
                     elif isinstance(expr.args[i].args[0],cos):
                         for j in range(i+1, len(expr.args)):
                             if isinstance(expr.args[j], Pow) and \
                                     isinstance(expr.args[j].args[0],sin) and \
                                     expr.args[j].args[1] == 2 and \
                                     expr.args[j].args[0].args == expr.args[i].args[0].args:
-                                        return (True, "cos(x)^2 + sin(x)^2 exists")
-    
-    return (False, "No such cos(x)^2 + sin(x)^2 exists")
+                                        return True, FormOutput.TRIG_CAN_SIMPLIFY
+
+    return False, FormOutput.TRIG_CANT_SIMPLIFY
 
 def const_to_const(expr):
     '''determines if an expression is a rational raised to a constant \
@@ -72,25 +72,25 @@ def const_to_const(expr):
         Returns:
             A tuple containing:
                 [0]: bool containing the result
-                [1]: string describing the result 
+                [1]: string describing the result
     '''
     if isinstance(expr, Pow) and isinstance(expr.args[0], Number):
         if isinstance(expr.args[1], Pow):
             if expr.args[1].args[1] == -1:
-                return (False, "Singleton raised to 1/n")
+                return False, FormOutput.ONE_OVER_N
         elif expr.args[1] == -1:
-            return (False, "Singleton raised to -1")
+            return False, FormOutput.INVERSE_N
         elif isinstance(expr.args[1], Number):
-            return (True, "Singleton is a constant raised to a constant")
-    
-    return (False, "Singleton is not a constant raised to a constant")
+            return True, FormOutput.CONST_TO_CONST
+
+    return False, FormOutput.NOT_CONST_TO_CONST
 
 
 def is_numerically_reducible_monomial(expr):
     #First, rule out the case that it's 1/(const * const)
     if isinstance(expr, Pow):
         if sum(isinstance(j,(Integer,int,float)) for j in expr.args[0].args) > 1:
-            return (True, "Two constants in denominator")
+            return True, FormOutput.SIMPLIFIABLE_DENOMINATOR
 
     if isinstance(expr, Mul):
 	#First, check to see if it's in form -1*(expr)
@@ -100,18 +100,18 @@ def is_numerically_reducible_monomial(expr):
 
         #Then, check to see if there are two integers in the numerator
         if sum(isinstance(j,(Integer,int,float)) for j in expr.args) > 1:
-            return (True, "Two constants in numerator")
+            return True, FormOutput.SIMPLIFIABLE_NUMERATOR
 
         #Then, check through any denominators that exist:
         for i in expr.args:
             if isinstance(i,Pow):
                 if sum(isinstance(j,(Integer,int,float)) for j in expr.args) > 1:
-                    return (True, "Two constants in denominator")
-        
+                    return True, FormOutput.SIMPLIFIABLE_DENOMINATOR
+
         #Finally, collect the numerator and denominator and check if they can be reduced
         q = fraction(expr)[0]
         r = fraction(expr)[1]
         if gcd(q,r) != 1:
-            return (True, "Fraction could be reduced further")
+            return True, FormOutput.SIMPLIFIABLE_FRACTION
 
-    return (False, "Not a reducible fraction")
+    return False, FormOutput.NOT_SIMPLIFIABLE_FRACTION

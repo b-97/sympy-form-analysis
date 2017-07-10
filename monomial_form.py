@@ -16,41 +16,37 @@ def is_monomial_form(expr):
                 [1]: string describing the result
     '''
     if is_singleton_form(expr)[0]:
-        return (True, "Expression is also a singleton")
+        return True, FormOutput.MONOMIAL_IS_SINGLETON
 
     if is_numerically_reducible_monomial(expr)[0]:
-        return (False, "Expression is a reducible monomial")
+        return False, FormOutput.REDUCIBLE_MONOMIAL
 
     elif isinstance(expr,Pow):
         if const_to_const(expr)[0]:
-            return (False, "Expression has a constant rational base and exponent")
+            return False, FormOutput.CONST_TO_CONST
         if is_singleton_form(expr.args[0])[0]:
             if expr.args[1] == 0 or expr.args[1] == 1:
-                return (False, "Expression uneccessarily raised to a power")
+                return False, FormOutput.REDUCIBLE_MONOMIAL
             if is_singleton_form(expr.args[1])[0]:
-                return (True, "Expression is a singleton raised to a \
-                        singleton power")
-            return (False, "Expression is not raised to a singleton power")
-        return (False, "Expression is not a singleton")
-    
+                return True, FormOutput.PROPER_MONOMIAL
+            return False, FormOutput.IMPROPER_MONOMIAL
+        return False, FormOutput.EXPANDABLE_MONOMIAL
     elif sum(isinstance(j, Number) for j in expr.args) > 1:
-        return (False, "Two factorable integers")
-
+        return False, FormOutput.REDUCIBLE_MONOMIAL
     elif isinstance(expr,Add):
-        return (False, "More than 1 term in expression")
-    
+        return False, FormOutput.MONOMIAL_MULTIPLE_TERMS
     elif isinstance(expr,Mul):
         for j in expr.args:
             if expr.args == 0:
-                return (False, "Expression is multiplied by 0")
+                return False, FormOutput.REDUCIBLE_MONOMIAL
             result = is_monomial_form(j)
             if not result[0]:
-                return (False, result[1])
-    
-    if duplicate_bases(expr)[0]: 
-        return (False, "Duplicate base found in monomial")
-    
-    return(True, "Expression is an expanded monomial")
+                return False, result[1]
+
+    if duplicate_bases(expr)[0]:
+        return False, FormOutput.REDUCIBLE_MONOMIAL
+
+    return True, FormOutput.PROPER_MONOMIAL
 
 #Check to see if any of the bases in a monomial are duplicates
 def duplicate_bases(expr):
@@ -67,9 +63,9 @@ def duplicate_bases(expr):
 
     #Set only collects unique bases
     if len(bases) != len(set(bases)):
-        return (True, "Bases can be combined")
+        return True, FormOutput.REDUCIBLE_MONOMIAL
     else:
-        return (False, "No combinable bases found")
+        return False, FormOutput.NOT_EXPANDED
 
 def search_bases(expr):
     '''Searches through the bases in an expression.
