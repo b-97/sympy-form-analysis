@@ -16,37 +16,36 @@ def is_monomial_form(expr):
                 [1]: string describing the result
     '''
     if is_singleton_form(expr)[0]:
-        return True, FormOutput.MONOMIAL_IS_SINGLETON
+        return True, MonomialOutput.strout("IS_SINGLETON")
 
     if is_numerically_reducible_monomial(expr)[0]:
-        return False, FormOutput.REDUCIBLE_MONOMIAL
+        return False, MonomialOutput.strout("REDUCIBLE")
 
     elif isinstance(expr,Pow):
         if const_to_const(expr)[0]:
-            return False, FormOutput.CONST_TO_CONST
+            return False, UtilOutput.strout("CONST_TO_CONST")
         if is_singleton_form(expr.args[0])[0]:
             if expr.args[1] == 0 or expr.args[1] == 1:
-                return False, FormOutput.REDUCIBLE_MONOMIAL
+                return False, MonomialOutput.strout("REDUCIBLE")
             if is_singleton_form(expr.args[1])[0]:
-                return True, FormOutput.PROPER_MONOMIAL
-            return False, FormOutput.IMPROPER_MONOMIAL
-        return False, FormOutput.EXPANDABLE_MONOMIAL
+                return True, MonomialOutput.strout("PROPER")
+            return False, MonomialOutput.strout("IMPROPER")
+        return False, MonomialOutput.strout("EXPANDABLE")
     elif sum(isinstance(j, Number) for j in expr.args) > 1:
-        return False, FormOutput.REDUCIBLE_MONOMIAL
+        return False, MonomialOutput.strout("REDUCIBLE")
     elif isinstance(expr,Add):
-        return False, FormOutput.MONOMIAL_MULTIPLE_TERMS
+        return False, MonomialOutput.strout("MULTIPLE_TERMS")
     elif isinstance(expr,Mul):
         for j in expr.args:
             if expr.args == 0:
-                return False, FormOutput.REDUCIBLE_MONOMIAL
+                return False, MonomialOutput.strout("REDUCIBLE")
             result = is_monomial_form(j)
             if not result[0]:
                 return False, result[1]
 
-    if duplicate_bases(expr)[0]:
-        return False, FormOutput.REDUCIBLE_MONOMIAL
+    result = duplicate_bases(expr)
 
-    return True, FormOutput.PROPER_MONOMIAL
+    return not result[0], result[1]
 
 #Check to see if any of the bases in a monomial are duplicates
 def duplicate_bases(expr):
@@ -59,15 +58,15 @@ def duplicate_bases(expr):
                 [0]: bool containing the result
                 [1]: string describing the result
     '''
-    bases = search_bases(expr)
+    bases = _search_bases(expr)
 
     #Set only collects unique bases
     if len(bases) != len(set(bases)):
-        return True, FormOutput.REDUCIBLE_MONOMIAL
-    else:
-        return False, FormOutput.NOT_EXPANDED
+        return True, MonomialOutput.strout("REDUCIBLE")
 
-def search_bases(expr):
+    return False, MonomialOutput.strout("PROPER")
+
+def _search_bases(expr):
     '''Searches through the bases in an expression.
         Args:
             expr: A standard Sympy expression
@@ -80,7 +79,7 @@ def search_bases(expr):
         if isinstance(expr.args[i], Pow):
             exprbases.append(expr.args[i].args[0])
         elif isinstance(expr.args[i],Mul):
-            exprbases += search_bases(expr.args[i])
-        else: #Trig/InverseTrig functions, Add instances for factored exprs
+            exprbases += _search_bases(expr.args[i])
+        else: #Trig/InverseTrig functions, Add for factored exprs
             exprbases.append(expr.args[i])
     return exprbases
