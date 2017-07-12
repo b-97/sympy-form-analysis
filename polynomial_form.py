@@ -1,6 +1,9 @@
 from __future__ import division
+from sympy.functions.elementary.trigonometric import TrigonometricFunction
+from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
+import sympy
+from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,degree
 
-from sympy import *
 from monomial_form import *
 from form_utils import *
 from form_output import *
