@@ -7,7 +7,7 @@ from form_output import *
 
 def is_fully_expanded_polynomial(expr, eval_trig=False):
     if is_monomial_form(expr)[0]:
-        return True, PolynomialOutput.strout("POLYNOMIAL_IS_MONOMIAL")
+        return True, PolynomialOutput.strout("IS_MONOMIAL")
 
     if not isinstance(expr,Add):
         result = is_numerically_reducible_monomial(expr)
@@ -54,7 +54,7 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
 
     #If the expression is a monomial or a singleton in the desired form
     if is_monomial_form(expr)[0]:
-        return True, PolynomialOutput.strout("POLYNOMIAL_IS_MONOMIAL")
+        return True, PolynomialOutput.strout("IS_MONOMIAL")
 
     if not isinstance(expr,Add):
         result = is_numerically_reducible_monomial("expr")
@@ -69,7 +69,7 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
     #Make sure each term in the polynomial is a monomial
     for i in range(0, len(expr.args)):
         if not is_factor_factored(expr.args[i])[0]:
-            return False, PolynomialOutput.strout("NOT_FACTORED_POLYNOMIAL")
+            return False, PolynomialOutput.strout("NOT_FACTORED")
 
     #Currently, no definition of polynomials allows for monomials that
     #are combinable by integers, so we can filter those out
@@ -95,9 +95,9 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
             monomials.append(expr.args[i])
 
     if len(monomials) != len(set(monomials)):
-        return False, PolynomialOutput.strout("NOT_FACTORED_POLYNOMIAL")
+        return False, PolynomialOutput.strout("NOT_FACTORED")
 
-    return True, PolynomialOutput.strout("FACTORED_POLYNOMIAL")
+    return True, PolynomialOutput.strout("FACTORED")
 
 def is_factor_factored(expr):
     '''Determines whether a term in a monomial is in factored form.
@@ -115,7 +115,7 @@ def is_factor_factored(expr):
 
 
     if sum(isinstance(j, Number) for j in expr.args) > 1:
-        return False, PolynomialOutput.strout("NOT_FACTORED_POLYNOMIAL")
+        return False, PolynomialOutput.strout("NOT_FACTORED")
 
 
     #If the expression is raised to a power, ensure the power
@@ -125,13 +125,13 @@ def is_factor_factored(expr):
         if const_to_const(expr)[0]:
             return False, UtilOutput.strout("CONST_TO_CONST")
         elif not is_singleton_form(expr.args[1])[0]:
-            return False, PolynomialOutput.strout("NOT_FACTORED_POLYNOMIAL")
+            return False, PolynomialOutput.strout("NOT_FACTORED")
         return is_factor_factored(expr.args[0])
 
     #if it's a Mul instance, take a look at what's inside
     if isinstance(expr,Mul):
         if not all(is_factor_factored(j)[0] for j in expr.args):
-            return False, PolynomialOutput.strout("NOT_FACTORED_POLYNOMIAL")
+            return False, PolynomialOutput.strout("NOT_FACTORED")
 
 
     if isinstance(expr,Add):
@@ -139,9 +139,9 @@ def is_factor_factored(expr):
         #expression could be factored further
         #TODO: Refine this definition
         if degree(expr) > 1 and len(real_roots(expr)) == degree(expr):
-            return False, PolynomialOutput.strout("NOT_FACTORED_POLYNOMIAL")
+            return False, PolynomialOutput.strout("NOT_FACTORED")
 
     if duplicate_bases(expr)[0]:
-        return False, PolynomialOutput.strout("NOT_FACTORED_POLYNOMIAL")
+        return False, PolynomialOutput.strout("NOT_FACTORED")
 
-    return True, PolynomialOutput.strout("FACTORED_POLYNOMIAL")
+    return True, PolynomialOutput.strout("FACTORED")

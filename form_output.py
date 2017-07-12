@@ -3,14 +3,14 @@ from sympy import srepr
 #Singleton related return values
 class SingletonOutput():
     messages = {
-        'IMPROPER_SINGLETON_TERM': 'Improper term in singleton',
-        'REDUCIBLE_SINGLETON': "Singleton can be reduced",
-        'INVALID_SINGLETON_SUM:': "More than one term in singleton",
-        'INVALID_SINGLETON_PRODUCT': "Invalid product in singleton",
-        'VALID_SINGLETON': "Valid summation in singleton",
-        'VALID_SINGLETON_TRIG': "Expression is a trig function",
-        'VALID_SINGLETON_INVTRIG': "Expression is an inverse trig function",
-        'INVALID_SINGLETON': "Not a singleton"
+        'IMPROPER_TERM': 'Improper term in singleton',
+        'REDUCIBLE': "Singleton can be reduced",
+        'INVALID_SUM:': "More than one term in singleton",
+        'INVALID_PRODUCT': "Invalid product in singleton",
+        'VALID': "Valid summation in singleton",
+        'VALID_TRIG': "Expression is a trig function",
+        'VALID_INVTRIG': "Expression is an inverse trig function",
+        'INVALID': "Not a singleton"
     }
 
     @staticmethod
@@ -44,10 +44,10 @@ class MonomialOutput():
 class PolynomialOutput():
     #Polynomial related return values
     messages = {
-        'POLYNOMIAL_IS_MONOMIAL':"Expression is also a monomial",
-        'EXPANDED_MONOMIALS':"Monomials in expression are expanded",
-        'FACTORED_POLYNOMIAL':"Expression is fully factored!",
-        'NOT_FACTORED_POLYNOMIAL':"Expression is not fully factored",
+        'IS_MONOMIAL':"Expression is also a monomial",
+        'EXPANDED':"Monomials in expression are expanded",
+        'FACTORED':"Expression is fully factored!",
+        'NOT_FACTORED':"Expression is not fully factored",
         'NOT_MONOMIAL':"One or more terms is not a proper monomial",
         'NOT_EXPANDED':"Expression is not fully expanded"
     }

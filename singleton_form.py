@@ -21,23 +21,23 @@ def is_singleton_factor_form(expr):
     '''
     for i in expr.args:
         if not isinstance(i, (Number, NumberSymbol,Pow,Mul)):
-            return False, SingletonOutput.strout("IMPROPER_SINGLETON_TERM")
+            return False, SingletonOutput.strout("IMPROPER_TERM")
         if isinstance(i,Pow):
             if isinstance(i.args[0], Number) and isinstance(i.args[1],NumberSymbol):
                 continue
             if isinstance(i.args[0],NumberSymbol) and isinstance(i.args[1], (Number,NumberSymbol)):
                 continue
-            return False, SingletonOutput.strout("IMPROPER_SINGLETON_TERM")
+            return False, SingletonOutput.strout("IMPROPER_TERM")
         if isinstance(i,Mul):
             if sum(j == -1 and isinstance(j,Number) for j in i.args) > 1:
-                return False, SingletonOutput.strout("IMPROPER_SINGLETON_TERM")
+                return False, SingletonOutput.strout("IMPROPER_TERM")
             if is_numerically_reducible_monomial(i)[0]:
-                return False, SingletonOutput.strout("IMPROPER_SINGLETON_TERM")
+                return False, SingletonOutput.strout("IMPROPER_TERM")
 
     if sum(isinstance(j, Number) for j in expr.args) > 1:
-        return False, SingletonOutput.strout("INVALID_SINGLETON_PRODUCT")
+        return False, SingletonOutput.strout("INVALID_PRODUCT")
 
-    return True, SingletonOutput.strout("VALID_SINGLETON_PRODUCT")
+    return True, SingletonOutput.strout("VALID_PRODUCT")
 
 def singleton_combinable_terms(expr):
     '''determines if two terms in a singleton can be combined.
@@ -58,7 +58,7 @@ def singleton_combinable_terms(expr):
     #We don't want symbols or subexpressions like Add
     for i in expr.args:
         if not isinstance(i, (Number, NumberSymbol, Mul)):
-            return True, SingletonOutput.strout("INVALID_SINGLETON_SUM")
+            return True, SingletonOutput.strout("INVALID_SUM")
         #If there's a product, make sure only one is rational
         if isinstance(i, Mul):
             bases += i.args
@@ -70,12 +70,12 @@ def singleton_combinable_terms(expr):
 
     #Any two rational numbers can be simplified
     if sum(isinstance(i, Number) for i in expr.args) > 1:
-        return True, SingletonOutput.strout("INVALID_SINGLETON_SUM")
+        return True, SingletonOutput.strout("INVALID_SUM")
 
     if len(bases) != len(set(bases)):
-        return True, SingletonOutput.strout("INVALID_SINGLETON_SUM")
+        return True, SingletonOutput.strout("INVALID_SUM")
     else:
-        return False, SingletonOutput.strout("VALID_SINGLETON_SUM")
+        return False, SingletonOutput.strout("VALID_SUM")
 
 def is_singleton_form(expr):
     '''determines if the expression is a singleton.
@@ -90,7 +90,7 @@ def is_singleton_form(expr):
                 [1]: string describing the result
     '''
     if isinstance(expr, (Number, NumberSymbol, Symbol)):
-        return True, SingletonOutput.strout("VALID_SINGLETON")
+        return True, SingletonOutput.strout("VALID")
 
     #Case of rational added to irrational
     if isinstance(expr, Add):
@@ -103,20 +103,20 @@ def is_singleton_form(expr):
     #Case of rational multiplied to irrational
     if isinstance(expr, Mul):
         if is_numerically_reducible_monomial(expr)[0]:
-            return False, UtilOutput.strout("REDUCIBLE_SINGLETON")
+            return False, UtilOutput.strout("REDUCIBLE")
         return is_singleton_factor_form(expr)
 
 
     #Case of trigonometric functions
     #TODO: Analyze what's inside the trigonometric function
     if isinstance(expr, TrigonometricFunction):
-        return True, SingletonOutput.strout("VALID_SINGLETON_TRIG")
+        return True, SingletonOutput.strout("VALID_TRIG")
     if isinstance(expr, InverseTrigonometricFunction):
-        return True, SingletonOutput.strout("VALID_SINGLETON_INVTRIG")
+        return True, SingletonOutput.strout("VALID_INVTRIG")
 
 
     #Case of pi^2, pi^pi, pi^x, etc.
     if isinstance(expr,Pow):
         return is_singleton_factor_form(expr)
 
-    return False, SingletonOutput.strout("INVALID_SINGLETON")
+    return False, SingletonOutput.strout("INVALID")
