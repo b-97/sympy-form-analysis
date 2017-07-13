@@ -26,17 +26,24 @@ def is_monomial_form(expr):
     elif isinstance(expr,Pow):
         if const_to_const(expr)[0]:
             return False, UtilOutput.strout("CONST_TO_CONST")
+
         if is_singleton_form(expr.args[0])[0]:
+
             if expr.args[1] == 0 or expr.args[1] == 1:
                 return False, MonomialOutput.strout("REDUCIBLE")
+
             if is_singleton_form(expr.args[1])[0]:
                 return True, MonomialOutput.strout("PROPER")
+
             return False, MonomialOutput.strout("IMPROPER")
         return False, MonomialOutput.strout("EXPANDABLE")
+
     elif sum(isinstance(j, Number) for j in expr.args) > 1:
         return False, MonomialOutput.strout("REDUCIBLE")
+
     elif isinstance(expr,Add):
         return False, MonomialOutput.strout("MULTIPLE_TERMS")
+
     elif isinstance(expr,Mul):
         for j in expr.args:
             if expr.args == 0:
@@ -46,7 +53,6 @@ def is_monomial_form(expr):
                 return False, result[1]
 
     result = duplicate_bases(expr)
-
     return not result[0], result[1]
 
 #Check to see if any of the bases in a monomial are duplicates

@@ -58,22 +58,31 @@ class TestSymp(unittest.TestCase):
             self.a28,self.a29,self.a30,self.a31,self.a32,self.a33,self.a34,
             self.a35,self.a36]
 
+    '''
+        Tests that ensure that all functions actualy produce a valuable output.
+    '''
     def test_singleton_output(self):
         for i in self.total_exprs:
             if not is_singleton_form(i)[1]:
                 print srepr(i)
             self.assertIsNotNone(is_singleton_form(i)[1])
 
-    def test_expanded_monomial_output(self):
+    def test_monomial_output(self):
         for i in self.total_exprs:
+            if not is_monomial_form(i)[1]:
+                print srepr(i)
             self.assertIsNotNone(is_monomial_form(i)[1])
 
     def test_fully_expanded_polynomial(self):
         for i in self.total_exprs:
+            if not is_fully_expanded_polynomial(i)[1]:
+                print srepr(i)
             self.assertIsNotNone(is_fully_expanded_polynomial(i)[1])
 
     def test_fully_factored_polynomial(self):
         for i in self.total_exprs:
+            if not is_fully_factored_polynomial(i)[1]:
+                print srepr(i)
             self.assertIsNotNone(is_fully_factored_polynomial(i)[1])
 
     def test_singleton(self):
