@@ -70,6 +70,7 @@ class UtilOutput():
         'CONST_TO_CONST':"Expression is a constant raised to a constant",
         'NOT_CONST_TO_CONST':"Expression isn't a constant raised to a constant",
         'ONE_OVER_N':"Expression is raised to 1/n",
+        'ONE_TO_N':"Expression is 1 raised to a power",
         'INVERSE_N':"Expression is raised to -1",
         'CONST_DIVISIBLE':"One or more terms can be combined",
         'NOT_CONST_DIVISIBLE':"Terms cannot be combined by constants",

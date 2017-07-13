@@ -66,7 +66,7 @@ def sin_2_cos_2_simplifiable(expr):
 
 def const_to_const(expr):
     '''determines if an expression is a rational raised to a constant \
-            power other than 1 and 1/n"
+            power other than -1 and 1/n, or an expression is an equivalent of n/1.
         Args:
             expr: A standard Sympy expression
         Returns:
@@ -75,6 +75,8 @@ def const_to_const(expr):
                 [1]: string describing the result
     '''
     if isinstance(expr, Pow) and isinstance(expr.args[0], Number):
+        if expr.args[0] == 1:
+            return True, UtilOutput.strout("ONE_TO_N")
         if isinstance(expr.args[1], Pow):
             if expr.args[1].args[1] == -1:
                 return False, UtilOutput.strout("ONE_OVER_N")
