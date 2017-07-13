@@ -5,9 +5,11 @@ class SingletonOutput():
     messages = {
         'IMPROPER_TERM': 'Improper term in singleton',
         'REDUCIBLE': "Singleton can be reduced",
-        'INVALID_SUM:': "More than one term in singleton",
+        'INVALID_SUM': "More than one term in singleton",
         'INVALID_PRODUCT': "Invalid product in singleton",
-        'VALID': "Valid summation in singleton",
+        'VALID_SUM':"Expression is a valid singleton",
+        'VALID_PRODUCT':"Expression is a valid singleton",
+        'VALID': "Expression is a singleton",
         'VALID_TRIG': "Expression is a trig function",
         'VALID_INVTRIG': "Expression is an inverse trig function",
         'INVALID': "Not a singleton"
@@ -15,11 +17,11 @@ class SingletonOutput():
 
     @staticmethod
     def strout(key):
-        return SingletonOutput.messages.get(key, "No message exists for this type")
+        return SingletonOutput.messages.get(key, None)
 
     @staticmethod
     def exprstrout(key, expr):
-        return srepr(expr)+" "+SingletonOutput.messages.get(key, "No message exists for this type")
+        return srepr(expr)+" "+SingletonOutput.messages.get(key, None)
 
 
 class MonomialOutput():
@@ -35,11 +37,11 @@ class MonomialOutput():
 
     @staticmethod
     def strout(key):
-        return MonomialOutput.messages.get(key, "No message exists for this type")
+        return MonomialOutput.messages.get(key, None)
 
     @staticmethod
     def exprstrout(key, expr):
-        return srepr(expr)+" "+MonomialOutput.messages.get(key, "No message exists for this type")
+        return srepr(expr)+" "+MonomialOutput.messages.get(key, None)
 
 class PolynomialOutput():
     #Polynomial related return values
@@ -54,11 +56,11 @@ class PolynomialOutput():
 
     @staticmethod
     def strout(key):
-        return PolynomialOutput.messages.get(key, "No message exists for this type")
+        return PolynomialOutput.messages.get(key, None)
 
     @staticmethod
     def exprstrout(key, expr):
-        return srepr(expr)+" "+PolynomialOutput.messages.get(key, "No message exists for this type")
+        return srepr(expr)+" "+PolynomialOutput.messages.get(key, None)
 
 class UtilOutput():
     #Utility related return values
@@ -71,6 +73,7 @@ class UtilOutput():
         'NOT_CONST_TO_CONST':"Expression isn't a constant raised to a constant",
         'ONE_OVER_N':"Expression is raised to 1/n",
         'ONE_TO_N':"Expression is 1 raised to a power",
+        'REDUCIBLE':"Expression is numerically reducible",
         'INVERSE_N':"Expression is raised to -1",
         'CONST_DIVISIBLE':"One or more terms can be combined",
         'NOT_CONST_DIVISIBLE':"Terms cannot be combined by constants",
@@ -80,11 +83,11 @@ class UtilOutput():
 
     @staticmethod
     def strout(key):
-        return UtilOutput.messages.get(key, "No message exists for this type")
+        return UtilOutput.messages.get(key, None)
 
     @staticmethod
     def exprstrout(key, expr):
-        return srepr(expr)+" "+UtilOutput.messages.get(key, "No message exists for this type")
+        return srepr(expr)+" "+UtilOutput.messages.get(key, None)
 
 class ErrorOutput:
     #Error related return values
@@ -94,8 +97,8 @@ class ErrorOutput:
 
     @staticmethod
     def strout(key):
-        return ErrorOutput.messages.get(key, "No error exists for this type")
+        return ErrorOutput.messages.get(key, None)
 
     @staticmethod
     def exprstrout(key, expr):
-        return srepr(expr)+" "+ErrorOutput.messages.get(key, "No error exists for this type")
+        return srepr(expr)+" "+ErrorOutput.messages.get(key, None)

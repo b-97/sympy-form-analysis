@@ -51,6 +51,31 @@ class TestSymp(unittest.TestCase):
         self.a35 = Pow(Mul(-1,pi),pi,evaluate=False)
         self.a36 = Add(x,3,Add(x,2,evaluate=False),evaluate=False)
 
+        self.total_exprs = [x,y,z,self.a1,self.a2,self.a3,self.a4,self.a5,self.a6,
+            self.a7,self.a8,self.a9,self.a10,self.a11,self.a13,
+            self.a14,self.a15,self.a16,self.a17,self.a18,self.a19,self.a20,
+            self.a21,self.a22,self.a23,self.a24,self.a25,self.a26,self.a27,
+            self.a28,self.a29,self.a30,self.a31,self.a32,self.a33,self.a34,
+            self.a35,self.a36]
+
+    def test_singleton_output(self):
+        for i in self.total_exprs:
+            if not is_singleton_form(i)[1]:
+                print srepr(i)
+            self.assertIsNotNone(is_singleton_form(i)[1])
+
+    def test_expanded_monomial_output(self):
+        for i in self.total_exprs:
+            self.assertIsNotNone(is_monomial_form(i)[1])
+
+    def test_fully_expanded_polynomial(self):
+        for i in self.total_exprs:
+            self.assertIsNotNone(is_fully_expanded_polynomial(i)[1])
+
+    def test_fully_factored_polynomial(self):
+        for i in self.total_exprs:
+            self.assertIsNotNone(is_fully_factored_polynomial(i)[1])
+
     def test_singleton(self):
         self.assertTrue(is_singleton_form(x)[0])
         self.assertTrue(is_singleton_form(y)[0])

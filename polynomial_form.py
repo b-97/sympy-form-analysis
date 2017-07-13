@@ -29,7 +29,7 @@ def is_fully_expanded_polynomial(expr, eval_trig=False):
 
     if isinstance(expr,Add):
         if all(is_monomial_form(i)[0] for i in expr.args):
-           return True, PolynomialOutput.strout("EXPANDED_MONOMIALS")
+           return True, PolynomialOutput.strout("EXPANDED")
         else:
             return False, PolynomialOutput.strout("NOT_EXPANDED")
 
