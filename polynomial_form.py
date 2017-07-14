@@ -75,6 +75,12 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
             return False, PolynomialOutput.strout("NOT_FACTORED")
 
     #Currently, no definition of polynomials allows for monomials that
+    #have cancellable terms, so we can filter those out
+    result = is_numerically_reducible_monomial(expr)
+    if result[0]:
+        return False, result[1]
+
+    #Currently, no definition of polynomials allows for monomials that
     #are combinable by integers, so we can filter those out
     result = const_divisible(expr)
     if result[0]:
@@ -133,6 +139,9 @@ def is_factor_factored(expr):
 
     #if it's a Mul instance, take a look at what's inside
     if isinstance(expr,Mul):
+        result = is_numerically_reducible_monomial(expr)
+        if result[0]:
+            return False, result[1]
         if not all(is_factor_factored(j)[0] for j in expr.args):
             return False, PolynomialOutput.strout("NOT_FACTORED")
 

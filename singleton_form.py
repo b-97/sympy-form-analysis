@@ -33,6 +33,9 @@ def is_singleton_factor_form(expr):
                 return False, SingletonOutput.strout("IMPROPER_TERM")
             if is_numerically_reducible_monomial(i)[0]:
                 return False, SingletonOutput.strout("IMPROPER_TERM")
+    if isinstance(expr,Pow) and isinstance(expr.args[0], Number):
+        result = const_to_const(expr)
+        return not result[0], result[1]
 
     if sum(isinstance(j, Number) for j in expr.args) > 1:
         return False, SingletonOutput.strout("INVALID_PRODUCT")

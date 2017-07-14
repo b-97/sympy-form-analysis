@@ -1,5 +1,5 @@
 import sympy
-from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div
+from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,Rational
 from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
 from form_output import *
@@ -15,8 +15,8 @@ def const_divisible(expr):
                 [1]: string describing the result
     '''
     if isinstance(expr,(Add,Mul)):
-        for f in expr.free_symbols:
-            exprs = rcollect(expr,f)
+        for syms in expr.free_symbols:
+            exprs = rcollect(expr,syms)
             if len(expr.args) != len(exprs.args):
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
         for i in range(0, len(expr.args)):
@@ -27,6 +27,7 @@ def const_divisible(expr):
                     if isinstance(expr.args[i], (Number, NumberSymbol)) and \
                             isinstance(expr.args[j], (Number, NumberSymbol)):
                                 return True, UtilOutput.strout("CONST_DIVISIBLE")
+
                     q, r = div(expr.args[i], expr.args[j],domain='QQ')
                     if isinstance(q, (Number,NumberSymbol)) and r == 0:
                         return True, UtilOutput.strout("CONST_DIVISIBLE")
