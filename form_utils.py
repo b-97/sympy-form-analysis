@@ -2,7 +2,7 @@ import sympy
 from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,Rational
 from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
-from form_output import *
+from .form_output import *
 
 def const_divisible(expr):
     '''determines whether the quotient of two expressions is constant divisible
@@ -99,7 +99,7 @@ def is_numerically_reducible_monomial(expr):
 	#First, check to see if it's in form -1*(expr)
         if isinstance(expr.args[0], Integer) and expr.args[0] == -1 and \
                 isinstance(expr.args[1], Mul):
-	    expr = expr.args[1]
+                    expr = expr.args[1]
 
         #Then, check to see if there are two integers in the numerator
         if sum(isinstance(j,(Integer,int,float)) for j in expr.args) > 1:

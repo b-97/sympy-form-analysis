@@ -4,8 +4,8 @@ from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbo
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
 
-from form_output import *
-from form_utils import *
+from .form_output import *
+from .form_utils import *
 
 def is_singleton_factor_form(expr):
     '''Determines if a product in a singleton is appropriate.

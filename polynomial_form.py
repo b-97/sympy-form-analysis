@@ -4,9 +4,9 @@ from sympy.functions.elementary.trigonometric import InverseTrigonometricFunctio
 import sympy
 from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,degree
 
-from monomial_form import *
-from form_utils import *
-from form_output import *
+from .monomial_form import *
+from .form_utils import *
+from .form_output import *
 
 def is_fully_expanded_polynomial(expr, eval_trig=False):
     if is_monomial_form(expr)[0]:
