@@ -1,5 +1,7 @@
-from .singleton_form import *
-from sympy import Pow, Mul
+from .form_output import NumBaseOutput
+from .singleton_form import is_singleton_form
+
+from sympy import Pow, Mul,Number,Integer,log
 import itertools
 
 def minimised_exp_bases(expr):
@@ -14,18 +16,21 @@ def minimised_exp_bases(expr):
                 [0] - boolean result of the function
                 [1] - string describing result of the function
     '''
-    result = simplified_expr_bases(expr)
+    result = simplified_exp_bases(expr)
     if not result[0]:
         return False, result[1]
 
     bases = _exp_collect_bases(expr)
 
     for i in bases:
-        n = 2
-        while (n < i):
-            if isinstance(log(i,n), (Integer, int)):
-                return False, "Base could be made smaller"
-    return True, "No base could be made smaller"
+        if isinstance(i, (int,Number)):
+            n = 2
+            while (n < i):
+                if isinstance(log(i,n), (Integer, int)):
+                    return False, NumBaseOutput.strout("SMALLER_BASE_EXISTS")
+                n += 1
+
+    return True, NumBaseOutput.strout("SMALLEST_BASE")
 
 def simplified_exp_bases(expr):
     '''Determines whether bases in an expression are simplified.
@@ -40,22 +45,25 @@ def simplified_exp_bases(expr):
     '''
     if isinstance(expr, Pow):
         return _exp_0_or_1(expr)
-    
-    if any(_exp_0_or_1(i)[0] for i in expr.args):
-        return False, "Redundant power detected"
-
+    elif is_singleton_form(expr):
+        return True, NumBaseOutput.strout('SINGLETON')
     elif not isinstance(expr, Mul):
-        return False, "Not a single term of singletons raised to a power"
+        return False, NumBaseOutput.strout('MULTIPLE_TERMS')
+    
+    for i in expr.args:
+        result = _exp_0_or_1(i)[0]
+        if result[0]:
+            return False, result[1]
     
     bases = _exp_collect_bases(expr)
 
     for i,j in itertools.combinations(bases, 2):
         if isinstance(log(i,j), Integer):
-            return False, "Two bases can be combined"
+            return False, NumBaseOutput.strout('NOT_SIMPLE_BASES')
         elif isinstance(log(j,i), Integer):
-            return False, "Two bases can be combined"
+            return False, NumBaseOutput.strout('NOT_SIMPLE_BASES')
 
-    return True, "No two bases can be combined"
+    return True, NumBaseOutput.strout('SIMPLE_BASES')
 
 
 def _exp_collect_bases(expr):
@@ -90,11 +98,11 @@ def _exp_0_or_1(expr):
                 [1] - string describing the result
     '''
     if not isinstance(expr, Pow):
-        return False, "Not an expression raised to a power"
+        return False, NumBaseOutput.strout('NOT_POW')
 
     if expr.args[1] == 0:
-        return True, "Expression raised to redundant power of 0"
+        return True, NumBaseOutput.strout('EXP_0')
     elif expr.args[1] == 1:
-        return True, "Expression raised to redundant power of 1"
+        return True, NumBaseOutput.strout('EXP_1')
 
-    return False, "Expression raised to a normal power"
+    return False, NumBaseOutput.strout("EXP_OK")

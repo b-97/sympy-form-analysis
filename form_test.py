@@ -1,6 +1,7 @@
 from .singleton_form import *
 from .monomial_form import *
 from .polynomial_form import *
+from .numerical_base_form import *
 from sympy import *
 from sympy.abc import x,y,z
 
@@ -50,13 +51,17 @@ class TestSymp(unittest.TestCase):
         self.a34 = Mul(-1,Pow(pi,pi,evaluate=False),evaluate=False)
         self.a35 = Pow(Mul(-1,pi),pi,evaluate=False)
         self.a36 = Add(x,3,Add(x,2,evaluate=False),evaluate=False)
+        
+        self.b1 = Mul(Pow(3,5,evaluate=False),Pow(9,10,evaluate=False),evaluate=False)
+        self.b2 = Pow(3,5,evaluate=False)
+        self.b3 = Pow(9,10,evaluate=False)
 
         self.total_exprs = [x,y,z,self.a1,self.a2,self.a3,self.a4,self.a5,self.a6,
             self.a7,self.a8,self.a9,self.a10,self.a11,self.a13,
             self.a14,self.a15,self.a16,self.a17,self.a18,self.a19,self.a20,
             self.a21,self.a22,self.a23,self.a24,self.a25,self.a26,self.a27,
             self.a28,self.a29,self.a30,self.a31,self.a32,self.a33,self.a34,
-            self.a35,self.a36]
+            self.a35,self.a36,self.b1,self.b2,self.b3]
 
     '''
         Tests that ensure that all functions actualy produce a valuable output.
@@ -73,17 +78,29 @@ class TestSymp(unittest.TestCase):
                 print srepr(i)
             self.assertIsNotNone(is_monomial_form(i)[1])
 
-    def test_fully_expanded_polynomial(self):
+    def test_fully_expanded_polynomial_output(self):
         for i in self.total_exprs:
             if not is_fully_expanded_polynomial(i)[1]:
                 print srepr(i)
             self.assertIsNotNone(is_fully_expanded_polynomial(i)[1])
 
-    def test_fully_factored_polynomial(self):
+    def test_fully_factored_polynomial_output(self):
         for i in self.total_exprs:
             if not is_fully_factored_polynomial(i)[1]:
                 print srepr(i)
             self.assertIsNotNone(is_fully_factored_polynomial(i)[1])
+
+    def test_simplified_exp_bases_output(self):
+        for i in self.total_exprs:
+            if not simplified_exp_bases(i)[1]:
+                print srepr(i)
+            self.assertIsNotNone(simplified_exp_bases(i)[1])
+
+    def test_minimised_exp_bases_output(self):
+        for i in self.total_exprs:
+            if not minimised_exp_bases(i)[1]:
+                print srepr(i)
+            self.assertIsNotNone(minimised_exp_bases(i)[1])
 
     def test_singleton(self):
         self.assertTrue(is_singleton_form(x)[0])

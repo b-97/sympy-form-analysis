@@ -1,4 +1,6 @@
 import sympy
+import itertools
+
 from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,Rational
 from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
@@ -19,18 +21,16 @@ def const_divisible(expr):
             exprs = rcollect(expr,syms)
             if len(expr.args) != len(exprs.args):
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
-        for i in range(0, len(expr.args)):
-            #Check to see if any of the other monomials are divisible with integer
-            #quotient and no remainder
-            if i <= len(expr.args) - 2:
-                for j in range(i+1, len(expr.args)):
-                    if isinstance(expr.args[i], (Number, NumberSymbol)) and \
-                            isinstance(expr.args[j], (Number, NumberSymbol)):
-                                return True, UtilOutput.strout("CONST_DIVISIBLE")
-
-                    q, r = div(expr.args[i], expr.args[j],domain='QQ')
-                    if isinstance(q, (Number,NumberSymbol)) and r == 0:
-                        return True, UtilOutput.strout("CONST_DIVISIBLE")
+        
+        
+        #Check to see if any of the other monomials are divisible with integer
+        #quotient and no remainder
+        for i,j in itertools.combinations(expr.args,2):
+            if is_numerical_equation(i)[0] and is_numerical_equation(j)[0]:
+                return True, UtilOutput.strout("CONST_DIVISIBLE")
+            q,r = div(i,j,domain='QQ')
+            if isinstance(q, (Number, NumberSymbol)) and r == 0:
+                return True, UtilOutput.strout("CONST_DIVISIBLE")
 
     return False, UtilOutput.strout("NOT_CONST_DIVISIBLE")
 
@@ -64,6 +64,25 @@ def sin_2_cos_2_simplifiable(expr):
                                         return True, UtilOutput.strout("TRIG_CAN_SIMPLIFY")
 
     return False, UtilOutput.strout("TRIG_CANT_SIMPLIFY")
+
+def is_numerical_equation(expr):
+    '''Determines if an expresion is a purely numerical equation (contains \
+            absolutely no symbols.'
+        Particularly useful for preventing an execution of div(N,M), where N \
+                and M are constants and Sympy will crash.
+        Args:
+            expr: A standard sympy expression
+        Returns:
+            A tuple containing:
+                [0]: boolean containing the result
+                [1]: string describing the result
+    '''
+    if isinstance(expr, (int,long,float,complex)):
+        return True, "Expression is a basic Python number type"
+    elif len(expr.free_symbols) == 0:
+        return True, "Expression is a numerical expression"
+    
+    return False, "Expression is not a purely numerical equation"
 
 def const_to_const(expr):
     '''determines if an expression is a rational raised to a constant \

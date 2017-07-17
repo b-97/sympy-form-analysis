@@ -89,6 +89,27 @@ class UtilOutput():
     def exprstrout(key, expr):
         return srepr(expr)+" "+UtilOutput.messages.get(key, None)
 
+class NumBaseOutput():
+    messages = {
+        'SMALLER_BASE_EXISTS':"Base could be made smaller",
+        'SMALLEST_BASE':"Smallest bases possible",
+        'SIMPLE_BASES':"No bases can be combined",
+        'NOT_SIMPLE_BASES':"Bases can be combined",
+        'EXP_0': "Redundant exponent of 0 detected",
+        'EXP_1': "Redundant exponent of 1 detected",
+        'EXP_OK': "Exponents in expression are OK",
+        'MULTIPlE_TERMS':"Multiple terms detected",
+        'NOT_POW':"Not an expression raised to a power",
+        'SINGLETON':"Expression is also a singleton"
+    }
+    @staticmethod
+    def strout(key):
+        return NumBaseOutput.messages.get(key, None)
+
+    @staticmethod
+    def exprstrout(key, expr):
+        return srepr(expr)+" "+NumBaseOutput.messages.get(key, None)
+    
 class ErrorOutput:
     #Error related return values
     messages = {
