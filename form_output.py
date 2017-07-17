@@ -98,7 +98,7 @@ class NumBaseOutput():
         'EXP_0': "Redundant exponent of 0 detected",
         'EXP_1': "Redundant exponent of 1 detected",
         'EXP_OK': "Exponents in expression are OK",
-        'MULTIPlE_TERMS':"Multiple terms detected",
+        'MULTIPLE_TERMS':"Multiple terms detected",
         'NOT_POW':"Not an expression raised to a power",
         'SINGLETON':"Expression is also a singleton"
     }

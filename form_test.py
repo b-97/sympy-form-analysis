@@ -267,5 +267,16 @@ class TestSymp(unittest.TestCase):
         self.assertTrue(is_fully_factored_polynomial(self.a35)[0])
         self.assertFalse(is_fully_factored_polynomial(self.a36)[0])
 
+    def test_simplified_exp_bases(self):
+        self.assertFalse(simplified_exp_bases(self.b1)[0])
+        self.assertTrue(simplified_exp_bases(self.b2)[0])
+        self.assertTrue(simplified_exp_bases(self.b3)[0])
+
+    def test_minimized_exp_bases(self):
+        self.assertFalse(minimised_exp_bases(self.b1)[0])
+        self.assertTrue(minimised_exp_bases(self.b2)[0])
+        self.assertFalse(minimised_exp_bases(self.b3)[0])
+
+
 if __name__ == '__main__':
     unittest.main()

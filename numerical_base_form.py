@@ -1,4 +1,4 @@
-from .form_output import NumBaseOutput
+from .form_output import *
 from .singleton_form import is_singleton_form
 
 from sympy import Pow, Mul,Number,Integer,log
@@ -44,14 +44,15 @@ def simplified_exp_bases(expr):
                 [1] - String describing result of the function
     '''
     if isinstance(expr, Pow):
-        return _exp_0_or_1(expr)
-    elif is_singleton_form(expr):
+        result = _exp_0_or_1(expr)
+        return not result[0], result[1]
+    elif is_singleton_form(expr)[0]:
         return True, NumBaseOutput.strout('SINGLETON')
     elif not isinstance(expr, Mul):
         return False, NumBaseOutput.strout('MULTIPLE_TERMS')
     
     for i in expr.args:
-        result = _exp_0_or_1(i)[0]
+        result = _exp_0_or_1(i)
         if result[0]:
             return False, result[1]
     
