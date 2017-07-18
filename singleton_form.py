@@ -98,13 +98,10 @@ def is_singleton_form(expr):
     #Case of rational added to irrational
     if isinstance(expr, Add):
         result = singleton_combinable_terms(expr)
-        if result[0]:
-            return (False, result[1])
-        else:
-            return (True, result[1])
+        return not result[0], result[1]
 
     #Case of rational multiplied to irrational
-    if isinstance(expr, Mul):
+    if isinstance(expr, (Mul,Pow)):
         if is_numerically_reducible_monomial(expr)[0]:
             return False, UtilOutput.strout("REDUCIBLE")
         return is_singleton_factor_form(expr)
@@ -116,10 +113,5 @@ def is_singleton_form(expr):
         return True, SingletonOutput.strout("VALID_TRIG")
     if isinstance(expr, InverseTrigonometricFunction):
         return True, SingletonOutput.strout("VALID_INVTRIG")
-
-
-    #Case of pi^2, pi^pi, pi^x, etc.
-    if isinstance(expr,Pow):
-        return is_singleton_factor_form(expr)
 
     return False, SingletonOutput.strout("INVALID")

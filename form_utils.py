@@ -109,31 +109,37 @@ def const_to_const(expr):
 
 
 def is_numerically_reducible_monomial(expr):
-    #First, rule out the case that it's 1/(const * const)
-    if isinstance(expr, Pow):
-        if sum(isinstance(j,(Integer,int,float)) for j in expr.args[0].args) > 1:
-            return True, UtilOutput.strout("SIMPLIFIABLE_DENOMINATOR")
-
-    if isinstance(expr, Mul):
+    '''Determines if terms in a monomial could be trivially cancelled out.
+        Trivially cancelled out is defined as cancellable without applying any
+        factorization or expansion.
+        Args:
+            expr: A standard sympy expression
+        Returns:
+            A tuple containing:
+                [0] - boolean result of the function
+                [1] - string describing the result
+    '''
+    if isinstance(expr, (Pow,Mul)):
 	#First, check to see if it's in form -1*(expr)
-        if isinstance(expr.args[0], Integer) and expr.args[0] == -1 and \
-                isinstance(expr.args[1], Mul):
-                    expr = expr.args[1]
-
-        #Then, check to see if there are two integers in the numerator
-        if sum(isinstance(j,(Integer,int,float)) for j in expr.args) > 1:
+        if isinstance(expr, Mul):
+            if isinstance(expr.args[0], Integer) and expr.args[0] == -1 and \
+                    isinstance(expr.args[1], Mul):
+                        expr = expr.args[1]
+            #Or if it's in the form (expr)*-1
+            elif isinstance(expr.args[1], Integer) and expr.args[1] == -1 and \
+                    isinstance(expr.args[0], Mul):
+                        expr = expr.args[0]
+        
+        #Check if the numerator is simplifiable
+        if sum(isinstance(j,(Integer,int,float)) for j in fraction(expr)[0].args) > 1:
             return True, UtilOutput.strout("SIMPLIFIABLE_NUMERATOR")
 
-        #Then, check through any denominators that exist:
-        for i in expr.args:
-            if isinstance(i,Pow):
-                if sum(isinstance(j,(Integer,int,float)) for j in expr.args) > 1:
-                    return True, UtilOutput.strout("SIMPLIFIABLE_DENOMINATOR")
+        #Check for simplifiable denominator
+        if sum(isinstance(j,(Integer,int,float)) for j in fraction(expr)[1].args) > 1:
+            return True, UtilOutput.strout("SIMPLIFIABLE_DENOMINATOR")
 
         #Finally, collect the numerator and denominator and check if they can be reduced
-        q = fraction(expr)[0]
-        r = fraction(expr)[1]
-        if gcd(q,r) != 1:
+        if gcd(fraction(expr)[0],fraction(expr)[1]) != 1:
             return True, UtilOutput.strout("SIMPLIFIABLE_FRACTION")
 
     return False, UtilOutput.strout("NOT_SIMPLIFIABLE_FRACTION")

@@ -63,8 +63,8 @@ def is_fully_factored_polynomial(expr, eval_trig=False):
                 return False, result[1]
 
     #Make sure each term in the polynomial is a monomial
-    for i in range(0, len(expr.args)):
-        if not is_factor_factored(expr.args[i])[0]:
+    for i in expr.args:
+        if not is_factor_factored(i)[0]:
             return False, PolynomialOutput.strout("NOT_FACTORED")
 
     #Currently, no definition of polynomials allows for monomials that
@@ -137,13 +137,13 @@ def is_factor_factored(expr):
             return False, result[1]
         if not all(is_factor_factored(j)[0] for j in expr.args):
             return False, PolynomialOutput.strout("NOT_FACTORED")
-
-
+    
+    #If the degree is larger than 2 and there are more than 1 terms, it's not factored
     if isinstance(expr,Add):
-        #Using the discriminant of a quadratic expression to determine if the
-        #expression could be factored further
-        #TODO: Refine this definition
-        if degree(expr) > 1 and len(real_roots(expr)) == degree(expr):
+        if degree(expr) > 2 and len(expr.args) > 1:
+            return False, PolynomialOutput.strout("NOT_FACTORED")
+
+        elif degree(expr) > 1 and len(real_roots(expr)) == degree(expr):
             return False, PolynomialOutput.strout("NOT_FACTORED")
 
     if duplicate_bases(expr)[0]:
