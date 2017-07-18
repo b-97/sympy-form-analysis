@@ -9,34 +9,27 @@ from .form_utils import *
 from .form_output import *
 
 def is_fully_expanded_polynomial(expr, eval_trig=False):
-    if is_monomial_form(expr)[0]:
+    result = is_monomial_form(expr)
+    if result[0]:
         return True, PolynomialOutput.strout("IS_MONOMIAL")
-
-    if not isinstance(expr,Add):
-        result = is_numerically_reducible_monomial(expr)
+    elif isinstance(expr, (TrigonometricFunction,InverseTrigonometricFunction)):
+        return is_fully_expanded_polynomial(expr.args)
+    elif not isinstance(expr, (Add)):
+        return False, result[1]
+    
+    for i in expr.args:
+        result = is_numerically_reducible_monomial(i)
         if result[0]:
             return False, result[1]
-
-    else:
-        for i in expr.args:
-            result = is_numerically_reducible_monomial(i)
-            if result[0]:
-                return False, result[1]
 
     result = const_divisible(expr)
     if result[0]:
         return False, result[1]
 
-    if isinstance(expr,Add):
-        if all(is_monomial_form(i)[0] for i in expr.args):
-           return True, PolynomialOutput.strout("EXPANDED")
-        else:
-            return False, PolynomialOutput.strout("NOT_EXPANDED")
-
-    elif isinstance(expr,(Mul,Pow)):
-        return is_monomial_form(expr)
-    elif isinstance(expr, (TrigonometricFunction,InverseTrigonometricFunction)):
-        return is_fully_expanded_polynomial(expr.args)
+    if all(is_monomial_form(i)[0] for i in expr.args):
+        return True, PolynomialOutput.strout("EXPANDED")
+    else:
+        return False, PolynomialOutput.strout("NOT_EXPANDED")
 
     return False, ErrorOutput.strout("ERROR")
 
