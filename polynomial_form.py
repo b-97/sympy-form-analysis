@@ -124,11 +124,15 @@ def is_factor_factored(expr):
     #is sane then look at the base
 
     if isinstance(expr, Pow):
+        return is_singleton_form(expr.args[1])
+
         if const_to_const(expr)[0]:
             return False, UtilOutput.strout("CONST_TO_CONST")
+        
+
         elif not is_singleton_form(expr.args[1])[0]:
             return False, PolynomialOutput.strout("NOT_FACTORED")
-        return is_factor_factored(expr.args[0])
+        #return is_factor_factored(expr.args[0])
 
     #if it's a Mul instance, take a look at what's inside
     if isinstance(expr,Mul):

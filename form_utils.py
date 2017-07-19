@@ -44,24 +44,12 @@ def sin_2_cos_2_simplifiable(expr):
             expr: A standard sympy expression with constants removed
     '''
     #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
-    for i in range(0, len(expr.args)):
-        #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
-        if isinstance(expr.args[i],Pow) and i <= len(expr.args) - 2 and \
-                expr.args[i].args[1] == 2:
-                    if isinstance(expr.args[i].args[0],sin):
-                        for j in range(i+1, len(expr.args)):
-                            if isinstance(expr.args[j], Pow) and \
-                                    isinstance(expr.args[j].args[0],cos) and \
-                                    expr.args[j].args[1] == 2 and \
-                                    expr.args[j].args[0].args == expr.args[i].args[0].args:
-                                        return True, UtilOutput.strout("TRIG_CAN_SIMPLIFY")
-                    elif isinstance(expr.args[i].args[0],cos):
-                        for j in range(i+1, len(expr.args)):
-                            if isinstance(expr.args[j], Pow) and \
-                                    isinstance(expr.args[j].args[0],sin) and \
-                                    expr.args[j].args[1] == 2 and \
-                                    expr.args[j].args[0].args == expr.args[i].args[0].args:
-                                        return True, UtilOutput.strout("TRIG_CAN_SIMPLIFY")
+    for i,j in itertools.permutations(expr.args):
+        if isinstance(i, Pow) and isinstance(j, Pow) and \
+                isinstance(i.args[0], sin) and isinstance(j.args[0], cos) and \
+                i.args[1] == 2 and j.args[1] == 2 and \
+                expand(i.args[0].args - j.args[0].args) == 0:
+                    return True, UtilOutput.strout("TRIG_CAN_SIMPLIFY")
 
     return False, UtilOutput.strout("TRIG_CANT_SIMPLIFY")
 
