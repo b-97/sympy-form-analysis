@@ -124,6 +124,30 @@ def is_squarefree_polynomial(expr):
     
     return True, "Polynomial is squarefree"
 
+def is_content_free_polynomial(expr):
+    '''Determines if a polynomial is content-free. A polynomial that has
+        content is defined to have an integer gcd between all monomials that
+        is not equal to 1. Will always return false if there is only one term
+        in the expression,
+        Args:
+            expr: A standard sympy expression
+        Returns:
+            A tuple containing:
+                [0] - boolean result of the function
+                [1] - string describing the result
+                [2] - integer content of the polynomial
+    '''
+    if not isinstance(expr, Add):
+        return False, "Expression has only one term", 1
+    
+    result = primitive(expr)
+
+    if primitive(expr)[0] != 1:
+        return False, "Expression has content that can be factored", primitive(expr)[0]
+
+    return True, "Expression has no factorable content", 1
+
+
 def is_factor_factored(expr):
     '''Determines whether a term in a monomial is in factored form.
         #TODO: Implementation
@@ -210,3 +234,30 @@ def real_field_reducible(expr):
         return True, "Quadratic can be reduced further"
 
     return False, "Expression can not be reduced further"
+
+def integer_field_reducible(expr):
+    '''Determines if the polynomial is reducible over the field of integers.
+        The current working definition of a polynomial reducible over the \
+                integers is one that has more than two integer roots or has \
+                content that can be factored.
+    However, for this library, we won't count monomials, such as x^4, 
+        as being reducible.
+    Args:
+        expr: a standard Sympy expression
+    Returns:
+        a tuple containing:
+            [0] - boolean result of the function
+            [1] - string describing the result
+    '''
+    
+    result = is_monomial_form(expr)
+    if result[0]:
+        return False, "Expression is also a monomial"
+
+    if not is_content_free_polynomial[0]:
+        return True, "Expression is not content free"
+
+    if sum(isinstance(j, (Integer, int)) for j in real_roots(expr)) > 1:
+        return True, "Expression could be factored further"
+
+    return False, "Expression could not be factored further"
