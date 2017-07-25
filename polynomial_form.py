@@ -84,6 +84,7 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='Z'):
     if result[0]:
         return False, result[1]
 
+
     #Currently, no definition of polynomials allows for monomials that
     #are combinable by integers, so we can filter those out
     result = const_divisible(expr)
@@ -94,17 +95,10 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='Z'):
         result = sin_2_cos_2_simplifiable(expr)
         if result[0]:
             return False, result[1]
-
-    monomials = []
-    for i in range(0, len(expr.args)):
-        if isinstance(expr.args[i], Pow):
-            monomials.append(expr.args[i].args[0])
-        else:
-            monomials.append(expr.args[i])
-
-    if len(monomials) != len(set(monomials)):
-        return False, PolynomialOutput.strout("NOT_FACTORED")
-
+    
+    result = duplicate_bases(expr)
+    if result[0]:
+        return False, result[1]
     return True, PolynomialOutput.strout("FACTORED")
 
 def is_squarefree_polynomial(expr):
