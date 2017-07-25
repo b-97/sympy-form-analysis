@@ -21,8 +21,7 @@ def const_divisible(expr):
             exprs = rcollect(expr,syms)
             if len(expr.args) != len(exprs.args):
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
-        
-        
+
         #Check to see if any of the other monomials are divisible with integer
         #quotient and no remainder
         for i,j in itertools.combinations(expr.args,2):
@@ -117,6 +116,15 @@ def is_numerically_reducible_monomial(expr):
             elif isinstance(expr.args[1], Integer) and expr.args[1] == -1 and \
                     isinstance(expr.args[0], Mul):
                         expr = expr.args[0]
+            #While we're analyzing "Muls", let's check for any const to consts
+            if any(const_to_const(j)[0] for j in expr.args):
+                return True, UtilOutput.strout("CONST_TO_CONST")
+        #Check for const_to_const while we're at it 
+        elif isinstance(expr, Pow):
+            result = const_to_const(expr)
+            if result[0]:
+                return True, UtilOutput.strout("CONST_TO_CONST")
+        
         
         #Check if the numerator is simplifiable
         if sum(isinstance(j,(Integer,int,float)) for j in fraction(expr)[0].args) > 1:
