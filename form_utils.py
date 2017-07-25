@@ -27,8 +27,8 @@ def const_divisible(expr):
         for i,j in itertools.combinations(expr.args,2):
             if is_numerical_equation(i)[0] and is_numerical_equation(j)[0]:
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
-            q,r = div(i,j,domain='QQ')
-            if isinstance(q, (Number, NumberSymbol)) and r == 0:
+            gcd_i_j = gcd(i,j)
+            if isinstance(gcd_i_j, (Number, NumberSymbol)) and gcd_i_j != 1:
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
 
     return False, UtilOutput.strout("NOT_CONST_DIVISIBLE")
