@@ -92,7 +92,7 @@ def const_to_const(expr):
         elif isinstance(expr.args[1], Number):
             return True, UtilOutput.strout("CONST_TO_CONST")
 
-    return False, UtilOutput.strout("CONST_TO_CONST")
+    return False, UtilOutput.strout("NOT_CONST_TO_CONST")
 
 
 def is_numerically_reducible_monomial(expr):
