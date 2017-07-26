@@ -272,9 +272,18 @@ def integer_field_reducible(expr):
     if result[0]:
         return False, PolynomialOutput.strout("IS_MONOMIAL")
 
-    result = is_content_free_polynomial
+    result = is_content_free_polynomial(expr)
     if not result[0]:
         return True, result[1]
+
+    if isinstance(expr, Mul):
+        for i in expr.args:
+            result = integer_field_reducible(i)
+            if result[0]:
+                return result
+
+    if isinstance(expr, Pow):
+        return integer_field_reducible(expr.args[0])
 
     if sum(isinstance(j, (Integer, int)) for j in real_roots(expr)) > 1:
         return True, PolynomialOutput.strout("INTEGER_HIGH_DEGREE")
