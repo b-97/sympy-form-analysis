@@ -227,6 +227,15 @@ def real_field_reducible(expr):
     if result[0]:
         return False, PolynomialOutput.strout("IS_MONOMIAL")
 
+    if isinstance(expr, Mul):
+        for i in expr.args:
+            result = real_field_reducible(i)
+            if result[0]:
+                return result
+
+    if isinstance(expr, Pow):
+        return real_field_reducible(expr.args[0])
+
     if degree(expr) > 2:
         return True, PolynomialOutput.strout("REAL_HIGH_DEGREE")
 
