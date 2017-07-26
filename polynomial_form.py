@@ -120,9 +120,9 @@ def is_squarefree_polynomial(expr):
     '''
     for exprsymbol in expr.free_symbols:
         if gcd(expr, Derivative(expr, exprsymbol)) != 1:
-            return False, "Polynomial is not squarefree"
+            return False, PolynomialOutput.strout("NOT_SQUAREFREE")
     
-    return True, "Polynomial is squarefree"
+    return True, PolynomialOutput.strout("SQUAREFREE")
 
 def is_content_free_polynomial(expr):
     '''Determines if a polynomial is content-free. A polynomial that has
@@ -138,14 +138,14 @@ def is_content_free_polynomial(expr):
                 [2] - integer content of the polynomial
     '''
     if not isinstance(expr, Add):
-        return False, "Expression has only one term", 1
+        return False, PolynomialOutput.strout("CONTENTFREE_MONOMIAL"), 1
     
     result = primitive(expr)
 
     if primitive(expr)[0] != 1:
-        return False, "Expression has content that can be factored", primitive(expr)[0]
+        return False, PolynomialOutput.strout("NOT_CONTENTFREE"), primitive(expr)[0]
 
-    return True, "Expression has no factorable content", 1
+    return True, PolynomialOutput.strout("CONTENTFREE"), 1
 
 
 def is_factor_factored(expr):
@@ -200,12 +200,12 @@ def complex_field_reducible(expr):
     '''
     result = is_monomial_form(expr)
     if result[0]:
-        return False, "Expression is also a monomial"
+        return False, PolynomialOutput.strout("IS_MONOMIAL")
     
     if degree(expr) > 1:
-        return True, "Expression has a degree higher than 1"
+        return True, PolynomialOutput.strout("COMPLEX_HIGH_DEGREE")
     
-    return False, "Expression is simplified over the reals"
+    return False, PolynomialOutput.strout("COMPLEX_FACTORED")
 
 def real_field_reducible(expr):
     '''Determines if the polynomial is reducible over the real field.
@@ -225,15 +225,15 @@ def real_field_reducible(expr):
     '''
     result = is_monomial_form(expr)
     if result[0]:
-        return False, "Expression is also a monomial"
+        return False, PolynomialOutput.strout("IS_MONOMIAL")
 
     if degree(expr) > 2:
-        return True, "Expression has a degree higher than 1"
+        return True, PolynomialOutput.strout("REAL_HIGH_DEGREE")
 
-    if degree(expr) == 2 and discriminant(expr) < 0:
-        return True, "Quadratic can be reduced further"
+    if degree(expr) == 2 and discriminant(expr) >= 0:
+        return True, PolynomialOutput.strout("REAL_FACTORABLE_QUAD")
 
-    return False, "Expression can not be reduced further"
+    return False, PolynomialOutput.strout("REAL_FACTORED")
 
 def integer_field_reducible(expr):
     '''Determines if the polynomial is reducible over the field of integers.
@@ -252,12 +252,13 @@ def integer_field_reducible(expr):
     
     result = is_monomial_form(expr)
     if result[0]:
-        return False, "Expression is also a monomial"
+        return False, PolynomialOutput.strout("IS_MONOMIAL")
 
-    if not is_content_free_polynomial[0]:
-        return True, "Expression is not content free"
+    result = is_content_free_polynomial
+    if not result[0]:
+        return True, result[1]
 
     if sum(isinstance(j, (Integer, int)) for j in real_roots(expr)) > 1:
-        return True, "Expression could be factored further"
+        return True, PolynomialOutput.strout("INTEGER_HIGH_DEGREE")
 
-    return False, "Expression could not be factored further"
+    return False, PolynomialOutput.strout("INTEGER_FACTORED")
