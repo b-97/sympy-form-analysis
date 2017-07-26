@@ -66,30 +66,26 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     #Polynomials that are not squarefree by definition have
     #[d/d(symbol)](expr) as a factor, so it may be a good idea to factor
     #those out for speed
+    #TODO: Analyze using form tools if this actually increases algorithm
+    #efficiency
     result = is_squarefree_polynomial(expr)
     if not result[0]:
         return result
     
-
+    
+    #Next, we check to see if individual terms in the polynomial are numerically
+    #reducible (i.e, 3/3, x/x x^2/x, etc.)
     if isinstance(expr, Add):
         for i in expr.args:
             result = is_numerically_reducible_monomial(i)
             if result[0]:
                 return False, result[1]
-        result = is_factor_factored(i)
-        if not result[0]:
-            return result
     else:
         result = is_numerically_reducible_monomial(expr)
         if result[0]:
             return False, result[1]
-        for i in expr.args:
-            result = is_factor_factored(i)
-            if not result[0]:
-                return False, result[1]
-
     #Currently, no definition of polynomials allows for monomials that
-    #are combinable by integers, so we can filter those out
+    #are combinable by integers or by bases, so we can filter those out
     result = const_divisible(expr)
     if result[0]:
         return False, result[1]
@@ -98,6 +94,8 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     if result[0]:
         return False, result[1]
 
+    #Finally, we analyze the reducibility of the polynomial according to the
+    #domain the user specified.
     if domain == 'RR':
         result = real_field_reducible(expr)
         return not result[0], result[1]
@@ -146,45 +144,6 @@ def is_content_free_polynomial(expr):
         return False, PolynomialOutput.strout("NOT_CONTENTFREE"), primitive(expr)[0]
 
     return True, PolynomialOutput.strout("CONTENTFREE"), 1
-
-
-def is_factor_factored(expr):
-    '''Determines whether a term in a monomial is in factored form.
-        #TODO: Implementation
-        Args:
-            expr: A Sympy expression, representing a monomial factor
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result
-    '''
-    result = is_singleton_form(expr)
-    if result[0]:
-        return True, result[1]
-
-
-    if sum(isinstance(j, Number) for j in expr.args) > 1:
-        return False, PolynomialOutput.strout("NOT_FACTORED")
-
-
-    #If the expression is raised to a power, ensure the power
-    #is sane then look at the base
-
-    if isinstance(expr, Pow):
-        return is_singleton_form(expr.args[1])
-
-    #if it's a Mul instance, take a look at what's inside
-    if isinstance(expr,Mul):
-        result = is_numerically_reducible_monomial(expr)
-        if result[0]:
-            return False, result[1]
-        if not all(is_factor_factored(j)[0] for j in expr.args):
-            return False, PolynomialOutput.strout("NOT_FACTORED")
-
-    if duplicate_bases(expr)[0]:
-        return False, PolynomialOutput.strout("NOT_FACTORED")
-
-    return True, PolynomialOutput.strout("FACTORED")
 
 def complex_field_reducible(expr):
     '''Determines if the polynomial is reducible over the complex field.

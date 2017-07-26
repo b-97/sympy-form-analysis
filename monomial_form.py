@@ -34,8 +34,8 @@ def is_monomial_form(expr):
 
             if is_singleton_form(expr.args[1])[0]:
                 return True, MonomialOutput.strout("PROPER")
-
             return False, MonomialOutput.strout("IMPROPER")
+
         return False, MonomialOutput.strout("EXPANDABLE")
 
     elif sum(isinstance(j, Number) for j in expr.args) > 1:
@@ -75,7 +75,8 @@ def duplicate_bases(expr):
     return False, MonomialOutput.strout("PROPER")
 
 def _search_bases(expr):
-    '''Searches through the bases in an expression.
+    '''Searches through the bases in an expression. This function is \
+            exclusively used by duplicate_bases.
         Args:
             expr: A standard Sympy expression
         Returns:
