@@ -59,7 +59,7 @@ class PolynomialOutput():
         'NOT_CONTENTFREE':"Expression is not contentfree",
         'COMPlEX_HIGH_DEGREE':"Expression has a degree higher than 1",
         'COMPLEX_FACTORED':"Expression is simplified over the complex field",
-        'REAL_HIGH_DEGREE':"Expression has a degree higher than 1",
+        'REAL_HIGH_DEGREE':"Expression has a degree higher than 2",
         'REAL_FACTORABLE_QUAD':"Quadratic can be factored further",
         'REAL_FACTORED': "Expression is factored within the real numbers",
         'INTEGER_HIGH_DEGREE':"Expression could be factored further in the integers",
