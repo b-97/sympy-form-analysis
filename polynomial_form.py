@@ -202,6 +202,15 @@ def complex_field_reducible(expr):
     if result[0]:
         return False, PolynomialOutput.strout("IS_MONOMIAL")
     
+    if isinstance(expr, Mul):
+        for i in expr.args:
+            result = complex_field_reducible(i)
+            if result[0]:
+                return result
+
+    if isinstance(expr, Pow):
+        return complex_field_reducible(expr.args[0])
+    
     if degree(expr) > 1:
         return True, PolynomialOutput.strout("COMPLEX_HIGH_DEGREE")
     
