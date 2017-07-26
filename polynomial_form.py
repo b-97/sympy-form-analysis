@@ -2,7 +2,7 @@ from __future__ import division
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
 import sympy
-from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,degree, Derivative, discriminant
+from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,degree, Derivative, discriminant, primitive, real_roots
 from .monomial_form import *
 from .form_utils import *
 from .form_output import *
@@ -65,9 +65,8 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
 
     #Polynomials that are not squarefree by definition have
     #[d/d(symbol)](expr) as a factor, so it may be a good idea to factor
-    #those out for speed
-    #TODO: Analyze using form tools if this actually increases algorithm
-    #efficiency
+    #those out for speed TODO: Analyze using form tools if this actually 
+    #increases algorithm efficiency
     result = is_squarefree_polynomial(expr)
     if not result[0]:
         return result
@@ -84,6 +83,7 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
         result = is_numerically_reducible_monomial(expr)
         if result[0]:
             return False, result[1]
+    
     #Currently, no definition of polynomials allows for monomials that
     #are combinable by integers or by bases, so we can filter those out
     result = const_divisible(expr)
@@ -101,6 +101,9 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
         return not result[0], result[1]
     elif domain == 'CC':
         result = complex_field_reducible(expr)
+        return not result[0], result[1]
+    elif domain == 'ZZ':
+        result = integer_field_reducible(expr)
         return not result[0], result[1]
     else:
         return False, UtilOutput.strout("ERROR")
