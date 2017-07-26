@@ -102,11 +102,14 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     elif domain == 'CC':
         result = complex_field_reducible(expr)
         return not result[0], result[1]
-    elif domain == 'ZZ':
-        result = integer_field_reducible(expr)
-        return not result[0], result[1]
+    #elif domain == 'ZZ': - multivariate polynomials not finished yet
+    #    result = integer_field_reducible(expr)
+    #    return not result[0], result[1]
+    #elif domain == 'QQ': - rational polynomials not finished yet
+    #    result = real_field_reducible(expr)
+    #    return not result[0], result[1]
     else:
-        return False, UtilOutput.strout("ERROR")
+        return False, ErrorOutput.strout("ERROR")
 
 def is_squarefree_polynomial(expr):
     '''Determines if a polynomial is squarefree. If a polynomial is not
