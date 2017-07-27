@@ -172,6 +172,7 @@ def complex_field_reducible(expr):
             result = complex_field_reducible(i)
             if result[0]:
                 return result
+        return False, PolynomialOutput.strout("COMPLEX_FACTORED")
 
     if isinstance(expr, Pow):
         return complex_field_reducible(expr.args[0])
@@ -206,6 +207,7 @@ def real_field_reducible(expr):
             result = real_field_reducible(i)
             if result[0]:
                 return result
+        return False, PolynomialOutput.strout("REAL_FACTORED")
 
     if isinstance(expr, Pow):
         return real_field_reducible(expr.args[0])
