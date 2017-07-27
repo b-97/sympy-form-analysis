@@ -38,9 +38,13 @@ def sin_2_cos_2_simplifiable(expr):
             can be evaluated.
         Will not catch if sin(x)^2 and cos(x)^2 are both multiplied by the
         same constant.
-
         Args:
             expr: A standard sympy expression with constants removed
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result
+        
     '''
     #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
     for i,j in itertools.permutations(expr.args):
