@@ -21,8 +21,6 @@ def is_fully_expanded_polynomial(expr, eval_trig=False):
     result = is_monomial_form(expr)
     if is_monomial_form(expr)[0]:
         return True, result[1]
-    elif isinstance(expr, (TrigonometricFunction,InverseTrigonometricFunction)):
-        return is_fully_expanded_polynomial(expr.args)
     elif not isinstance(expr, (Add)):
         return False, result[1]
     
@@ -32,10 +30,8 @@ def is_fully_expanded_polynomial(expr, eval_trig=False):
 
     if all(is_monomial_form(i)[0] for i in expr.args):
         return True, PolynomialOutput.strout("EXPANDED")
-    else:
-        return False, PolynomialOutput.strout("NOT_EXPANDED")
-
-    return False, ErrorOutput.strout("ERROR")
+    
+    return False, PolynomialOutput.strout("NOT_EXPANDED")
 
 def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     '''Determines if a proper polynomial is fully expanded.
