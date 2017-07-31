@@ -19,23 +19,27 @@ def is_singleton_factor_form(expr):
                 [0]: bool containing the result
                 [1]: string describing the result
     '''
-    for i in expr.args:
-        if not isinstance(i, (Number, NumberSymbol,Pow,Mul)):
-            return False, SingletonOutput.strout("IMPROPER_TERM")
-        if isinstance(i,Pow):
-            if isinstance(i.args[0], Number) and isinstance(i.args[1],NumberSymbol):
-                continue
-            if isinstance(i.args[0],NumberSymbol) and isinstance(i.args[1], (Number,NumberSymbol)):
-                continue
-            return False, SingletonOutput.strout("IMPROPER_TERM")
-        if isinstance(i,Mul):
-            if sum(j == -1 and isinstance(j,Number) for j in i.args) > 1:
-                return False, SingletonOutput.strout("IMPROPER_TERM")
-            if is_numerically_reducible_monomial(i)[0]:
-                return False, SingletonOutput.strout("IMPROPER_TERM")
+    if len(expr.free_symbols) > 0 and not isinstance(expr, Symbol):
+        return False, SingletonOutput.strout("IMPROPER_TERM")
+
+
     if isinstance(expr,Pow) and isinstance(expr.args[0], Number):
         result = const_to_const(expr)
         return not result[0], result[1]
+
+    for i in expr.args:
+        #Make sure that anything inside is either a number,
+        #numbersymbol, multiplication, or addition.
+        if not isinstance(i, (Number, NumberSymbol,Pow,Mul)):
+            return False, SingletonOutput.strout("IMPROPER_TERM")
+        if isinstance(i,Pow):
+            result = const_to_const(i)
+            if result[0]:
+                return False, result[1] 
+        if isinstance(i,Mul):
+            if is_numerically_reducible_monomial(i)[0]:
+                return False, SingletonOutput.strout("IMPROPER_TERM")
+    
 
     if sum(isinstance(j, Number) for j in expr.args) > 1:
         return False, SingletonOutput.strout("INVALID_PRODUCT")
