@@ -106,9 +106,9 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     #elif domain == 'ZZ':
     #    result = integer_field_reducible(expr)
     #    return not result[0], result[1]
-    #elif domain == 'QQ': - rational polynomials not finished yet
-    #    result = real_field_reducible(expr)
-    #    return not result[0], result[1]
+    elif domain == 'QQ':
+        result = real_field_reducible(expr)
+        return not result[0], result[1]
     else:
         return False, ErrorOutput.strout("ERROR")
 

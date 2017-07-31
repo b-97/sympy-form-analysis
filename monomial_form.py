@@ -23,12 +23,8 @@ def is_monomial_form(expr):
     if is_numerically_reducible_monomial(expr)[0]:
         return False, MonomialOutput.strout("REDUCIBLE")
 
-    elif isinstance(expr,Pow):
-        if const_to_const(expr)[0]:
-            return False, UtilOutput.strout("CONST_TO_CONST")
-
+    if isinstance(expr,Pow):
         if is_singleton_form(expr.args[0])[0]:
-
             if expr.args[1] == 0 or expr.args[1] == 1:
                 return False, MonomialOutput.strout("REDUCIBLE")
 
