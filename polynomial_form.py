@@ -102,9 +102,9 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     elif domain == 'CC':
         result = complex_field_reducible(expr)
         return not result[0], result[1]
-    #elif domain == 'ZZ': - multivariate polynomials not finished yet
-    #    result = integer_field_reducible(expr)
-    #    return not result[0], result[1]
+    elif domain == 'ZZ': - multivariate polynomials not finished yet
+        result = integer_field_reducible(expr)
+        return not result[0], result[1]
     #elif domain == 'QQ': - rational polynomials not finished yet
     #    result = real_field_reducible(expr)
     #    return not result[0], result[1]
@@ -222,10 +222,9 @@ def real_field_reducible(expr):
 
 def integer_field_reducible(expr):
     '''Determines if the polynomial is reducible over the field of integers.
-        The current working definition of a polynomial reducible over the \
-                integers is one that has more than two integer roots or has \
-                content that can be factored.
-    However, for this library, we won't count monomials, such as x^4, 
+        A polynomial reducible ver the integers is one that has more than two \
+                integer roots or has integer content that can be factored.
+    However, for this library, we wholly exclude monomials, such as x^4, 
         as being reducible.
     Args:
         expr: a standard Sympy expression
@@ -239,9 +238,10 @@ def integer_field_reducible(expr):
     if result[0]:
         return False, PolynomialOutput.strout("IS_MONOMIAL")
 
-    result = is_content_free_polynomial(expr)
-    if not result[0]:
-        return True, result[1]
+    if isinstance(expr, Add):
+        result = is_integer_content_free_polynomial(expr)
+        if not result[0]:
+            return True, result[1]
 
     if isinstance(expr, Mul):
         for i in expr.args:
@@ -256,3 +256,45 @@ def integer_field_reducible(expr):
         return True, PolynomialOutput.strout("INTEGER_HIGH_DEGREE")
 
     return False, PolynomialOutput.strout("INTEGER_FACTORED")
+
+def rational_field_reducible(expr):
+    '''Determines if the polynomial is reducible over the field of integers.
+        A polynomial reducible over the rationals is one that has more than \
+                two rational roots or has rational content that can be factored.
+    However, for this library, we will wholly exclude monomials, such as x^4, 
+        as being reducible.
+    Args:
+        expr: a standard Sympy expression
+    Returns:
+        a tuple containing:
+            [0] - boolean result of the function
+            [1] - string describing the result
+    '''
+    result = is_monomial_form(expr)
+    if result[0]:
+        return False, PolynomialOutput.strout("IS_MONOMIAL")
+
+    if isinstance(expr, Add):
+        result = is_rational_content_free_polynomial(expr) #TO BE DEFINED
+        if not result[0]:
+            return True, result[1]
+
+    if isinstance(expr, Mul):
+        for i in expr.args:
+            result = rational_field_reducible(i)
+            if result[0]:
+                return result
+
+    if isinstance(expr, Pow):
+        return rational_field_reducible(expr.args[0])
+
+    if degree(expr) > 2:
+        return False, PolynomialOutput.strout("RATIONAL_HIGH_DEGREE")
+
+    expr_discrim = discrimininant(expr)
+    if expr_discrim > 2:
+        if all(isinstance(num, Rational) for num in expr.coeffs() + [expr_discrim]):
+            return True, PolynomialOutput.strout("RATIONAL_HIGH_DEGREE")
+
+    return False, PolynomialOutput.strout("RATIONAL_FACTORED")
+    
