@@ -1,7 +1,7 @@
 import sympy
 import itertools
 
-from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,Rational
+from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,Rational,exp,S
 from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
 from .form_output import *
@@ -21,9 +21,6 @@ def const_divisible(expr):
             exprs = rcollect(expr,syms)
             if len(expr.args) != len(exprs.args):
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
-
-        #Check to see if any of the other monomials are divisible with integer
-        #quotient and no remainder
         for i,j in itertools.combinations(expr.args,2):
             if is_numerical_equation(i)[0] and is_numerical_equation(j)[0]:
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
@@ -111,35 +108,58 @@ def is_numerically_reducible_monomial(expr):
                 [1] - string describing the result
     '''
     if isinstance(expr, (Pow,Mul)):
-	#First, check to see if it's in form -1*(expr)
         if isinstance(expr, Mul):
-            if isinstance(expr.args[0], Integer) and expr.args[0] == -1 and \
-                    isinstance(expr.args[1], Mul):
-                        expr = expr.args[1]
-            #Or if it's in the form (expr)*-1
-            elif isinstance(expr.args[1], Integer) and expr.args[1] == -1 and \
-                    isinstance(expr.args[0], Mul):
-                        expr = expr.args[0]
-            #While we're analyzing "Muls", let's check for any const to consts
+            if expr.args[0] == -1 and isinstance(expr.args[1], Mul):
+                expr = expr.args[1]
+            elif expr.args[1] == -1 and isinstance(expr.args[0], Mul):
+                expr = expr.args[0]
             if any(const_to_const(j)[0] for j in expr.args):
                 return True, UtilOutput.strout("CONST_TO_CONST")
-        #Check for const_to_const while we're at it 
         elif isinstance(expr, Pow):
             result = const_to_const(expr)
             if result[0]:
                 return True, UtilOutput.strout("CONST_TO_CONST")
-        
-        
-        #Check if the numerator is simplifiable
-        if sum(isinstance(j,(Integer,int,float)) for j in fraction(expr)[0].args) > 1:
+        if sum(isinstance(j,(Integer,int,float)) for j in mr_fraction(expr)[0].args) > 1:
             return True, UtilOutput.strout("SIMPLIFIABLE_NUMERATOR")
 
-        #Check for simplifiable denominator
-        if sum(isinstance(j,(Integer,int,float)) for j in fraction(expr)[1].args) > 1:
+        if sum(isinstance(j,(Integer,int,float)) for j in mr_fraction(expr)[1].args) > 1:
             return True, UtilOutput.strout("SIMPLIFIABLE_DENOMINATOR")
-
-        #Finally, collect the numerator and denominator and check if they can be reduced
         if gcd(fraction(expr)[0],fraction(expr)[1]) != 1:
             return True, UtilOutput.strout("SIMPLIFIABLE_FRACTION")
 
     return False, UtilOutput.strout("NOT_SIMPLIFIABLE_FRACTION")
+
+def mr_fraction(expr,exact=False):
+    '''Modified version of sympy's fraction() function, with the difference \
+            being that the expressions constructed at the end possess the \
+            evaluate=False flag.
+        Args:
+            expr: a standard sympy expression
+        Returns:
+            A tuple containing:
+                [0] - numerator of the expression
+                [1] - denominator of the expression
+    '''
+    numer = []
+    denom = []
+    for term in Mul.make_args(expr):
+        if term.is_Pow or term.func is exp:
+            b, ex = term.as_base_exp()
+            if ex.is_negative:
+                if ex is S.NegativeOne:
+                    denom.append(b)
+                else:
+                    denom.append(Pow(b, -ex))
+            elif not exact and ex.is_Mul:
+                n, d = term.as_numer_denom()
+                numer.append(n)
+                denom.append(d)
+            else:
+                numer.append(term)
+        elif term.is_Rational:
+            n,d = term.as_numer_denom()
+            numer.append(n)
+            denom.append(d)
+        else:
+            numer.append(term)
+    return Mul(*numer,evaluate=False), Mul(*denom,evaluate=False)

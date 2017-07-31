@@ -33,10 +33,6 @@ def is_monomial_form(expr):
             return False, MonomialOutput.strout("IMPROPER")
 
         return False, MonomialOutput.strout("EXPANDABLE")
-
-    elif sum(isinstance(j, Number) for j in expr.args) > 1:
-        return False, MonomialOutput.strout("REDUCIBLE")
-
     elif isinstance(expr,Add):
         return False, MonomialOutput.strout("MULTIPLE_TERMS")
 
