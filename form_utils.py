@@ -1,10 +1,11 @@
 import sympy
 import itertools
 
-from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,Rational,exp,S
+from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,Rational,exp,S,flatten
 from sympy.functions.elementary.trigonometric import TrigonometricFunction as SymTrigF
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction as SymInvTrigF
 from .form_output import *
+from .equivalent_form import *
 
 def const_divisible(expr):
     '''determines whether the quotient of two expressions is constant divisible
@@ -16,17 +17,17 @@ def const_divisible(expr):
                 [0]: bool containing the result
                 [1]: string describing the result
     '''
-    if isinstance(expr,(Add,Mul)):
-        for syms in expr.free_symbols:
-            exprs = rcollect(expr,syms)
-            if len(expr.args) != len(exprs.args):
-                return True, UtilOutput.strout("CONST_DIVISIBLE")
-        for i,j in itertools.combinations(expr.args,2):
+
+    flat = mr_flatten(expr)
+
+    if isinstance(flat,(Add,Mul)):
+        for i,j in itertools.combinations(flat.args,2):
             if is_numerical_equation(i)[0] and is_numerical_equation(j)[0]:
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
             gcd_i_j = gcd(i,j)
             if isinstance(gcd_i_j, (Number, NumberSymbol)) and gcd_i_j != 1:
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
+            
 
     return False, UtilOutput.strout("NOT_CONST_DIVISIBLE")
 

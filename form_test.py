@@ -51,6 +51,10 @@ class TestSymp(unittest.TestCase):
         self.a34 = Mul(-1,Pow(pi,pi,evaluate=False),evaluate=False)
         self.a35 = Pow(Mul(-1,pi),pi,evaluate=False)
         self.a36 = Add(x,3,Add(x,2,evaluate=False),evaluate=False)
+
+        #Polynomials from Wikipedia
+        self.w1 = Add(Pow(x,2),Mul(4,x),4,evaluate=False) #CC,RR,QQ,ZZ
+        self.w2 = Add(Pow(x,2),-4,evaluate=False)
         
         self.b1 = Mul(Pow(3,5,evaluate=False),Pow(9,10,evaluate=False),evaluate=False)
         self.b2 = Pow(3,5,evaluate=False)
@@ -63,7 +67,6 @@ class TestSymp(unittest.TestCase):
             self.a21,self.a22,self.a23,self.a24,self.a25,self.a26,self.a27,
             self.a28,self.a29,self.a30,self.a31,self.a32,self.a33,self.a34,
             self.a35,self.a36,self.b1,self.b2,self.b3,self.b4]
-
     '''
         Tests that ensure that all functions actualy produce a valuable output.
     '''
@@ -240,45 +243,45 @@ class TestSymp(unittest.TestCase):
         self.assertFalse(is_fully_expanded_polynomial(self.a36)[0])
 
     def test_real_factored_polynomial(self):
-        self.assertTrue(is_fully_factored_polynomial(x)[0])
-        self.assertTrue(is_fully_factored_polynomial(y)[0])
-        self.assertTrue(is_fully_factored_polynomial(z)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a1)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a2)[0])
-        self.assertFalse(is_fully_factored_polynomial(self.a3)[0]) #N
-        self.assertTrue(is_fully_factored_polynomial(self.a4)[0])
-        self.assertFalse(is_fully_factored_polynomial(self.a5)[0]) #N
-        self.assertTrue(is_fully_factored_polynomial(self.a6)[0])
-        self.assertFalse(is_fully_factored_polynomial(self.a7)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a8)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a9)[0])
-        self.assertFalse(is_fully_factored_polynomial(self.a10)[0]) #N
-        self.assertFalse(is_fully_factored_polynomial(self.a11)[0]) #N
-        #self.assertFalse(is_fully_factored_polynomial(self.a12)[0]) #N
-        self.assertTrue(is_fully_factored_polynomial(self.a13)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a14)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a15)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a16)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a17)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a18)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a19)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a20)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a21)[0])
-        self.assertFalse(is_fully_factored_polynomial(self.a22)[0])
-        self.assertFalse(is_fully_factored_polynomial(self.a23)[0]) #N
-        self.assertTrue(is_fully_factored_polynomial(self.a24)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a25)[0]) #N
-        self.assertFalse(is_fully_factored_polynomial(self.a26)[0]) #N
-        self.assertFalse(is_fully_factored_polynomial(self.a27)[0]) #N
-        self.assertFalse(is_fully_factored_polynomial(self.a28)[0]) #N
-        self.assertFalse(is_fully_factored_polynomial(self.a29)[0]) #N
-        self.assertTrue(is_fully_factored_polynomial(self.a30)[0])
-        self.assertFalse(is_fully_factored_polynomial(self.a31)[0]) #N
-        self.assertFalse(is_fully_factored_polynomial(self.a32)[0]) #N
-        self.assertTrue(is_fully_factored_polynomial(self.a33)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a34)[0])
-        self.assertTrue(is_fully_factored_polynomial(self.a35)[0])
-        self.assertFalse(is_fully_factored_polynomial(self.a36)[0])
+        self.assertTrue(is_fully_factored_polynomial(x,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(y,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(z,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a1,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a2,domain='RR')[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a3,domain='RR')[0]) #N
+        self.assertTrue(is_fully_factored_polynomial(self.a4,domain='RR')[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a5,domain='RR')[0]) #N
+        self.assertTrue(is_fully_factored_polynomial(self.a6,domain='RR')[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a7,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a8,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a9,domain='RR')[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a10,domain='RR')[0]) #N
+        self.assertFalse(is_fully_factored_polynomial(self.a11,domain='RR')[0]) #N
+        #self.assertFalse(is_fully_factored_polynomial(self.a12,domain='RR')[0]) #N
+        self.assertTrue(is_fully_factored_polynomial(self.a13,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a14,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a15,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a16,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a17,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a18,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a19,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a20,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a21,domain='RR')[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a22,domain='RR')[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a23,domain='RR')[0]) #N
+        self.assertTrue(is_fully_factored_polynomial(self.a24,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a25,domain='RR')[0]) #N
+        self.assertFalse(is_fully_factored_polynomial(self.a26,domain='RR')[0]) #N
+        self.assertFalse(is_fully_factored_polynomial(self.a27,domain='RR')[0]) #N
+        self.assertFalse(is_fully_factored_polynomial(self.a28,domain='RR')[0]) #N
+        self.assertFalse(is_fully_factored_polynomial(self.a29,domain='RR')[0]) #N
+        self.assertTrue(is_fully_factored_polynomial(self.a30,domain='RR')[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a31,domain='RR')[0]) #N
+        self.assertFalse(is_fully_factored_polynomial(self.a32,domain='RR')[0]) #N
+        self.assertTrue(is_fully_factored_polynomial(self.a33,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a34,domain='RR')[0])
+        self.assertTrue(is_fully_factored_polynomial(self.a35,domain='RR')[0])
+        self.assertFalse(is_fully_factored_polynomial(self.a36,domain='RR')[0])
 
     def test_complex_factored_polynomial(self):
         self.assertTrue(is_fully_factored_polynomial(x,domain='CC')[0])

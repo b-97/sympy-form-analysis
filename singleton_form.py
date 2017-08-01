@@ -22,7 +22,6 @@ def is_singleton_factor_form(expr):
     if len(expr.free_symbols) > 0 and not isinstance(expr, Symbol):
         return False, SingletonOutput.strout("IMPROPER_TERM")
 
-
     if isinstance(expr,Pow) and isinstance(expr.args[0], Number):
         result = const_to_const(expr)
         return not result[0], result[1]
@@ -66,7 +65,6 @@ def singleton_combinable_terms(expr):
     for i in expr.args:
         if not isinstance(i, (Number, NumberSymbol, Mul)):
             return True, SingletonOutput.strout("INVALID_SUM")
-        #If there's a product, make sure only one is rational
         if isinstance(i, Mul):
             bases += i.args
             result = is_singleton_factor_form(i)
@@ -81,8 +79,8 @@ def singleton_combinable_terms(expr):
 
     if len(bases) != len(set(bases)):
         return True, SingletonOutput.strout("INVALID_SUM")
-    else:
-        return False, SingletonOutput.strout("VALID_SUM")
+    
+    return False, SingletonOutput.strout("VALID_SUM")
 
 def is_singleton_form(expr):
     '''determines if the expression is a singleton.
@@ -99,23 +97,16 @@ def is_singleton_form(expr):
     if isinstance(expr, (Number, NumberSymbol, Symbol)):
         return True, SingletonOutput.strout("VALID")
 
-    #Case of rational added to irrational
     if isinstance(expr, Add):
         result = singleton_combinable_terms(expr)
         return not result[0], result[1]
 
-    #Case of rational multiplied to irrational
     if isinstance(expr, (Mul,Pow)):
         if is_numerically_reducible_monomial(expr)[0]:
             return False, UtilOutput.strout("REDUCIBLE")
         return is_singleton_factor_form(expr)
 
-
-    #Case of trigonometric functions
-    #TODO: Analyze what's inside the trigonometric function
-    if isinstance(expr, TrigonometricFunction):
+    if isinstance(expr, (TrigonometricFunction, InverseTrigonometricFunction)):
         return True, SingletonOutput.strout("VALID_TRIG")
-    if isinstance(expr, InverseTrigonometricFunction):
-        return True, SingletonOutput.strout("VALID_INVTRIG")
 
     return False, SingletonOutput.strout("INVALID")

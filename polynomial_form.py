@@ -102,9 +102,9 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     #elif domain == 'ZZ':
     #    result = integer_field_reducible(expr)
     #    return not result[0], result[1]
-    elif domain == 'QQ':
-        result = real_field_reducible(expr)
-        return not result[0], result[1]
+    #elif domain == 'QQ':
+    #    result = rational_field_reducible(expr)
+    #    return not result[0], result[1]
     else:
         return False, ErrorOutput.strout("ERROR")
 
@@ -125,7 +125,7 @@ def is_squarefree_polynomial(expr):
     
     return True, PolynomialOutput.strout("SQUAREFREE")
 
-def is_content_free_polynomial(expr):
+def is_integer_content_free_polynomial(expr):
     '''Determines if a polynomial is content-free. A polynomial that has
         content is defined to have an integer gcd between all monomials that
         is not equal to 1. Will always return false if there is only one term
