@@ -1,6 +1,5 @@
 import sympy
-from sympy import *
-from sympy.core.operations import AssocOp
+from sympy import Expr, Mul, Add
 
 def mr_equivalent_form(expr):
     return mr_flatten(expr)
