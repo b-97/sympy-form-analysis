@@ -2,6 +2,7 @@ from .singleton_form import *
 from .monomial_form import *
 from .polynomial_form import *
 from .numerical_base_form import *
+from .equivalent_form import *
 from sympy import *
 from sympy.abc import x,y,z
 
