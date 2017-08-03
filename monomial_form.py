@@ -2,7 +2,7 @@ from __future__ import division
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
 import sympy
-from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div
+from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,gcd,div
 from .singleton_form import *
 from .form_utils import *
 
