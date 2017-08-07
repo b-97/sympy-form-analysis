@@ -23,14 +23,14 @@ def is_fully_expanded_polynomial(expr, eval_trig=False):
         return True, result[1]
     elif not isinstance(expr, (Add)):
         return False, result[1]
-    
+
     result = const_divisible(expr)
     if result[0]:
         return False, result[1]
 
     if all(is_monomial_form(i)[0] for i in expr.args):
         return True, PolynomialOutput.strout("EXPANDED")
-    
+
     return False, PolynomialOutput.strout("NOT_EXPANDED")
 
 def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
@@ -68,19 +68,14 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     if not result[0]:
         return result
     '''
-    
+
     #Next, we check to see if individual terms in the polynomial are numerically
     #reducible (i.e, 3/3, x/x x^2/x, etc.)
-    if isinstance(expr, Add):
-        for i in expr.args:
-            result = is_numerically_reducible_monomial(i)
-            if result[0]:
-                return False, result[1]
-    else:
-        result = is_numerically_reducible_monomial(expr)
+    for i in mr_polynomial_terms(expr):
+        result = is_numerically_reducible_monomial(i)
         if result[0]:
             return False, result[1]
-    
+
     #Currently, no definition of polynomials allows for monomials that
     #are combinable by integers or by bases, so we can filter those out
     result = const_divisible(expr)
@@ -122,7 +117,7 @@ def is_squarefree_polynomial(expr):
     for exprsymbol in expr.free_symbols:
         if gcd(expr, Derivative(expr, exprsymbol)) != 1:
             return False, PolynomialOutput.strout("NOT_SQUAREFREE")
-    
+
     return True, PolynomialOutput.strout("SQUAREFREE")
 
 def is_integer_content_free_polynomial(expr):
@@ -140,7 +135,7 @@ def is_integer_content_free_polynomial(expr):
     '''
     if not isinstance(expr, Add):
         return False, PolynomialOutput.strout("CONTENTFREE_MONOMIAL"), 1
-    
+
     result = primitive(expr)
 
     if primitive(expr)[0] != 1:
@@ -163,7 +158,7 @@ def complex_field_reducible(expr):
     result = is_monomial_form(expr)
     if result[0]:
         return False, PolynomialOutput.strout("IS_MONOMIAL")
-    
+
     if isinstance(expr, Mul):
         for i in expr.args:
             result = complex_field_reducible(i)
@@ -173,10 +168,10 @@ def complex_field_reducible(expr):
 
     if isinstance(expr, Pow):
         return complex_field_reducible(expr.args[0])
-    
+
     if degree(expr) > 1:
         return True, PolynomialOutput.strout("COMPLEX_HIGH_DEGREE")
-    
+
     return False, PolynomialOutput.strout("COMPLEX_FACTORED")
 
 def real_field_reducible(expr):
@@ -186,7 +181,7 @@ def real_field_reducible(expr):
         1: Degree of polynomial is less than 3.
         2: If degree of polynomial is 2, at least one of the roots are in
             the complex field.
-    However, for this library, we won't count monomials, such as x^4, 
+    However, for this library, we won't count monomials, such as x^4,
         as being reducible.
     Args:
         expr: a standard Sympy expression
@@ -221,7 +216,7 @@ def integer_field_reducible(expr):
     '''Determines if the polynomial is reducible over the field of integers.
         A polynomial reducible ver the integers is one that has more than two \
                 integer roots or has integer content that can be factored.
-    However, for this library, we wholly exclude monomials, such as x^4, 
+    However, for this library, we wholly exclude monomials, such as x^4,
         as being reducible.
     Args:
         expr: a standard Sympy expression
@@ -230,7 +225,7 @@ def integer_field_reducible(expr):
             [0] - boolean result of the function
             [1] - string describing the result
     '''
-    
+
     result = is_monomial_form(expr)
     if result[0]:
         return False, PolynomialOutput.strout("IS_MONOMIAL")
@@ -258,7 +253,7 @@ def rational_field_reducible(expr):
     '''Determines if the polynomial is reducible over the field of integers.
         A polynomial reducible over the rationals is one that has more than \
                 two rational roots or has rational content that can be factored.
-    However, for this library, we will wholly exclude monomials, such as x^4, 
+    However, for this library, we will wholly exclude monomials, such as x^4,
         as being reducible.
     Args:
         expr: a standard Sympy expression
@@ -270,11 +265,6 @@ def rational_field_reducible(expr):
     result = is_monomial_form(expr)
     if result[0]:
         return False, PolynomialOutput.strout("IS_MONOMIAL")
-
-    if isinstance(expr, Add):
-        result = is_rational_content_free_polynomial(expr) #TO BE DEFINED
-        if not result[0]:
-            return True, result[1]
 
     if isinstance(expr, Mul):
         for i in expr.args:
@@ -294,4 +284,3 @@ def rational_field_reducible(expr):
             return True, PolynomialOutput.strout("RATIONAL_HIGH_DEGREE")
 
     return False, PolynomialOutput.strout("RATIONAL_FACTORED")
-    

@@ -27,9 +27,22 @@ def const_divisible(expr):
             gcd_i_j = gcd(i,j)
             if isinstance(gcd_i_j, (Number, NumberSymbol)) and gcd_i_j != 1:
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
-            
+
 
     return False, UtilOutput.strout("NOT_CONST_DIVISIBLE")
+
+def mr_polynomial_terms(expr):
+    '''Takes a polynomial and seperates it into a list of all of the terms.
+        Will return a list of length 1 if there is only 1 term in the expression.
+        Args:
+            expr: A standard sympy expression
+        Returns:
+            A list of sympy expressions
+    '''
+    if isinstance(expr, Add):
+        return expr.args
+    else:
+        return [expr]
 
 def sin_2_cos_2_simplifiable(expr):
     '''determines whether the trig identity sin(x)^2 + cos(x)^2 = 1 \
@@ -42,7 +55,7 @@ def sin_2_cos_2_simplifiable(expr):
             A tuple containing:
                 [0]: bool containing the result
                 [1]: string describing the result
-        
+
     '''
     #Check to see if any two monomials are actually sin(x)^2 and cos(x)^2
     for i,j in itertools.permutations(expr.args):
@@ -70,7 +83,7 @@ def is_numerical_equation(expr):
         return True, "Expression is a basic Python number type"
     elif len(expr.free_symbols) == 0:
         return True, "Expression is a numerical expression"
-    
+
     return False, "Expression is not a purely numerical equation"
 
 def const_to_const(expr):
