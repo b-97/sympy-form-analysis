@@ -47,7 +47,6 @@ def is_monomial_form(expr):
     result = duplicate_bases(expr)
     return not result[0], result[1]
 
-#Check to see if any of the bases in a monomial are duplicates
 def duplicate_bases(expr):
     '''Returns if any bases in a monomial are duplicates
         Preconditions: monomial is otherwise well-formed.

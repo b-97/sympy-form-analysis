@@ -2,7 +2,7 @@ from __future__ import division
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
 import sympy
-from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,gcd,div,degree, Derivative, discriminant, primitive, real_roots
+from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,gcd,div,degree, Derivative, discriminant, primitive, real_roots, sieve
 from .monomial_form import *
 from .form_utils import *
 from .form_output import *
@@ -103,23 +103,6 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     else:
         return False, ErrorOutput.strout("ERROR")
 
-def is_squarefree_polynomial(expr):
-    '''Determines if a polynomial is squarefree. If a polynomial is not
-        squarefree, a factor can be found by computing gcd(f,f'), and thus
-        is not fully factored.
-        Args:
-            expr: A standard sympy expression
-        Returns:
-            A tuple containing:
-                [0] - boolean result of the function
-                [1] - string describing the result
-    '''
-    for exprsymbol in expr.free_symbols:
-        if gcd(expr, Derivative(expr, exprsymbol)) != 1:
-            return False, PolynomialOutput.strout("NOT_SQUAREFREE")
-
-    return True, PolynomialOutput.strout("SQUAREFREE")
-
 def is_integer_content_free_polynomial(expr):
     '''Determines if a polynomial is content-free. A polynomial that has
         content is defined to have an integer gcd between all monomials that
@@ -134,7 +117,7 @@ def is_integer_content_free_polynomial(expr):
                 [2] - integer content of the polynomial
     '''
     if not isinstance(expr, Add):
-        return False, PolynomialOutput.strout("CONTENTFREE_MONOMIAL"), 1
+        return True, PolynomialOutput.strout("CONTENTFREE_MONOMIAL"), 1
 
     result = primitive(expr)
 
@@ -244,7 +227,7 @@ def integer_field_reducible(expr):
     if isinstance(expr, Pow):
         return integer_field_reducible(expr.args[0])
 
-    if sum(isinstance(j, (Integer, int)) for j in real_roots(expr)) > 1:
+    if discriminant(expr) > 0 and sum(isinstance(j, (Integer, int)) for j in real_roots(expr)) > 1:
         return True, PolynomialOutput.strout("INTEGER_HIGH_DEGREE")
 
     return False, PolynomialOutput.strout("INTEGER_FACTORED")
@@ -275,12 +258,8 @@ def rational_field_reducible(expr):
     if isinstance(expr, Pow):
         return rational_field_reducible(expr.args[0])
 
-    if degree(expr) > 2:
-        return False, PolynomialOutput.strout("RATIONAL_HIGH_DEGREE")
+    '''TODO: RATIONAL COMBINABLE TERMS'''
 
-    expr_discrim = discrimininant(expr)
-    if expr_discrim > 2:
-        if all(isinstance(num, Rational) for num in expr.coeffs() + [expr_discrim]):
-            return True, PolynomialOutput.strout("RATIONAL_HIGH_DEGREE")
+    expr_primitive = primitive(expr)[1]
 
-    return False, PolynomialOutput.strout("RATIONAL_FACTORED")
+    return integer_field_reducible(expr_primitive)
