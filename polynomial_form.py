@@ -187,6 +187,8 @@ def real_field_reducible(expr):
     if isinstance(expr, Pow):
         return real_field_reducible(expr.args[0])
 
+    '''TODO: ENSURE REAL COEFFICIENTS ARE TAKEN CARE OF'''
+
     if degree(expr) > 2:
         return True, PolynomialOutput.strout("REAL_HIGH_DEGREE")
 
@@ -224,13 +226,14 @@ def integer_field_reducible(expr):
             if result[0]:
                 return result
 
-    if isinstance(expr, Pow):
-        return integer_field_reducible(expr.args[0])
+    '''TODO: ENSURE INTEGER COEFFICIENTS ARE TAKEN CARE OF'''
 
-    if discriminant(expr) > 0 and sum(isinstance(j, (Integer, int)) for j in real_roots(expr)) > 1:
-        return True, PolynomialOutput.strout("INTEGER_HIGH_DEGREE")
+    expr_poly = Poly(expr, domain=ZZ)
+    result = expr_poly.is_irreducible
 
-    return False, PolynomialOutput.strout("INTEGER_FACTORED")
+    if result:
+        return False, "Expression is fully factored in the integers"
+    return True, "Expression is fully factored in the integers"
 
 def rational_field_reducible(expr):
     '''Determines if the polynomial is reducible over the field of integers.
@@ -245,7 +248,9 @@ def rational_field_reducible(expr):
             [0] - boolean result of the function
             [1] - string describing the result
     '''
+
     result = is_monomial_form(expr)
+
     if result[0]:
         return False, PolynomialOutput.strout("IS_MONOMIAL")
 
@@ -258,8 +263,12 @@ def rational_field_reducible(expr):
     if isinstance(expr, Pow):
         return rational_field_reducible(expr.args[0])
 
-    '''TODO: RATIONAL COMBINABLE TERMS'''
+    '''TODO: ENSURE RATIONAL COEFFICIENTS ARE TAKEN CARE OF'''
 
-    expr_primitive = primitive(expr)[1]
+    expr_poly = Poly(expr, domain=ZZ)
+    result = expr_poly.is_irreducible
 
-    return integer_field_reducible(expr_primitive)
+    if result:
+        return False, "Expression is fully factored in the rationals"
+
+    return True, "Expression can be factored further in the rationals"
