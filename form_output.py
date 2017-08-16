@@ -62,8 +62,11 @@ class PolynomialOutput():
         'REAL_HIGH_DEGREE':"Expression has a degree higher than 2",
         'REAL_FACTORABLE_QUAD':"Quadratic can be factored further",
         'REAL_FACTORED': "Expression is factored within the real numbers",
-        'INTEGER_HIGH_DEGREE':"Expression could be factored further in the integers",
-        'INTEGER_FACTORED':"Expression is factored within the integers"
+        'INTEGER_REDUCIBLE':"Expression could be factored further in the integers",
+        'INTEGER_FACTORED':"Expression is factored within the integers",
+        'RATIONAL_REDUCIBLE':"Expression could be factored further in the rationals",
+        'RATIONAL_FACTORED':"Expression is factored in the rationals"
+        ''
     }
 
     @staticmethod
@@ -121,7 +124,7 @@ class NumBaseOutput():
     @staticmethod
     def exprstrout(key, expr):
         return srepr(expr)+" "+NumBaseOutput.messages.get(key, None)
-    
+
 class ErrorOutput:
     #Error related return values
     messages = {

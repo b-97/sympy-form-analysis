@@ -218,8 +218,9 @@ def integer_field_reducible(expr):
     result = expr_poly.is_irreducible
 
     if result:
-        return False, PolynomialOutput.strout("INTEGER_REDUCIBLE")
-    return True, PolynomialOutput.strout("INTEGER_FACTORED")"
+        return False, PolynomialOutput.strout("INTEGER_FACTORED")
+    
+    return True, PolynomialOutput.strout("INTEGER_REDUCIBLE")
 
 def rational_field_reducible(expr):
     '''Determines if the polynomial is reducible over the field of integers.
@@ -253,6 +254,6 @@ def rational_field_reducible(expr):
     result = expr_poly.is_irreducible
 
     if result:
-        return False, PolynomialOutput.strout("RATIONAL_REDUCIBLE")
+        return False, PolynomialOutput.strout("RATIONAL_FACTORED")
 
     return True, PolynomialOutput.strout("RATIONAL_REDUCIBLE")
