@@ -216,10 +216,7 @@ def integer_field_reducible(expr):
             if result[0]:
                 return result
 
-    expr_poly = Poly(expr, domain=ZZ)
-    result = expr_poly.is_irreducible
-
-    if result:
+    if Poly(expr, domain=ZZ).is_irreducible:
         return False, PolynomialOutput.strout("INTEGER_FACTORED")
     
     return True, PolynomialOutput.strout("INTEGER_REDUCIBLE")
@@ -252,10 +249,7 @@ def rational_field_reducible(expr):
     if isinstance(expr, Pow):
         return rational_field_reducible(expr.args[0])
 
-    expr_poly = Poly(expr, domain=QQ)
-    result = expr_poly.is_irreducible
-
-    if result:
+    if Poly(expr, domain=QQ).is_irreducible:
         return False, PolynomialOutput.strout("RATIONAL_FACTORED")
 
     return True, PolynomialOutput.strout("RATIONAL_REDUCIBLE")
