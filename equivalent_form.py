@@ -3,6 +3,17 @@ from sympy import Expr, Mul, Add
 import sys
 
 def mr_equivalent_form(expr):
+    '''Larger method to apply equivalent functions to Sympy expressions.
+        Current methods that apply is only one: mr_flatten. Plans exist to \
+                include more, including negative coefficients for muls, etc.
+        Args:
+            expr: A standard sympy expression
+            associatives: a tuple of operations known to be associative for \
+                    the field containing the expression (OPTIONal
+        Returns:
+            A standard sympy expression, algebraically equivalent to the \
+                    supplied expression
+    '''
     try:
         return mr_flatten(expr)
     except:
