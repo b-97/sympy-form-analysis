@@ -2,6 +2,8 @@ from __future__ import division
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
 import sympy
+from sympy import Poly
+from sympy import ZZ,CC,QQ,RR
 from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,gcd,div,degree, Derivative, discriminant, primitive, real_roots, sieve
 from .monomial_form import *
 from .form_utils import *
