@@ -7,6 +7,7 @@ from sympy import *
 from sympy.abc import x,y,z
 
 import unittest
+
 '''
     NOTE: Sympy doesn't honor expression flag evaluate=False
         for the identity property. This may be a crippling problem, that needs

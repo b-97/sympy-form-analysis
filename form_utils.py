@@ -79,7 +79,7 @@ def is_numerical_equation(expr):
                 [0]: boolean containing the result
                 [1]: string describing the result
     '''
-    if isinstance(expr, (int,long,float,complex)):
+    if isinstance(expr, (Number, NumberSymbol,int,long,float,complex)):
         return True, "Expression is a basic Python number type"
     elif len(expr.free_symbols) == 0:
         return True, "Expression is a numerical expression"

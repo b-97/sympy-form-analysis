@@ -7,6 +7,35 @@ from sympy.functions.elementary.trigonometric import InverseTrigonometricFunctio
 from .form_output import *
 from .form_utils import *
 
+def is_singleton_form(expr):
+    '''determines if the expression is a singleton.
+        Note: internally, 0 + 6 will pass as a singleton, because SymPy will
+            convert 0 + 6 to 6. This is Sympy's fault; if the issue is handled
+            it won't be here.
+        Args:
+            expr: A standard Sympy expression
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result
+    '''
+    if isinstance(expr, (Number, NumberSymbol, Symbol)):
+        return True, SingletonOutput.strout("VALID")
+
+    if isinstance(expr, Add):
+        result = singleton_combinable_terms(expr)
+        return not result[0], result[1]
+
+    if isinstance(expr, (Mul,Pow)):
+        if is_numerically_reducible_monomial(expr)[0]:
+            return False, UtilOutput.strout("REDUCIBLE")
+        return is_singleton_factor_form(expr)
+
+    if isinstance(expr, (TrigonometricFunction, InverseTrigonometricFunction)):
+        return True, SingletonOutput.strout("VALID_TRIG")
+
+    return False, SingletonOutput.strout("INVALID")
+
 def is_singleton_factor_form(expr):
     '''Determines if a product in a singleton is appropriate.
         1. No symbols are allowed in the product.
@@ -82,31 +111,3 @@ def singleton_combinable_terms(expr):
     
     return False, SingletonOutput.strout("VALID_SUM")
 
-def is_singleton_form(expr):
-    '''determines if the expression is a singleton.
-        Note: internally, 0 + 6 will pass as a singleton, because SymPy will
-            convert 0 + 6 to 6. This is Sympy's fault; if the issue is handled
-            it won't be here.
-        Args:
-            expr: A standard Sympy expression
-        Returns:
-            A tuple containing:
-                [0]: bool containing the result
-                [1]: string describing the result
-    '''
-    if isinstance(expr, (Number, NumberSymbol, Symbol)):
-        return True, SingletonOutput.strout("VALID")
-
-    if isinstance(expr, Add):
-        result = singleton_combinable_terms(expr)
-        return not result[0], result[1]
-
-    if isinstance(expr, (Mul,Pow)):
-        if is_numerically_reducible_monomial(expr)[0]:
-            return False, UtilOutput.strout("REDUCIBLE")
-        return is_singleton_factor_form(expr)
-
-    if isinstance(expr, (TrigonometricFunction, InverseTrigonometricFunction)):
-        return True, SingletonOutput.strout("VALID_TRIG")
-
-    return False, SingletonOutput.strout("INVALID")

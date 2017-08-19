@@ -4,3 +4,4 @@ from .polynomial_form import *
 from .form_utils import *
 from .form_output import *
 from .equivalent_form import *
+from .test_utils import *
