@@ -11,6 +11,7 @@ import unittest
 from contexttimer import Timer
 import matplotlib.pyplot as plt
 import numpy as np
+import random
 
 '''
     NOTE: Sympy doesn't honor expression flag evaluate=False
@@ -18,8 +19,18 @@ import numpy as np
         to be handled by whatever implements this library
         Test a12 has been left in there just in case the issue is resolved
 '''
+gen_exprs = []
+
+for i in range(500):
+    randpoly = Poly(np.random.choice(range(1000),20,replace=True),x,domain=RR)
+    gen_exprs.append(randpoly.as_expr())
+
+if not os.path.exists("test_results"):
+        os.makedirs("test_results")
+
 class TestSymp(unittest.TestCase):
     def setUp(self):
+        '''
         self.a1 = Pow(x, 2)
         self.a2 = Add(x, y,evaluate=False)
         self.a3 = Mul(x,y,2,3,evaluate=False)
@@ -60,21 +71,18 @@ class TestSymp(unittest.TestCase):
         #Polynomials from Wikipedia
         self.w1 = Add(Pow(x,2),Mul(4,x),4,evaluate=False) #CC,RR,QQ,ZZ
         self.w2 = Add(Pow(x,2),-4,evaluate=False)
-
-        self.b1 = Mul(Pow(3,5,evaluate=False),Pow(9,10,evaluate=False),evaluate=False)
-        self.b2 = Pow(3,5,evaluate=False)
-        self.b3 = Pow(9,10,evaluate=False)
-        self.b4 = Pow(3,3,evaluate=False)
-
+        
         self.total_exprs = [x,y,z,self.a1,self.a2,self.a3,self.a4,self.a5,self.a6,
             self.a7,self.a8,self.a9,self.a10,self.a11,self.a13,
             self.a14,self.a15,self.a16,self.a17,self.a18,self.a19,self.a20,
             self.a21,self.a22,self.a23,self.a24,self.a25,self.a26,self.a27,
             self.a28,self.a29,self.a30,self.a31,self.a32,self.a33,self.a34,
-            self.a35,self.a36,self.w1,self.w2]
+            self.a35,self.a36,self.w1,self.w2]+gen_exprs
+        '''
+
+        self.total_exprs = gen_exprs
 
     def test_singleton_speed(self):
-        #Turn off caching in python so we don't screw up time results
         os.environ["SYMPY_USE_CACHE"] = "no"
         f = open("test_results/singleton.csv","w+")
         list_x = []
@@ -88,76 +96,119 @@ class TestSymp(unittest.TestCase):
             f.write(str(leng)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
-        plt.plot(np.array(list_x), np.array(list_y))
-        plt.show()
+        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.savefig('test_results/singleton.png', bbox_inches='tight')
+        plt.clf()
 
     def test_monomial_speed(self):
-        #Turn off caching in python so we don't screw up time results
         os.environ["SYMPY_USE_CACHE"] = "no"
         f = open("test_results/monomial.csv","w+")
+        list_x = []
+        list_y = []
         for i in self.total_exprs:
             leng = polynomial_length(i)
+            list_x.append(leng)
             with Timer(factor=1000) as t:
                 is_monomial_form(i)
-            f.write(str(leng)+","+str(t.elapsed)+"\n")
+            time = t.elapsed
+            f.write(str(leng)+","+str(time)+"\n")
+            list_y.append(time)
         f.close()
+        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.savefig('test_results/monomial.png', bbox_inches='tight')
+        plt.clf()
+   
 
     def test_expanded_polynomial_speed(self):
-        #Turn off caching in python so we don't screw up time results
         os.environ["SYMPY_USE_CACHE"] = "no"
-        f = open("test_results/expanded_polynomial.csv","w+")
+        f = open("test_results/expanded_poly.csv","w+")
+        list_x = []
+        list_y = []
         for i in self.total_exprs:
             leng = polynomial_length(i)
+            list_x.append(leng)
             with Timer(factor=1000) as t:
                 is_fully_expanded_polynomial(i)
-            f.write(str(leng)+","+str(t.elapsed)+"\n")
+            time = t.elapsed
+            f.write(str(leng)+","+str(time)+"\n")
+            list_y.append(time)
         f.close()
+        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.savefig('test_results/expanded_poly.png', bbox_inches='tight')
+        plt.clf()
 
-    
-    def test_factored_complex_speed(self):
-        #Turn off caching in python so we don't screw up time results
+
+    def test_complex_factored_speed(self):
         os.environ["SYMPY_USE_CACHE"] = "no"
-        f = open("test_results/factored_complex_polynomial.csv","w+")
+        f = open("test_results/complex_factored.csv","w+")
+        list_x = []
+        list_y = []
+        for i in self.total_exprs:
+            deg = degree(i)
+            list_x.append(deg)
+            with Timer(factor=1000) as t:
+                is_fully_factored_polynomial(i,domain="CC")
+            time = t.elapsed
+            f.write(str(deg)+","+str(time)+"\n")
+            list_y.append(time)
+        f.close()
+        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.savefig('test_results/complex_factored.png', bbox_inches='tight')
+        plt.clf()
+
+    def test_real_factored_speed(self):
+        os.environ["SYMPY_USE_CACHE"] = "no"
+        f = open("test_results/real_factored.csv","w+")
+        list_x = []
+        list_y = []
+        for i in self.total_exprs:
+            deg = degree(i)
+            list_x.append(deg)
+            with Timer(factor=1000) as t:
+                is_fully_factored_polynomial(i,domain="RR")
+            time = t.elapsed
+            f.write(str(deg)+","+str(time)+"\n")
+            list_y.append(time)
+        f.close()
+        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.savefig('test_results/real_factored.png', bbox_inches='tight')
+        plt.clf()
+
+    def test_rational_factored_speed(self):
+        os.environ["SYMPY_USE_CACHE"] = "no"
+        f = open("test_results/rational_factored.csv","w+")
+        list_x = []
+        list_y = []
         for i in self.total_exprs:
             leng = polynomial_length(i)
+            list_x.append(leng)
             with Timer(factor=1000) as t:
-                is_fully_factored_polynomial(i,domain='CC')
-            f.write(str(leng)+","+str(t.elapsed)+"\n")
+                is_fully_factored_polynomial(i,domain="QQ")
+            time = t.elapsed
+            f.write(str(leng)+","+str(time)+"\n")
+            list_y.append(time)
         f.close()
+        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.savefig('test_results/rational_factored.png', bbox_inches='tight')
+        plt.clf()
 
-
-    def test_factored_real_speed(self):
-        #Turn off caching in python so we don't screw up time results
+    def test_integer_factored_speed(self):
         os.environ["SYMPY_USE_CACHE"] = "no"
-        f = open("test_results/factored_real_polynomial.csv","w+")
+        f = open("test_results/integer_factored.csv","w+")
+        list_x = []
+        list_y = []
         for i in self.total_exprs:
             leng = polynomial_length(i)
+            list_x.append(leng)
             with Timer(factor=1000) as t:
-                is_fully_factored_polynomial(i,domain='RR')
-            f.write(str(leng)+","+str(t.elapsed)+"\n")
+                is_fully_factored_polynomial(i,domain="ZZ")
+            time = t.elapsed
+            f.write(str(leng)+","+str(time)+"\n")
+            list_y.append(time)
         f.close()
+        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.savefig('test_results/integer_factored.png', bbox_inches='tight')
+        plt.clf()
 
-    def test_factored_rational_speed(self):
-        #Turn off caching in python so we don't screw up time results
-        os.environ["SYMPY_USE_CACHE"] = "no"
-        f = open("test_results/factored_rational_polynomial.csv","w+")
-        for i in self.total_exprs:
-            leng = polynomial_length(i)
-            with Timer(factor=1000) as t:
-                is_fully_factored_polynomial(i,domain='QQ')
-            f.write(str(leng)+","+str(t.elapsed)+"\n")
-        f.close()
-
-    def test_factored_integer_speed(self):
-        #Turn off caching in python so we don't screw up time results
-        os.environ["SYMPY_USE_CACHE"] = "no"
-        f = open("test_results/factored_integer_polynomial.csv","w+")
-        for i in self.total_exprs:
-            leng = polynomial_length(i)
-            with Timer(factor=1000) as t:
-                is_fully_factored_polynomial(i,domain='ZZ')
-            f.write(str(leng)+","+str(t.elapsed)+"\n")
-        f.close()
-    
 if __name__ == '__main__':
     unittest.main()
