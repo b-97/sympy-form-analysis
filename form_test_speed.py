@@ -21,12 +21,15 @@ import random
 '''
 gen_exprs = []
 
-test_poly_deg = 1
+test_poly_deg = 2
 for i in range(500):
-    randpoly = Poly(np.random.choice(range(1000),test_poly_deg,replace=True),x,domain=RR)
+    randcoeffs = np.random.choice(range(1000),test_poly_deg,replace=True)
+    randpoly = Poly(randcoeffs,x,domain=RR)
     gen_exprs.append(randpoly.as_expr())
-    if(test_poly_deg > 20):
-        test_poly_deg = 1
+    
+    test_poly_deg += 1
+    if(test_poly_deg > 21):
+        test_poly_deg = 2
 
 if not os.path.exists("test_results"):
         os.makedirs("test_results")
