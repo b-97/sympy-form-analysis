@@ -59,16 +59,6 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     if is_monomial_form(expr)[0]:
         return True, PolynomialOutput.strout("IS_MONOMIAL")
 
-    '''
-                Polynomials that are not squarefree by definition have
-                [d/d(symbol)](expr) as a factor. Currently checking for
-                squarefree polynomials increases the length of calculations,
-                but tests need to be made to check for this.
-    result = is_squarefree_polynomial(expr)
-    if not result[0]:
-        return result
-    '''
-
     #Next, we check to see if individual terms in the polynomial are numerically
     #reducible (i.e, 3/3, x/x x^2/x, etc.)
     for i in mr_polynomial_terms(expr):
@@ -94,12 +84,12 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     elif domain == 'CC':
         result = complex_field_reducible(expr)
         return not result[0], result[1]
-    #elif domain == 'ZZ':
-    #    result = integer_field_reducible(expr)
-    #    return not result[0], result[1]
-    #elif domain == 'QQ':
-    #    result = rational_field_reducible(expr)
-    #    return not result[0], result[1]
+    elif domain == 'ZZ':
+        result = integer_field_reducible(expr)
+        return not result[0], result[1]
+    elif domain == 'QQ':
+        result = rational_field_reducible(expr)
+        return not result[0], result[1]
     else:
         return False, ErrorOutput.strout("ERROR")
 
@@ -187,8 +177,6 @@ def real_field_reducible(expr):
     if isinstance(expr, Pow):
         return real_field_reducible(expr.args[0])
 
-    '''TODO: ENSURE REAL COEFFICIENTS ARE TAKEN CARE OF'''
-
     if degree(expr) > 2:
         return True, PolynomialOutput.strout("REAL_HIGH_DEGREE")
 
@@ -226,8 +214,6 @@ def integer_field_reducible(expr):
             if result[0]:
                 return result
 
-    '''TODO: ENSURE INTEGER COEFFICIENTS ARE TAKEN CARE OF'''
-
     expr_poly = Poly(expr, domain=ZZ)
     result = expr_poly.is_irreducible
 
@@ -263,9 +249,7 @@ def rational_field_reducible(expr):
     if isinstance(expr, Pow):
         return rational_field_reducible(expr.args[0])
 
-    '''TODO: ENSURE RATIONAL COEFFICIENTS ARE TAKEN CARE OF'''
-
-    expr_poly = Poly(expr, domain=ZZ)
+    expr_poly = Poly(expr, domain=QQ)
     result = expr_poly.is_irreducible
 
     if result:

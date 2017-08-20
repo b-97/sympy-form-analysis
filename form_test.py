@@ -26,7 +26,6 @@ class TestSymp(unittest.TestCase):
         self.a9 = Mul(Pow(y,pi),Pow(x,10),evaluate=False)
         self.a10 = Add(3,pi,pi,evaluate=False)
         self.a11 = Add(1,9,pi,evaluate=False)
-        #self.a12 = Add(0,1,evaluate=False)
         self.a13 = Add(152, pi,evaluate=False)
         self.a14 = Add(3, pi,evaluate=False)
         self.a15 = Add(3, Mul(4, pi),evaluate=False)
@@ -56,7 +55,7 @@ class TestSymp(unittest.TestCase):
         #Polynomials from Wikipedia
         self.w1 = Add(Pow(x,2),Mul(4,x),4,evaluate=False) #CC,RR,QQ,ZZ
         self.w2 = Add(Pow(x,2),-4,evaluate=False)
-        
+
         self.b1 = Mul(Pow(3,5,evaluate=False),Pow(9,10,evaluate=False),evaluate=False)
         self.b2 = Pow(3,5,evaluate=False)
         self.b3 = Pow(9,10,evaluate=False)
