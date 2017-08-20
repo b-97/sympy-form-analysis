@@ -102,7 +102,7 @@ class TestSymp(unittest.TestCase):
             f.write(str(leng)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
-        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.scatter(np.array(list_x), np.array(list_y),color="red")
         plt.savefig('test_results/singleton.png', bbox_inches='tight')
         plt.clf()
 
@@ -120,7 +120,7 @@ class TestSymp(unittest.TestCase):
             f.write(str(leng)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
-        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.scatter(np.array(list_x), np.array(list_y),color="orangered")
         plt.savefig('test_results/monomial.png', bbox_inches='tight')
         plt.clf()
    
@@ -139,7 +139,7 @@ class TestSymp(unittest.TestCase):
             f.write(str(leng)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
-        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.scatter(np.array(list_x), np.array(list_y),color="darkkhaki")
         plt.savefig('test_results/expanded_poly.png', bbox_inches='tight')
         plt.clf()
 
@@ -158,7 +158,7 @@ class TestSymp(unittest.TestCase):
             f.write(str(deg)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
-        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.scatter(np.array(list_x), np.array(list_y),color="darkgreen")
         plt.savefig('test_results/complex_factored.png', bbox_inches='tight')
         plt.clf()
 
@@ -176,7 +176,7 @@ class TestSymp(unittest.TestCase):
             f.write(str(deg)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
-        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.scatter(np.array(list_x), np.array(list_y),color="teal")
         plt.savefig('test_results/real_factored.png', bbox_inches='tight')
         plt.clf()
 
@@ -194,7 +194,7 @@ class TestSymp(unittest.TestCase):
             f.write(str(leng)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
-        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.scatter(np.array(list_x), np.array(list_y),color="blue")
         plt.savefig('test_results/rational_factored.png', bbox_inches='tight')
         plt.clf()
 
@@ -212,7 +212,7 @@ class TestSymp(unittest.TestCase):
             f.write(str(leng)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
-        plt.scatter(np.array(list_x), np.array(list_y))
+        plt.scatter(np.array(list_x), np.array(list_y),color="violet")
         plt.savefig('test_results/integer_factored.png', bbox_inches='tight')
         plt.clf()
 
