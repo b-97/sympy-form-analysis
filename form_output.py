@@ -17,7 +17,8 @@ class SingletonOutput():
         'COMPLEX_NO_REAL': "Complex number that has no real part",
         'REAL': "Expression is a real singleton",
         'IMAGINARY': "Expression is the imaginary unit",
-        'IMAGINARY_IMPROPER':"Imaginary Number to improper power"
+        'IMAGINARY_IMPROPER':"Imaginary Number to improper power",
+        'IMAGINARY_OK_FACTORS':"Expression has no imaginary numbers to powers"
     }
 
     @staticmethod
