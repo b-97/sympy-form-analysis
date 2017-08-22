@@ -12,7 +12,11 @@ class SingletonOutput():
         'VALID': "Expression is a singleton",
         'VALID_TRIG': "Expression is a trig function",
         'VALID_INVTRIG': "Expression is an inverse trig function",
-        'INVALID': "Not a singleton"
+        'INVALID': "Not a singleton",
+        'COMPLEX': "Expression is a complex number",
+        'COMPLEX_NO_REAL': "Complex number that has no real part",
+        'REAL': "Expression is a real singleton",
+        'IMAGINARY': "Expression is the imaginary unit"
     }
 
     @staticmethod

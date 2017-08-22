@@ -1,11 +1,48 @@
 from __future__ import division
 import sympy
-from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div
+from sympy import Add,Mul,rcollect,Number,NumberSymbol,sin,cos,Pow,Integer,Symbol,fraction,gcd,div,I
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.trigonometric import InverseTrigonometricFunction
+from sympy.core.numbers import ImaginaryUnit
 
 from .form_output import *
 from .form_utils import *
+
+def is_complex_singleton_form(expr, accept_reals=True):
+    '''Determines if an expression is a complex number.
+    Args:
+        expr: A standard sympy expression
+        accept_reals: Whether or not the function will return true if there \
+                is no complex part to the number [OPTIONAL]
+    Returns:
+        A tuple containing:
+            [0]: bool containing the result
+            [1]: string describing the result
+    '''
+    if not is_singleton_form(expr)[0]:
+        return is_singleton_form(expr)
+    
+    if isinstance(expr, (ImaginaryUnit, complex)):
+        return True, SingletonOutput.strout("IMAGINARY")
+
+    if isinstance(expr, (Number, NumberSymbol, float, int)):
+        return accept_reals, SingletonOutput.strout("REAL")
+    
+    expr = mr_flatten(expr)
+    
+    if isinstance(expr, Add):
+        for j in expr.args:
+            if any(isinstance(k, ImaginaryUnit) for k in j.args):
+                return True, SingletonOutput.strout("COMPLEX")
+            if any(isinstance(l, Mul) for l in j.args):
+                if any(isinstance(k, ImaginaryUnit) for k in j.args):
+                    return True, SingletonOutput.strout("COMPLEX")
+                
+    if isinstance(expr, Mul):
+        if any(isinstance(k, ImaginaryUnit) for k in expr.args):
+            return True, SingletonOutput.strout("COMPLEX_NO_REAL")
+    
+    return accept_reals, SingletonOutput.strout("REAL")
 
 def is_singleton_form(expr):
     '''determines if the expression is a singleton.
@@ -19,7 +56,7 @@ def is_singleton_form(expr):
                 [0]: bool containing the result
                 [1]: string describing the result
     '''
-    if isinstance(expr, (Number, NumberSymbol, Symbol)):
+    if isinstance(expr, (Number, float, int, complex, ImaginaryUnit, NumberSymbol, Symbol)):
         return True, SingletonOutput.strout("VALID")
 
     if isinstance(expr, Add):
@@ -58,7 +95,7 @@ def is_singleton_factor_form(expr):
     for i in expr.args:
         #Make sure that anything inside is either a number,
         #numbersymbol, multiplication, or addition.
-        if not isinstance(i, (Number, NumberSymbol,Pow,Mul)):
+        if not isinstance(i, (Number, ImaginaryUnit, NumberSymbol,Pow,Mul)):
             return False, SingletonOutput.strout("IMPROPER_TERM")
         if isinstance(i,Pow):
             result = const_to_const(i)
