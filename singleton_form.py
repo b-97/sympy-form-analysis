@@ -10,18 +10,18 @@ from .form_utils import *
 
 def is_complex_singleton_form(expr, accept_reals=True):
     '''Determines if an expression is a complex number.
-    Args:
-        expr: A standard sympy expression
-        accept_reals: Whether or not the function will return true if there \
-                is no complex part to the number [OPTIONAL]
-    Returns:
-        A tuple containing:
-            [0]: bool containing the result
-            [1]: string describing the result
+        Args:
+            expr: A standard sympy expression
+            accept_reals: Whether or not the function will return true if there \
+                    is no complex part to the number [OPTIONAL]
+        Returns:
+            A tuple containing:
+                [0]: bool containing the result
+                [1]: string describing the result
     '''
     if not is_singleton_form(expr)[0]:
         return is_singleton_form(expr)
-    
+
     if isinstance(expr, (ImaginaryUnit, complex)):
         return True, SingletonOutput.strout("IMAGINARY")
 
@@ -30,12 +30,16 @@ def is_complex_singleton_form(expr, accept_reals=True):
     
     expr = mr_flatten(expr)
     
+    result = _complex_improper_term(expr)
+    if result[0]:
+        return not result[0], result[1]
+
     if isinstance(expr, Add):
         for j in expr.args:
             if any(isinstance(k, ImaginaryUnit) for k in j.args):
                 return True, SingletonOutput.strout("COMPLEX")
             if any(isinstance(l, Mul) for l in j.args):
-                if any(isinstance(k, ImaginaryUnit) for k in j.args):
+                if any(isinstance(k, ImaginaryUnit) for k in l.args):
                     return True, SingletonOutput.strout("COMPLEX")
                 
     if isinstance(expr, Mul):
@@ -43,6 +47,29 @@ def is_complex_singleton_form(expr, accept_reals=True):
             return True, SingletonOutput.strout("COMPLEX_NO_REAL")
     
     return accept_reals, SingletonOutput.strout("REAL")
+
+def _complex_improper_term(expr, funcs=(Add,Mul,Pow)):
+    '''Determines if an expression has I to a power, which can be simplified.
+        Args:
+            expr: A standard sympy expression
+            funcs: List of functions to traverse (OPTIONAL)
+        Returns:
+            A tuple containing:
+                [0]: Boolean containing the result
+                [1]: String describing the result
+    '''
+    if not isinstance(expr, funcs):
+        return False, SingletonOutput.strout("IMAGINARY_OK_FACTORS")
+
+    if isinstance(expr, Pow):
+        if isinstance(expr.args[0], ImaginaryUnit):
+            return True, SingletonOutput.strout("IMAGINARY_IMPROPER")
+
+    for i in expr.args:
+        if any(_complex_improper_term(j) for j in i.args):
+            return True, SingletonOutput.strout("IMAGINARY_IMPROPER")
+
+    return False, SingletonOutput.strout("IMAGINARY_OK_FACTORS") 
 
 def is_singleton_form(expr):
     '''determines if the expression is a singleton.
