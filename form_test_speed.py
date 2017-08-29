@@ -41,7 +41,7 @@ if not os.path.exists("test_results"):
 class TestSymp(unittest.TestCase):
     def setUp(self):
         self.total_exprs = gen_exprs
-
+    '''
     def test_singleton_speed(self):
         os.environ["SYMPY_USE_CACHE"] = "no"
         f = open("test_results/singleton.csv","w+")
@@ -84,19 +84,22 @@ class TestSymp(unittest.TestCase):
         plt.savefig('test_results/monomial.png', bbox_inches='tight')
         plt.clf()
    
-
+    '''
     def test_expanded_polynomial_speed(self):
         os.environ["SYMPY_USE_CACHE"] = "no"
         f = open("test_results/expanded_poly.csv","w+")
         list_x = []
         list_y = []
         for i in self.total_exprs:
-            leng = polynomial_length(i)
-            list_x.append(leng)
+            #leng = polynomial_length(i)
+            deg = degree(i)
+            #list_x.append(leng)
+            list_x.append(deg)
             with Timer(factor=1000) as t:
                 is_fully_expanded_polynomial(i)
             time = t.elapsed
-            f.write(str(leng)+","+str(time)+"\n")
+            #f.write(str(leng)+","+str(time)+"\n")
+            f.write(str(deg)+","+str(time)+"\n")
             list_y.append(time)
         f.close()
         plt.scatter(np.array(list_x), np.array(list_y),color="darkkhaki")
@@ -106,7 +109,7 @@ class TestSymp(unittest.TestCase):
         plt.savefig('test_results/expanded_poly.png', bbox_inches='tight')
         plt.clf()
 
-
+    '''
     def test_complex_factored_speed(self):
         os.environ["SYMPY_USE_CACHE"] = "no"
         f = open("test_results/complex_factored.csv","w+")
@@ -190,6 +193,7 @@ class TestSymp(unittest.TestCase):
         plt.ylabel("Evaluation Time (ms)")
         plt.savefig('test_results/integer_factored.png', bbox_inches='tight')
         plt.clf()
+    '''
 
 if __name__ == '__main__':
     unittest.main()

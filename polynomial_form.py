@@ -74,10 +74,6 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
     if result[0]:
         return False, result[1]
 
-    result = duplicate_bases(expr)
-    if result[0]:
-        return False, result[1]
-
     #Finally, we analyze the reducibility of the polynomial according to the
     #domain the user specified.
     if domain == 'RR':
