@@ -25,7 +25,11 @@ _Proper Singleton Form_
 
 `sfa.is_singleton_form(expr)`
 
-Determines if an expression is a singleton.
+Determines if an expression is a singleton. A singleton is defined in this library as a singular variable or number that cannot be expressed as two smaller variables or numbers. Rational numbers and variables raised to powers do not fit this definition.
+
+'sfa.is_complex_singleton_form(expr)`
+
+Determines if an expression is a complex number in proper form, with complex proper form defined as a + bi.
 
 
 _Proper Monomial Form_
