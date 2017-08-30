@@ -16,6 +16,12 @@ Testing polynomial evaluation for efficiency and accuracy is implemented using P
 ------
 While more methods exist in this library than documented, they are considered incomplete in their current state due to bugs or refactoring issues. Plans are underway to sort them into another testing branch.
 
+All methods in this library generate a tuple containing:
+[0] - Boolean result of the function. This is most likely what you want to use.
+[1] - String describing the result of the function.
+
+Future versions of sympy-form-analysis will allow users to specify a flag swapping between returning a tuple and a boolean.
+
 
 #### Library methods:
 _(All methods assume the following code has been executed beforehand):_
@@ -27,7 +33,7 @@ _Proper Singleton Form_
 
 Determines if an expression is a singleton. A singleton is defined in this library as a singular variable or number that cannot be expressed as two smaller variables or numbers. Rational numbers and variables raised to powers do not fit this definition.
 
-'sfa.is_complex_singleton_form(expr)`
+`sfa.is_complex_singleton_form(expr)`
 
 Determines if an expression is a complex number in proper form, with complex proper form defined as a + bi.
 
