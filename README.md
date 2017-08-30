@@ -1,4 +1,11 @@
 # sympy-form-analysis
-Library of Python functions to analyze the form of Sympy expressions
+## Library of Python functions to analyze the form of Sympy expressions
 
-Run tests with `python -m sympy-form-analysis.form_test`
+
+
+Testing:
+Run tests with:
+`python -m sympy-form-analysis.form_test_speed
+or
+`python -m sympy-form-analysis.form_test_accuracy
+
