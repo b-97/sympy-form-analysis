@@ -46,7 +46,7 @@ Determines if a Sympy expression is fully reduced. A polynomial that is fully re
 
 Testing:
 
-Run tests with:
+Tests can be run from the terminal with:
 
 `python -m sympy-form-analysis.form_test_speed`
 
