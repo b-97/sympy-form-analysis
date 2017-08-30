@@ -76,16 +76,16 @@ def is_fully_factored_polynomial(expr, eval_trig=False, domain='RR'):
 
     #Finally, we analyze the reducibility of the polynomial according to the
     #domain the user specified.
-    if domain == 'RR':
+    if domain == 'RR' or domain == RR:
         result = real_field_reducible(expr)
         return not result[0], result[1]
-    elif domain == 'CC':
+    elif domain == 'CC' or domain == CC:
         result = complex_field_reducible(expr)
         return not result[0], result[1]
-    elif domain == 'ZZ':
+    elif domain == 'ZZ' or domain == ZZ:
         result = integer_field_reducible(expr)
         return not result[0], result[1]
-    elif domain == 'QQ':
+    elif domain == 'QQ' or domain == QQ:
         result = rational_field_reducible(expr)
         return not result[0], result[1]
     else:
