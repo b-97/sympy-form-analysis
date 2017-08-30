@@ -22,23 +22,34 @@ _(All methods assume the following code has been executed beforehand):_
 `import sympy_form_analysis as sfa`
 
 _Proper Singleton Form_
+
 `sfa.is_singleton_form(expr)`
+
 Determines if an expression is a singleton.
 
+
 _Proper Monomial Form_
+
 `sfa.is_monomial_form(expr)`
 
 Determines whether an expression is in proper monomial form. Monomials are defined as either a singleton or a single product of singletons, where singletons (excluding Rational numbers) are optionally explicitly raised to a power.
 
 _Proper Polynomial Forms_
+
 `sfa.is_fully_expanded_polynomial(expr, eval_trig=False)`
+
 Determines if a SymPy expression is a fully expanded polynomial. A polynomial that is fully expanded is defined in this library as a sum of linearly independent monomials that cannot be expanded further. Eval_trig currently exists for compatibility with earlier versions of sympy-form-analysis, but is currently not in use as features are in development for that flag.
 
 `sfa.is_fully_factored_polynomial(expr, eval_trig=False, domain="RR")`
+
 Determines if a Sympy expression is fully reduced. A polynomial that is fully reduced is defined in this library as an expression that is either a fully reduced polynomial or a product of independent reduced polynomials. By default, sympy-form-analysis determines reducibility for polynomials in the Real domain, however CC, ZZ, and QQ are also supported by specifying the flag as a string. Alternatively, specifying the domains as reals themselves themselves is supported as well.
 
 Testing:
+
 Run tests with:
+
 `python -m sympy-form-analysis.form_test_speed`
+
 or
+
 `python -m sympy-form-analysis.form_test_accuracy`
