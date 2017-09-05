@@ -23,7 +23,7 @@ def is_fully_expanded_polynomial(expr, eval_trig=False):
     result = is_monomial_form(expr)
     if is_monomial_form(expr)[0]:
         return True, result[1]
-    elif not isinstance(expr, (Add)):
+    elif not isinstance(expr, Add):
         return False, result[1]
 
     result = const_divisible(expr)
@@ -214,7 +214,7 @@ def integer_field_reducible(expr):
 
     if Poly(expr, domain=ZZ).is_irreducible:
         return False, PolynomialOutput.strout("INTEGER_FACTORED")
-    
+
     return True, PolynomialOutput.strout("INTEGER_REDUCIBLE")
 
 def rational_field_reducible(expr):

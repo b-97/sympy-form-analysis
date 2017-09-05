@@ -22,10 +22,11 @@ def const_divisible(expr):
 
     if isinstance(flat,(Add,Mul)):
         for i,j in itertools.combinations(flat.args,2):
-            if is_numerical_equation(i)[0] and is_numerical_equation(j)[0]:
+            sumnum = sum(is_numerical_equation(ex)[0] for ex in (i,j))
+            if sumnum == 2:
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
             gcd_i_j = gcd(i,j)
-            if isinstance(gcd_i_j, (Number, NumberSymbol)) and gcd_i_j != 1:
+            if isinstance(gcd_i_j, (Number, NumberSymbol)) and gcd_i_j != 1 and sumnum != 1:
                 return True, UtilOutput.strout("CONST_DIVISIBLE")
 
 
